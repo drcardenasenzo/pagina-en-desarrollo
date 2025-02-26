@@ -254,13 +254,13 @@ h1:hover::after, h2:hover::after {
 @media (max-width: 1024px) {
     .area-card {
         animation: shadowMoveMobile 6s ease-in-out infinite;
-        transition: none; /* Sin transición en móvil */
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Sombra base igual a PC */
+        transition: none;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
     .area-card:hover {
-        transform: none; /* Sin transformación al hover en móvil */
-        box-shadow: none; /* Sin cambio de sombra al hover en móvil */
-        border-bottom: none; /* Sin borde al hover en móvil */
+        transform: none;
+        box-shadow: none;
+        border-bottom: none;
     }
     .area-card::before {
         content: '';
@@ -269,38 +269,19 @@ h1:hover::after, h2:hover::after {
         height: 200%;
         background: rgba(212, 175, 55, 0.1);
         transform: rotate(45deg);
-        animation: moveTriangle 10s ease-in-out infinite; /* Movimiento muy lento */
+        animation: moveTriangle 10s ease-in-out infinite;
     }
-    /* Diferentes posiciones iniciales para cada área */
-    .areas-grid .area-card:nth-child(1)::before {
-        top: -50%;
-        left: -50%;
-    }
-    .areas-grid .area-card:nth-child(2)::before {
-        top: -30%;
-        left: -70%;
-    }
-    .areas-grid .area-card:nth-child(3)::before {
-        top: -70%;
-        left: -30%;
-    }
-    .areas-grid .area-card:nth-child(4)::before {
-        top: -40%;
-        left: -60%;
-    }
-    .areas-grid .area-card:nth-child(5)::before {
-        top: -60%;
-        left: -40%;
-    }
-    .areas-grid .area-card:nth-child(6)::before {
-        top: -50%;
-        left: -50%;
-    }
+    .areas-grid .area-card:nth-child(1)::before { top: -50%; left: -50%; }
+    .areas-grid .area-card:nth-child(2)::before { top: -30%; left: -70%; }
+    .areas-grid .area-card:nth-child(3)::before { top: -70%; left: -30%; }
+    .areas-grid .area-card:nth-child(4)::before { top: -40%; left: -60%; }
+    .areas-grid .area-card:nth-child(5)::before { top: -60%; left: -40%; }
+    .areas-grid .area-card:nth-child(6)::before { top: -50%; left: -50%; }
 }
 
 @keyframes shadowMoveMobile {
     0% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
-    50% { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); } /* Misma sombra que PC */
+    50% { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); }
     100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
 }
 
@@ -375,7 +356,7 @@ h1:hover::after, h2:hover::after {
     margin-top: 0;
     margin-bottom: 1.5rem;
     text-align: left;
-    max-width: 900px; /* Un poco más ancho que el texto */
+    max-width: 900px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -394,7 +375,7 @@ h1:hover::after, h2:hover::after {
     text-align: justify;
     color: var(--gris-oscuro);
     margin-bottom: 1rem;
-    max-width: 800px; /* Ancho reducido para el texto */
+    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -510,13 +491,13 @@ h1:hover::after, h2:hover::after {
 
 @media (max-width: 1024px) {
     .articulo-card {
-        animation: shadowMoveMobile 6s ease-in-out infinite; /* Sombras iguales a áreas en móvil */
-        transition: none; /* Sin transición en móvil */
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Sombra base igual a áreas */
+        animation: shadowMoveMobile 6s ease-in-out infinite;
+        transition: none;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
     .articulo-card:hover {
-        transform: none; /* Sin transformación al hover en móvil */
-        box-shadow: none; /* Sin cambio de sombra al hover en móvil */
+        transform: none;
+        box-shadow: none;
     }
 }
 
@@ -742,7 +723,7 @@ h1:hover::after, h2:hover::after {
 }
 
 .mapa-img {
-    max-width: 280px; /* Achicado de 300px a 280px */
+    max-width: 280px;
     height: auto;
     border: 2px solid var(--dorado-suave);
     border-radius: 5px;
@@ -779,13 +760,13 @@ h1:hover::after, h2:hover::after {
     font-weight: bold;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    animation: float 3s ease-in-out infinite; /* Movimiento constante */
-    transition: background 0.3s ease, box-shadow 0.3s ease; /* Solo para fondo y sombra */
+    animation: float 3s ease-in-out infinite;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .whatsapp-btn:hover {
     background: #1EBF54;
-    transform: scale(1.2); /* Agrandado al pasar el cursor */
+    transform: scale(1.2);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
@@ -796,14 +777,8 @@ h1:hover::after, h2:hover::after {
 }
 
 @media (max-width: 1024px) {
-    nav {
-        padding: 1rem;
-    }
-
-    .menu-toggle {
-        display: block;
-    }
-
+    nav { padding: 1rem; }
+    .menu-toggle { display: block; }
     .nav-links {
         display: none;
         flex-direction: column;
@@ -815,132 +790,32 @@ h1:hover::after, h2:hover::after {
         top: 100%;
         left: 0;
     }
-
-    .nav-links.active {
-        display: flex;
-    }
-
-    nav a {
-        margin: 0.5rem 0;
-        padding: 0.5rem 1rem;
-        width: 100%;
-        text-align: center;
-    }
-
-    section {
-        padding: 8rem 5% 6rem 5%;
-    }
-
-    #inicio {
-        padding: 8rem 5% 4.5rem 5%;
-    }
-
-    .sobre-mi-container {
-        flex-direction: column;
-        gap: 2rem;
-    }
-
-    .sobre-mi-img {
-        max-width: 300px;
-        margin-left: 0;
-        margin-right: 0;
-    }
-
-    .sobre-mi-text {
-        margin-right: 0;
-        font-size: 1.1rem;
-    }
-
-    .sobre-mi-text p {
-        font-size: 1.1rem;
-    }
-
-    .areas-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .articulos-preview {
-        grid-template-columns: 1fr;
-    }
-
-    .modal-content {
-        padding: 10px;
-    }
-
-    .modal-content.scrollable {
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .modal-back {
-        top: 40px;
-        left: 10px;
-    }
-
-    .modal-body {
-        padding: 100px 15px 50px 15px;
-    }
-
-    .modal-whatsapp-btn {
-        padding: 0.8rem 1.2rem;
-        font-size: 0.9rem;
-    }
-
-    .faq-item h3 {
-        font-size: 1.2rem;
-    }
-
-    .client-faq h2 {
-        font-size: 1.8rem;
-    }
-
-    .faq-client-item h3 {
-        font-size: 1.2rem;
-    }
-
-    .faq-client-answer {
-        font-size: 1.1rem;
-    }
-
-    .testimonials h2 {
-        font-size: 2rem;
-    }
-
-    .testimonials-container {
-        height: 250px;
-    }
-
-    .testimonial-img {
-        width: 100px;
-        height: 100px;
-    }
-
-    .testimonial p {
-        font-size: 1.1rem;
-        padding: 0 1rem;
-    }
-
-    .contacto-container {
-        flex-direction: column;
-        gap: 2rem;
-        max-width: 500px;
-    }
-
-    .contacto-info {
-        max-width: 100%;
-    }
-
-    .contacto-whatsapp-btn {
-        padding: 1rem 2rem;
-        font-size: 1rem;
-        animation: float 3s ease-in-out infinite;
-    }
-
-    .mapa-img {
-        max-width: 250px; /* Achicado más en móvil */
-    }
-
-    .whatsapp-btn {
-        padding: 0.8rem 1.2rem;
-        font-size: 0.9rem;
-    }
+    .nav-links.active { display: flex; }
+    nav a { margin: 0.5rem 0; padding: 0.5rem 1rem; width: 100%; text-align: center; }
+    section { padding: 8rem 5% 6rem 5%; }
+    #inicio { padding: 8rem 5% 4.5rem 5%; }
+    .sobre-mi-container { flex-direction: column; gap: 2rem; }
+    .sobre-mi-img { max-width: 300px; margin-left: 0; margin-right: 0; }
+    .sobre-mi-text { margin-right: 0; font-size: 1.1rem; }
+    .sobre-mi-text p { font-size: 1.1rem; }
+    .areas-grid { grid-template-columns: 1fr; }
+    .articulos-preview { grid-template-columns: 1fr; }
+    .modal-content { padding: 10px; }
+    .modal-content.scrollable { -webkit-overflow-scrolling: touch; }
+    .modal-back { top: 40px; left: 10px; }
+    .modal-body { padding: 100px 15px 50px 15px; }
+    .modal-whatsapp-btn { padding: 0.8rem 1.2rem; font-size: 0.9rem; }
+    .faq-item h3 { font-size: 1.2rem; }
+    .client-faq h2 { font-size: 1.8rem; }
+    .faq-client-item h3 { font-size: 1.2rem; }
+    .faq-client-answer { font-size: 1.1rem; }
+    .testimonials h2 { font-size: 2rem; }
+    .testimonials-container { height: 250px; }
+    .testimonial-img { width: 100px; height: 100px; }
+    .testimonial p { font-size: 1.1rem; padding: 0 1rem; }
+    .contacto-container { flex-direction: column; gap: 2rem; max-width: 500px; }
+    .contacto-info { max-width: 100%; }
+    .contacto-whatsapp-btn { padding: 1rem 2rem; font-size: 1rem; animation: float 3s ease-in-out infinite; }
+    .mapa-img { max-width: 250px; }
+    .whatsapp-btn { padding: 0.8rem 1.2rem; font-size: 0.9rem; }
 }
