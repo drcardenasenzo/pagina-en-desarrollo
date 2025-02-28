@@ -160,6 +160,14 @@ section {
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
+/* Restored parallax effect for desktop and tablet */
+.parallax {
+    background-position: center 30%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    will-change: transform;
+}
+
 #inicio::before {
     content: '';
     position: absolute;
@@ -169,6 +177,24 @@ section {
     height: 100%;
     background: rgba(0, 0, 0, 0.3);
     z-index: 0;
+}
+
+/* Restored moving reflection in #inicio */
+#inicio::after {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(30deg);
+    animation: subtleMove 10s infinite;
+    z-index: 0;
+}
+
+@keyframes subtleMove {
+    0% { transform: translateX(-50%) rotate(30deg); }
+    50% { transform: translateX(50%) rotate(30deg); }
+    100% { transform: translateX(-50%) rotate(30deg); }
 }
 
 .inicio-content {
@@ -525,6 +551,24 @@ h1:hover::after, h2:hover::after {
     transform: scale(1);
 }
 
+/* Article-specific styles for individual article pages */
+.article-page h1 {
+    padding-top: 100px;
+}
+
+.article-page img {
+    max-width: 300px;
+    height: auto;
+    margin: 1.5rem auto;
+    display: block;
+}
+
+.article-page p {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 #sobre-mi {
     padding: 5rem 10% 7rem 10%;
     background: linear-gradient(to right, var(--blanco) 50%, rgba(212, 175, 55, 0.1) 100%);
@@ -660,26 +704,12 @@ h1:hover::after, h2:hover::after {
     padding: 0 2rem;
 }
 
-/* Article-specific styles for individual article pages */
-.article-page h1 {
-    padding-top: 100px;
-}
-
-.article-page img {
-    max-width: 300px;
-    height: auto;
-    margin: 1.5rem auto;
-    display: block;
-}
-
-.article-page p {
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
+#articulos {
+    padding-top: 3.8rem; /* Reduced slightly from 4rem for desktop */
 }
 
 #contacto {
-    padding: 5rem 10% 7rem 10%;
+    padding: 4.5rem 10% 7rem 10%;
     background: var(--gris-oscuro);
     color: var(--blanco);
     position: relative;
@@ -862,6 +892,8 @@ h1:hover::after, h2:hover::after {
     .articulo-content p {
         font-size: 1rem;
         margin-top: -0.75rem;
+        text-align: justify;
+        line-height: 1.5;
     }
     .articulos-buttons {
         margin-top: 1.5rem;
@@ -985,6 +1017,7 @@ h1:hover::after, h2:hover::after {
     }
     #inicio {
         padding: 8rem 5% 4rem 5%;
+        background-attachment: scroll; /* No parallax on mobile */
     }
     .sobre-mi-container {
         flex-direction: column;

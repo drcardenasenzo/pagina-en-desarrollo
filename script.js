@@ -41,14 +41,96 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    document.querySelectorAll('.area-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const contentId = card.getAttribute('data-modal');
+            openModal('modal-preguntas', contentId);
+        });
+    });
+
+    document.querySelectorAll('.modal-back').forEach(button => {
+        button.addEventListener('click', () => {
+            const modalId = button.closest('.modal').id;
+            closeModal(modalId);
+        });
+    });
+
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                closeMenuAndModals();
+                closeClientFaqAnswers();
+                scrollToSection(href);
+            } else if (href.includes('#')) {
+                e.preventDefault(); // Prevent default to handle manually
+                closeMenuAndModals();
+                closeClientFaqAnswers();
+                const targetId = href.split('#')[1];
+                // Navigate to the page and scroll after load
+                window.location.href = href;
+                setTimeout(() => scrollToSection('#' + targetId), 100);
+            }
+            if (window.innerWidth <= 767) {
+                setTimeout(() => {
+                    navLinks.classList.remove('active');
+                    menuToggle.classList.remove('active');
+                }, 100);
+            }
+        });
+    });
+
+    const logo = document.querySelector('.logo');
+    if (logo) {
+        logo.addEventListener('click', (e) => {
+            const href = logo.getAttribute('href');
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                closeMenuAndModals();
+                scrollToSection(href);
+            } else if (href.includes('#')) {
+                e.preventDefault();
+                closeMenuAndModals();
+                const targetId = href.split('#')[1];
+                window.location.href = href;
+                setTimeout(() => scrollToSection('#' + targetId), 100);
+            }
+        });
+    }
+
+    if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+        shuffleArticles();
+    }
+
+    setArticleVisibility();
+
+    window.addEventListener('resize', debounce(setArticleVisibility, 100));
+
+    const verMasBtn = document.getElementById('ver-mas-btn');
+    const verMenosBtn = document.getElementById('ver-menos-btn');
+    if (verMasBtn) verMasBtn.addEventListener('click', loadMoreArticles);
+    if (verMenosBtn) verMenosBtn.addEventListener('click', collapseArticles);
+
+    const clientFaqItems = document.querySelectorAll('.faq-client-item h3');
+    clientFaqItems.forEach(item => {
+        item.addEventListener('click', () => toggleClientAnswer(item, clientFaqItems));
+    });
+
+    rotateTestimonials();
+
+    if (window.location.hash) {
+        setTimeout(() => {
+            scrollToSection(window.location.hash);
+        }, 100);
+    }
 });
 
 function closeMenuAndModals() {
     const navLinks = document.querySelector('.nav-links');
     const menuToggle = document.querySelector('.menu-toggle');
-    if (navLinks) {
-        navLinks.classList.remove('active');
-    }
+    if (navLinks) navLinks.classList.remove('active');
     if (menuToggle) menuToggle.classList.remove('active');
     closeModal('modal-preguntas');
 }
@@ -256,88 +338,6 @@ function scrollToSection(targetId) {
     const target = document.querySelector(targetId);
     if (target) {
         const targetPosition = target.getBoundingClientRect().top + window.scrollY - 70;
-        if (window.innerWidth <= 767) {
-            closeMenuAndModals();
-            setTimeout(() => {
-                requestAnimationFrame(() => {
-                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-                });
-            }, 50);
-        } else {
-            requestAnimationFrame(() => {
-                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-            });
-        }
+        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
     }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.area-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const contentId = card.getAttribute('data-modal');
-            openModal('modal-preguntas', contentId);
-        });
-    });
-
-    document.querySelectorAll('.modal-back').forEach(button => {
-        button.addEventListener('click', () => {
-            const modalId = button.closest('.modal').id;
-            closeModal(modalId);
-        });
-    });
-
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', (e) => {
-            const href = link.getAttribute('href');
-            if (href.startsWith('#')) {
-                e.preventDefault();
-                closeClientFaqAnswers();
-                scrollToSection(href);
-            } else if (href.includes('#')) {
-                const targetId = href.split('#')[1];
-                setTimeout(() => scrollToSection('#' + targetId), 100);
-            }
-        });
-    });
-
-    const logo = document.querySelector('.logo');
-    if (logo) {
-        logo.addEventListener('click', (e) => {
-            const href = logo.getAttribute('href');
-            if (href.startsWith('#')) {
-                e.preventDefault();
-                closeMenuAndModals();
-                scrollToSection(href);
-            } else if (href.includes('#')) {
-                const targetId = href.split('#')[1];
-                setTimeout(() => scrollToSection('#' + targetId), 100);
-            }
-        });
-    }
-
-    if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
-        shuffleArticles();
-    }
-
-    setArticleVisibility();
-
-    window.addEventListener('resize', debounce(setArticleVisibility, 100));
-
-    const verMasBtn = document.getElementById('ver-mas-btn');
-    const verMenosBtn = document.getElementById('ver-menos-btn');
-    if (verMasBtn) verMasBtn.addEventListener('click', loadMoreArticles);
-    if (verMenosBtn) verMenosBtn.addEventListener('click', collapseArticles);
-
-    const clientFaqItems = document.querySelectorAll('.faq-client-item h3');
-    clientFaqItems.forEach(item => {
-        item.addEventListener('click', () => toggleClientAnswer(item, clientFaqItems));
-    });
-
-    rotateTestimonials();
-
-    if (window.location.hash) {
-        setTimeout(() => {
-            scrollToSection(window.location.hash);
-        }, 100);
-    }
-});
