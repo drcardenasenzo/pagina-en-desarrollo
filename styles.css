@@ -46,15 +46,55 @@ nav.scrolled {
     display: none;
     background: none;
     border: none;
-    color: var(--blanco);
-    font-size: 1.5rem;
     cursor: pointer;
-    padding: 0.5rem;
-    transition: transform 0.3s ease;
+    padding: 0;
+    width: 30px;
+    height: 22px;
+    position: relative;
+    margin-right: 1rem;
+    margin-left: 1rem;
 }
 
-.menu-toggle:hover {
-    transform: rotate(90deg);
+.hamburger {
+    width: 100%;
+    height: 3px;
+    background: var(--dorado-suave);
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+}
+
+.hamburger::before,
+.hamburger::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: var(--dorado-suave);
+    left: 0;
+    transition: all 0.3s ease;
+}
+
+.hamburger::before {
+    top: -8px;
+}
+
+.hamburger::after {
+    top: 8px;
+}
+
+.menu-toggle.active .hamburger {
+    background: transparent;
+}
+
+.menu-toggle.active .hamburger::before {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.menu-toggle.active .hamburger::after {
+    transform: translateY(-8px) rotate(-45deg);
 }
 
 nav .logo {
@@ -76,7 +116,7 @@ nav a {
     font-size: 1.1rem;
     margin: 0 1.5rem;
     position: relative;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.2s ease;
 }
 
 nav a:hover {
@@ -100,29 +140,24 @@ nav a:hover::after {
 
 .nav-links {
     display: flex;
+    transition: all 0.2s ease;
 }
 
 section {
-    padding: 7rem 10%;
+    padding: 4rem 10% 7rem 10%;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 #inicio {
     background-image: url('portada.jpg');
     background-size: cover;
-    background-position: center;
+    background-position: center 30%;
     position: relative;
     color: var(--blanco);
     text-align: center;
     padding: 8rem 10% 6rem 10%;
     overflow: hidden;
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
-}
-
-.parallax {
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
 }
 
 #inicio::before {
@@ -136,23 +171,6 @@ section {
     z-index: 0;
 }
 
-#inicio::after {
-    content: '';
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    background: rgba(255, 255, 255, 0.1);
-    transform: rotate(30deg);
-    animation: subtleMove 10s infinite;
-    z-index: 0;
-}
-
-@keyframes subtleMove {
-    0% { transform: translateX(-50%) rotate(30deg); }
-    50% { transform: translateX(50%) rotate(30deg); }
-    100% { transform: translateX(-50%) rotate(30deg); }
-}
-
 .inicio-content {
     position: relative;
     z-index: 1;
@@ -161,6 +179,11 @@ section {
 .inicio-content h1 {
     color: #FFFFFF;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1.5rem;
+}
+
+.inicio-content p {
+    font-size: 1.55rem;
 }
 
 .inicio-cta {
@@ -207,6 +230,7 @@ h1:hover::after, h2:hover::after {
 }
 
 #areas {
+    padding-top: 5rem;
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -221,16 +245,17 @@ h1:hover::after, h2:hover::after {
     background: var(--blanco);
     padding: 2rem;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     overflow: hidden;
     cursor: pointer;
+    will-change: transform;
 }
 
 .area-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
     border-bottom: 3px solid var(--dorado-suave);
 }
 
@@ -249,46 +274,6 @@ h1:hover::after, h2:hover::after {
 .area-card:hover::before {
     top: 0;
     left: 0;
-}
-
-@media (max-width: 1024px) {
-    .area-card {
-        animation: shadowMoveMobile 6s ease-in-out infinite;
-        transition: none;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-    .area-card:hover {
-        transform: none;
-        box-shadow: none;
-        border-bottom: none;
-    }
-    .area-card::before {
-        content: '';
-        position: absolute;
-        width: 200%;
-        height: 200%;
-        background: rgba(212, 175, 55, 0.1);
-        transform: rotate(45deg);
-        animation: moveTriangle 10s ease-in-out infinite;
-    }
-    .areas-grid .area-card:nth-child(1)::before { top: -50%; left: -50%; }
-    .areas-grid .area-card:nth-child(2)::before { top: -30%; left: -70%; }
-    .areas-grid .area-card:nth-child(3)::before { top: -70%; left: -30%; }
-    .areas-grid .area-card:nth-child(4)::before { top: -40%; left: -60%; }
-    .areas-grid .area-card:nth-child(5)::before { top: -60%; left: -40%; }
-    .areas-grid .area-card:nth-child(6)::before { top: -50%; left: -50%; }
-}
-
-@keyframes shadowMoveMobile {
-    0% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
-    50% { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); }
-    100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
-}
-
-@keyframes moveTriangle {
-    0% { top: -50%; left: -50%; }
-    50% { top: 0; left: 0; }
-    100% { top: -50%; left: -50%; }
 }
 
 .modal {
@@ -328,12 +313,12 @@ h1:hover::after, h2:hover::after {
     background: var(--azul-profundo);
     color: var(--blanco);
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1.2rem;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.1rem;
     position: fixed;
-    top: 50px;
+    top: 20px;
     left: 20px;
     transition: background 0.3s ease;
     z-index: 2001;
@@ -346,7 +331,7 @@ h1:hover::after, h2:hover::after {
 }
 
 .modal-body {
-    padding: 120px 20px 60px 20px;
+    padding: 100px 20px 60px 20px;
     position: relative;
     z-index: 1;
     flex-grow: 1;
@@ -354,7 +339,7 @@ h1:hover::after, h2:hover::after {
 
 .modal-body h2 {
     margin-top: 0;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     text-align: left;
     max-width: 900px;
     margin-left: auto;
@@ -362,9 +347,9 @@ h1:hover::after, h2:hover::after {
 }
 
 .modal-body img {
-    max-width: 350px;
+    max-width: 100px;
     height: auto;
-    margin: 1rem auto;
+    margin: 1.5rem auto;
     display: block;
 }
 
@@ -391,7 +376,7 @@ h1:hover::after, h2:hover::after {
     text-decoration: none;
     font-weight: bold;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    z-index: 2001;
+    z-index: 2000;
     transition: all 0.3s ease;
     animation: float 3s ease-in-out infinite;
 }
@@ -441,6 +426,9 @@ h1:hover::after, h2:hover::after {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     margin-top: 2rem;
+    margin-bottom: 4rem;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .articulo-card {
@@ -453,6 +441,9 @@ h1:hover::after, h2:hover::after {
     position: relative;
     text-decoration: none;
     color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 420px;
 }
 
 .articulo-card:hover {
@@ -476,34 +467,32 @@ h1:hover::after, h2:hover::after {
 }
 
 .articulo-content {
-    padding: 1.5rem;
-    position: relative;
-    z-index: 1;
+    padding: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 .articulo-content h3 {
-    transition: text-shadow 0.3s ease;
+    font-size: 1.2rem;
+    color: var(--azul-profundo);
+    margin-bottom: 0.5rem;
 }
 
-.articulo-content h3:hover {
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-@media (max-width: 1024px) {
-    .articulo-card {
-        animation: shadowMoveMobile 6s ease-in-out infinite;
-        transition: none;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-    .articulo-card:hover {
-        transform: none;
-        box-shadow: none;
-    }
+.articulo-content p {
+    font-family: 'Arial', sans-serif;
+    font-size: 1.1rem;
+    color: var(--gris-oscuro);
+    line-height: 1.4;
+    margin-top: 0.25rem;
+    text-align: left;
+    margin-bottom: auto;
 }
 
 .articulos-buttons {
     text-align: center;
-    margin-top: 1rem;
+    margin-top: 2rem;
     display: flex;
     justify-content: center;
     gap: 1rem;
@@ -520,6 +509,7 @@ h1:hover::after, h2:hover::after {
     font-size: 1rem;
     transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    outline: none;
 }
 
 .ver-mas-btn:hover, .ver-menos-btn:hover {
@@ -529,8 +519,14 @@ h1:hover::after, h2:hover::after {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
 
+.ver-mas-btn:active, .ver-menos-btn:active {
+    background: var(--azul-profundo);
+    color: var(--blanco);
+    transform: scale(1);
+}
+
 #sobre-mi {
-    padding: 7rem 10%;
+    padding: 5rem 10% 7rem 10%;
     background: linear-gradient(to right, var(--blanco) 50%, rgba(212, 175, 55, 0.1) 100%);
 }
 
@@ -540,16 +536,16 @@ h1:hover::after, h2:hover::after {
     justify-content: space-between;
     max-width: 1200px;
     margin: 0 auto;
-    gap: 5rem;
+    gap: 3rem;
 }
 
 .sobre-mi-img {
-    flex: 0 0 300px;
+    flex: 0 0 auto;
+    max-width: 300px;
     overflow: hidden;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-left: -4rem;
 }
 
 .sobre-mi-img:hover {
@@ -565,7 +561,6 @@ h1:hover::after, h2:hover::after {
 
 .sobre-mi-text {
     flex: 1;
-    margin-right: -3rem;
     text-align: justify;
 }
 
@@ -665,12 +660,34 @@ h1:hover::after, h2:hover::after {
     padding: 0 2rem;
 }
 
+/* Article-specific styles for individual article pages */
+.article-page h1 {
+    padding-top: 100px;
+}
+
+.article-page img {
+    max-width: 300px;
+    height: auto;
+    margin: 1.5rem auto;
+    display: block;
+}
+
+.article-page p {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 #contacto {
-    padding: 7rem 10%;
+    padding: 5rem 10% 7rem 10%;
     background: var(--gris-oscuro);
     color: var(--blanco);
     position: relative;
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+#contacto h2 {
+    margin-bottom: 0.25rem;
 }
 
 .textured-bg {
@@ -760,8 +777,8 @@ h1:hover::after, h2:hover::after {
     font-weight: bold;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     z-index: 1000;
+    transition: all 0.3s ease;
     animation: float 3s ease-in-out infinite;
-    transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .whatsapp-btn:hover {
@@ -776,9 +793,13 @@ h1:hover::after, h2:hover::after {
     100% { transform: translateY(0); }
 }
 
-@media (max-width: 1024px) {
-    nav { padding: 1rem; }
-    .menu-toggle { display: block; }
+@media (max-width: 1024px) and (min-width: 768px) {
+    nav {
+        padding: 1.5rem;
+    }
+    .menu-toggle {
+        display: block;
+    }
     .nav-links {
         display: none;
         flex-direction: column;
@@ -790,32 +811,297 @@ h1:hover::after, h2:hover::after {
         top: 100%;
         left: 0;
     }
-    .nav-links.active { display: flex; }
-    nav a { margin: 0.5rem 0; padding: 0.5rem 1rem; width: 100%; text-align: center; }
-    section { padding: 8rem 5% 6rem 5%; }
-    #inicio { padding: 8rem 5% 4.5rem 5%; }
-    .sobre-mi-container { flex-direction: column; gap: 2rem; }
-    .sobre-mi-img { max-width: 300px; margin-left: 0; margin-right: 0; }
-    .sobre-mi-text { margin-right: 0; font-size: 1.1rem; }
-    .sobre-mi-text p { font-size: 1.1rem; }
-    .areas-grid { grid-template-columns: 1fr; }
-    .articulos-preview { grid-template-columns: 1fr; }
-    .modal-content { padding: 10px; }
-    .modal-content.scrollable { -webkit-overflow-scrolling: touch; }
-    .modal-back { top: 40px; left: 10px; }
-    .modal-body { padding: 100px 15px 50px 15px; }
-    .modal-whatsapp-btn { padding: 0.8rem 1.2rem; font-size: 0.9rem; }
-    .faq-item h3 { font-size: 1.2rem; }
-    .client-faq h2 { font-size: 1.8rem; }
-    .faq-client-item h3 { font-size: 1.2rem; }
-    .faq-client-answer { font-size: 1.1rem; }
-    .testimonials h2 { font-size: 2rem; }
-    .testimonials-container { height: 250px; }
-    .testimonial-img { width: 100px; height: 100px; }
-    .testimonial p { font-size: 1.1rem; padding: 0 1rem; }
-    .contacto-container { flex-direction: column; gap: 2rem; max-width: 500px; }
-    .contacto-info { max-width: 100%; }
-    .contacto-whatsapp-btn { padding: 1rem 2rem; font-size: 1rem; animation: float 3s ease-in-out infinite; }
-    .mapa-img { max-width: 250px; }
-    .whatsapp-btn { padding: 0.8rem 1.2rem; font-size: 0.9rem; }
+    .nav-links.active {
+        display: flex;
+    }
+    nav a {
+        margin: 0.5rem 0;
+        padding: 0.5rem 1rem;
+        width: 100%;
+        text-align: center;
+    }
+    section {
+        padding: 4rem 5% 6rem 5%;
+    }
+    #inicio {
+        padding: 9rem 5% 5rem 5%;
+    }
+    .sobre-mi-container {
+        flex-direction: row;
+        gap: 2rem;
+    }
+    .sobre-mi-img {
+        max-width: 250px;
+    }
+    .sobre-mi-text {
+        font-size: 1.1rem;
+    }
+    .sobre-mi-text p {
+        font-size: 1rem;
+    }
+    .areas-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    #areas {
+        padding-top: 6rem;
+    }
+    .articulos-preview {
+        grid-template-columns: repeat(2, 1fr);
+        margin-bottom: 5rem;
+    }
+    .articulo-card {
+        height: 480px;
+    }
+    .articulo-card img {
+        height: 250px;
+        object-position: top;
+    }
+    .articulo-content h3 {
+        font-size: 1.25rem;
+    }
+    .articulo-content p {
+        font-size: 1rem;
+        margin-top: -0.75rem;
+    }
+    .articulos-buttons {
+        margin-top: 1.5rem;
+    }
+    .modal-content {
+        padding: 15px;
+    }
+    .modal-content.scrollable {
+        -webkit-overflow-scrolling: touch;
+    }
+    .modal-back {
+        top: 30px;
+        left: 15px;
+        padding: 0.7rem 1.4rem;
+        font-size: 1.15rem;
+    }
+    .modal-body {
+        padding: 130px 15px 50px 15px;
+        max-width: 90%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .modal-body img {
+        max-width: 90px;
+    }
+    .faq-item {
+        text-align: center;
+        margin: 1.5rem 0;
+    }
+    .faq-item h3 {
+        font-size: 1.2rem;
+    }
+    .client-faq h2 {
+        font-size: 1.8rem;
+    }
+    .faq-client-item h3 {
+        font-size: 1.2rem;
+    }
+    .faq-client-answer {
+        font-size: 1rem;
+    }
+    .testimonials h2 {
+        font-size: 2rem;
+    }
+    .testimonials-container {
+        height: 280px;
+    }
+    .testimonial-img {
+        width: 110px;
+        height: 110px;
+    }
+    .testimonial p {
+        font-size: 1.1rem;
+        padding: 0 1rem;
+    }
+    .contacto-container {
+        flex-direction: row;
+        gap: 2rem;
+        max-width: 900px;
+    }
+    .contacto-info {
+        max-width: 50%;
+    }
+    .contacto-whatsapp-btn {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+    }
+    .mapa-img {
+        max-width: 260px;
+    }
+    .whatsapp-btn {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    .article-page p {
+        max-width: 900px;
+    }
+}
+
+@media (max-width: 767px) {
+    nav {
+        padding: 1.5rem;
+    }
+    .menu-toggle {
+        display: block;
+    }
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: var(--azul-profundo);
+        padding: 1rem 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        transition: all 0.15s ease;
+    }
+    .nav-links.active {
+        display: flex;
+    }
+    nav .logo {
+        font-size: 1.3rem;
+    }
+    nav a {
+        margin: 0.5rem 0;
+        padding: 0.5rem 1rem;
+        width: 100%;
+        text-align: center;
+    }
+    nav a::after {
+        display: none;
+    }
+    nav a:hover {
+        transform: scale(1.05);
+    }
+    section {
+        padding: 4rem 5% 6rem 5%;
+    }
+    #inicio {
+        padding: 8rem 5% 4rem 5%;
+    }
+    .sobre-mi-container {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .sobre-mi-img {
+        max-width: 250px;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .sobre-mi-text {
+        margin-right: 0;
+        font-size: 1.1rem;
+    }
+    .sobre-mi-text p {
+        font-size: 1rem;
+    }
+    .areas-grid {
+        grid-template-columns: 1fr;
+    }
+    #areas {
+        padding-top: 6rem;
+    }
+    .area-card {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+    .articulos-preview {
+        grid-template-columns: 1fr;
+        margin-bottom: 5rem;
+    }
+    .articulo-card {
+        height: 450px;
+    }
+    .articulo-card img {
+        height: 220px;
+        object-position: top;
+    }
+    .articulo-content h3 {
+        font-size: 1.25rem;
+    }
+    .articulo-content p {
+        font-size: 1.15rem;
+        margin-top: -0.5rem;
+    }
+    .articulos-buttons {
+        margin-top: 1.5rem;
+    }
+    .modal-content {
+        padding: 10px;
+    }
+    .modal-content.scrollable {
+        -webkit-overflow-scrolling: touch;
+    }
+    .modal-back {
+        top: 40px;
+        left: 10px;
+    }
+    .modal-body {
+        padding: 140px 10px 40px 10px;
+        max-width: 95%;
+        margin: 0 auto;
+    }
+    .modal-body img {
+        max-width: 80px;
+    }
+    .faq-item h3 {
+        font-size: 1.2rem;
+    }
+    .client-faq h2 {
+        font-size: 1.8rem;
+    }
+    .faq-client-item h3 {
+        font-size: 1.2rem;
+    }
+    .faq-client-answer {
+        font-size: 1rem;
+    }
+    .testimonials h2 {
+        font-size: 2rem;
+    }
+    .testimonials-container {
+        height: 250px;
+    }
+    .testimonial-img {
+        width: 100px;
+        height: 100px;
+    }
+    .testimonial p {
+        font-size: 1.1rem;
+        padding: 0 1rem;
+    }
+    #contacto {
+        padding: 4.5rem 5% 6rem 5%;
+    }
+    .contacto-container {
+        flex-direction: column;
+        gap: 2rem;
+        max-width: 500px;
+    }
+    .contacto-info {
+        max-width: 100%;
+    }
+    .contacto-whatsapp-btn {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+    }
+    .mapa-img {
+        max-width: 250px;
+    }
+    .whatsapp-btn {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    .footer-text {
+        margin-top: 2.5rem;
+    }
+    .article-page p {
+        max-width: 700px;
+    }
 }

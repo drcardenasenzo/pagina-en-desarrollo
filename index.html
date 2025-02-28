@@ -18,6 +18,7 @@
     <meta name="twitter:title" content="Estudio Jurídico Cárdenas y asociados">
     <meta name="twitter:description" content="Servicios legales en Buenos Aires. Consulta gratis con el Dr. Cárdenas.">
     <meta name="twitter:image" content="https://www.estudiojuridicoenzocardenas.com/enzo.jpg">
+    <link rel="icon" href="logo.jpg" type="image/jpeg">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
     <script type="application/ld+json">
@@ -43,14 +44,16 @@
 </head>
 <body>
     <nav>
-        <a href="#inicio" class="logo">Cárdenas & Asociados</a>
-        <button class="menu-toggle" aria-label="Abrir menú">☰</button>
+        <a href="index.html#inicio" class="logo">Cárdenas & Asociados</a>
+        <button class="menu-toggle" aria-label="Abrir menú">
+            <span class="hamburger"></span>
+        </button>
         <div class="nav-links">
-            <a href="#inicio">Inicio</a>
-            <a href="#areas">Áreas de Práctica</a>
-            <a href="#articulos">Artículos</a>
-            <a href="#sobre-mi">Sobre Mí</a>
-            <a href="#contacto">Contacto</a>
+            <a href="index.html#inicio">Inicio</a>
+            <a href="index.html#areas">Áreas de Práctica</a>
+            <a href="index.html#articulos">Artículos</a>
+            <a href="index.html#sobre-mi">Sobre Mí</a>
+            <a href="index.html#contacto">Contacto</a>
         </div>
     </nav>
 
@@ -73,7 +76,6 @@
             <div class="area-card" data-modal="pregunta-6"><h3>JUICIOS EJECUTIVOS</h3><p>Preguntas frecuentes</p></div>
         </div>
 
-        <!-- Contenido de preguntas frecuentes embebido en el HTML -->
         <div class="preguntas-content" style="display: none;">
             <div id="pregunta-1">
                 <h2>Preguntas Frecuentes - Divorcios</h2>
@@ -103,12 +105,10 @@
                 <div class="faq-item">
                     <h3>¿Quiénes tienen derecho a percibir alimentos y hasta cuándo?</h3>
                     <div class="faq-answer">Los hijos hasta los 21 años o, si estudian una profesión u oficio, pueden extenderse hasta los 25 años de edad.
-                    <br>
-                    <br> 
+                    <br><br> 
                         También tienen este derecho los cónyuges durante la vida en común. Luego del divorcio, hay dos causales que lo habilitan: la falta de recursos (cuya cuota alimentaria no puede extenderse más allá de los años que duró el matrimonio) o por enfermedad grave preexistente al divorcio.
-                    <br>    
-                    <br> 
-                        Además, cualquier persona puede reclamar alimentos a sus ascendientes (padres, abuelos), descendientes (hijos, nietos) o hermanos cuando no pueda proveérselos por sí misma, hasta que mejore su fortuna. </div>
+                    <br><br> 
+                        Además, cualquier persona puede reclamar alimentos a sus ascendientes (padres, abuelos), descendientes (hijos, nietos) o hermanos cuando no pueda proveérselos por sí misma, hasta que mejore su fortuna.</div>
                 </div>
                 <div class="faq-item">
                     <h3>¿En qué consisten los alimentos?</h3>
@@ -178,22 +178,19 @@
                 <div class="faq-item">
                     <h3>¿Cuánto dura la garantía de un producto?</h3>
                     <div class="faq-answer">Los productos no consumibles tienen una garantía de 6 meses si son nuevos y de 3 meses si son usados. La garantía está establecida por ley, por lo que contás con ella independientemente de si el vendedor te dio un papel de garantía.
-                    <br>
-                    <br>
+                    <br><br>
                         El proveedor puede extender una garantía con un plazo mayor.</div>
                 </div>
                 <div class="faq-item">
                     <h3>¿Los servicios tienen garantía?</h3>
                     <div class="faq-answer">Si el servicio fue deficiente (ej.: llevaste a reparar un celular y siguió sin funcionar bien), tenés 30 días para reclamar. El proveedor deberá arreglar esa deficiencia sin costo.
-                    <br>
-                    <br>
+                    <br><br>
                         Además, pueden darte una garantía, la cual debe ser por escrito e incluir el plazo de vigencia, sus datos (CUIT y nombre) y la descripción del trabajo realizado.</div>
                 </div>
                 <div class="faq-item">
                     <h3>¿Puedo devolver algo que compré online?</h3>
                     <div class="faq-answer">Sí, tenés un plazo de 10 días desde que te llegó el producto. No tenés que explicar por qué; es tu derecho revocar la compra sin tener que dar motivos. Los gastos de devolución serán a cargo del proveedor (ej.: flete), es gratis para el consumidor.
-                    <br>
-                    <br>
+                    <br><br>
                         En la página web vas a encontrar un “botón de arrepentimiento” para realizar la revocación de la compra. Si no funciona, podés comunicarte por cualquier medio oficial de la empresa.</div>
                 </div>
                 <div class="faq-item">
@@ -241,535 +238,227 @@
     <section id="articulos">
         <h2>Artículos</h2>
         <div class="articulos-preview">
-            <div class="articulo-card" data-modal="articulo-1">
+            <a href="articulo-1.html" class="articulo-card">
                 <img srcset="blog1-small.jpg 320w, blog1.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog1.jpg" alt="Cómo desconocer un cargo indebido en la tarjeta de crédito o débito" loading="lazy">
                 <div class="articulo-content">
                     <h3>Cómo desconocer un cargo indebido en el resumen de la tarjeta</h3>
                     <p>Si te llegó un cargo que no realizaste, podés desconocerlo. Te enseñamos cómo hacerlo...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-2">
+            </a>
+            <a href="articulo-2.html" class="articulo-card">
                 <img srcset="blog2-small.jpg 320w, blog2.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog2.jpg" alt="Devolución de compras online en Argentina" loading="lazy">
                 <div class="articulo-content">
                     <h3>¿Compraste online y el producto no era lo que imaginaste?</h3>
                     <p>Si realizaste una compra online tenés 10 días para devolverlo gratis...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-3">
+            </a>
+            <a href="articulo-3.html" class="articulo-card">
                 <img srcset="blog3-small.jpg 320w, blog3.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog3.jpg" alt="Garantía de productos y servicios en Argentina" loading="lazy">
                 <div class="articulo-content">
                     <h3>Todo lo que tenés que saber sobre la garantía de un producto o servicio</h3>
                     <p>Si el producto tiene una falla tenés derecho a la garantía...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-4">
+            </a>
+            <a href="articulo-4.html" class="articulo-card">
                 <img srcset="blog4-small.jpg 320w, blog4.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog4.jpg" alt="Cancelación de compras online por falta de stock" loading="lazy">
                 <div class="articulo-content">
                     <h3>¿Compraste un producto online y te cancelaron la compra por "falta de stock"?</h3>
                     <p>Si el producto estaba publicado, no pueden alegar falta de stock...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-5">
+            </a>
+            <a href="articulo-5.html" class="articulo-card">
                 <img srcset="blog5-small.jpg 320w, blog5.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog5.jpg" alt="Cuota alimentaria por edad en Argentina" loading="lazy">
                 <div class="articulo-content">
                     <h3>¿Hasta qué edad se debe pagar cuota alimentaria?</h3>
                     <p>Ingresá a este artículo que te vamos a enseñar todo sobre alimentos...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-6">
+            </a>
+            <a href="articulo-6.html" class="articulo-card">
                 <img srcset="blog6-small.jpg 320w, blog6.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog6.jpg" alt="Diferencias entre matrimonio y unión convivencial" loading="lazy">
                 <div class="articulo-content">
                     <h3>¿En qué se diferencia el matrimonio de la unión convivencial?</h3>
                     <p>Te vamos a contar todas las diferencias y derribar mitos...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-7">
+            </a>
+            <a href="articulo-7.html" class="articulo-card">
                 <img srcset="blog7-small.jpg 320w, blog7.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog7.jpg" alt="Artículo 7 sobre temas legales" loading="lazy">
                 <div class="articulo-content">
                     <h3>¿Se puede hacer un divorcio expres?</h3>
                     <p>[TEXTO ACA - Breve preview]</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-8">
+            </a>
+            <a href="articulo-8.html" class="articulo-card">
                 <img srcset="blog8-small.jpg 320w, blog8.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog8.jpg" alt="Título del artículo 8" loading="lazy">
                 <div class="articulo-content">
                     <h3>Nos separamos... ¿Quién se queda viviendo en la casa?</h3>
                     <p>Breve descripción del artículo 8...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-9">
+            </a>
+            <a href="articulo-9.html" class="articulo-card">
                 <img srcset="blog9-small.jpg 320w, blog9.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog9.jpg" alt="Título del artículo 9" loading="lazy">
                 <div class="articulo-content">
                     <h3>¿Sucesion expres?</h3>
                     <p>Breve descripción del artículo 9...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-10">
+            </a>
+            <a href="articulo-10.html" class="articulo-card">
                 <img srcset="blog10-small.jpg 320w, blog10.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog10.jpg" alt="Título del artículo 10" loading="lazy">
                 <div class="articulo-content">
                     <h3>Régimen de comunicación con nuestras mascotas</h3>
                     <p>Breve descripción del artículo 10...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-11">
+            </a>
+            <a href="articulo-11.html" class="articulo-card">
                 <img srcset="blog11-small.jpg 320w, blog11.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog11.jpg" alt="Título del artículo 11" loading="lazy">
                 <div class="articulo-content">
                     <h3>¿Cuándo prescribe una deuda y qué pasa si te reclaman después?</h3>
                     <p>Breve descripción del artículo 11...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-12">
+            </a>
+            <a href="articulo-12.html" class="articulo-card">
                 <img srcset="blog12-small.jpg 320w, blog12.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog12.jpg" alt="Título del artículo 12" loading="lazy">
                 <div class="articulo-content">
                     <h3>¿Los abuelos están obligados a pagar alimentos a los nietos?</h3>
                     <p>Breve descripción del artículo 12...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-13">
+            </a>
+            <a href="articulo-13.html" class="articulo-card">
                 <img srcset="blog13-small.jpg 320w, blog13.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog13.jpg" alt="Título del artículo 13" loading="lazy">
                 <div class="articulo-content">
                     <h3>Compré algo por internet y nunca llegó: ¿qué puedo hacer?</h3>
                     <p>Breve descripción del artículo 13...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-14">
+            </a>
+            <a href="articulo-14.html" class="articulo-card">
                 <img srcset="blog14-small.jpg 320w, blog14.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog14.jpg" alt="Título del artículo 14" loading="lazy">
                 <div class="articulo-content">
                     <h3>Testamento: ¿cómo evitar problemas futuros?</h3>
                     <p>Breve descripción del artículo 14...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-15">
+            </a>
+            <a href="articulo-15.html" class="articulo-card">
                 <img srcset="blog15-small.jpg 320w, blog15.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog15.jpg" alt="Título del artículo 15" loading="lazy">
                 <div class="articulo-content">
                     <h3>¿Te embargaron la cuenta bancaria? Cómo defenderte</h3>
                     <p>Breve descripción del artículo 15...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-16">
+            </a>
+            <a href="articulo-16.html" class="articulo-card">
                 <img srcset="blog16-small.jpg 320w, blog16.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog16.jpg" alt="Título del artículo 16" loading="lazy">
                 <div class="articulo-content">
                     <h3>¿Qué hacer si mi expareja no me deja ver a mis hijos?</h3>
                     <p>Breve descripción del artículo 16...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-17">
+            </a>
+            <a href="articulo-17.html" class="articulo-card">
                 <img srcset="blog17-small.jpg 320w, blog17.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog17.jpg" alt="Título del artículo 17" loading="lazy">
                 <div class="articulo-content">
-                    <h3> ¿Qué bienes no se pueden embargar en Argentina?</h3>
+                    <h3>¿Qué bienes no se pueden embargar en Argentina?</h3>
                     <p>Breve descripción del artículo 17...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-18">
+            </a>
+            <a href="articulo-18.html" class="articulo-card">
                 <img srcset="blog18-small.jpg 320w, blog18.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog18.jpg" alt="Título del artículo 18" loading="lazy">
                 <div class="articulo-content">
                     <h3>¿Puedo exigir cuota alimentaria si el padre trabaja en negro?</h3>
                     <p>Breve descripción del artículo 18...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-19">
+            </a>
+            <a href="articulo-19.html" class="articulo-card">
                 <img srcset="blog19-small.jpg 320w, blog19.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog19.jpg" alt="Título del artículo 19" loading="lazy">
                 <div class="articulo-content">
                     <h3>¿Cómo hacer un reclamo en Defensa del Consumidor y qué resultado esperar?</h3>
                     <p>Breve descripción del artículo 19...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-20">
+            </a>
+            <a href="articulo-20.html" class="articulo-card">
                 <img srcset="blog20-small.jpg 320w, blog20.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog20.jpg" alt="Título del artículo 20" loading="lazy">
                 <div class="articulo-content">
                     <h3>¿Pueden embargarme si soy monotributista?</h3>
                     <p>Breve descripción del artículo 20...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-21">
+            </a>
+            <a href="articulo-21.html" class="articulo-card">
                 <img srcset="blog21-small.jpg 320w, blog21.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog21.jpg" alt="Título del artículo 21" loading="lazy">
                 <div class="articulo-content">
                     <h3>Sucesión intestada: ¿qué pasa si alguien muere sin testamento?</h3>
                     <p>Breve descripción del artículo 21...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-22">
+            </a>
+            <a href="articulo-22.html" class="articulo-card">
                 <img srcset="blog22-small.jpg 320w, blog22.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog22.jpg" alt="Título del artículo 22" loading="lazy">
                 <div class="articulo-content">
                     <h3>Título del artículo 22</h3>
                     <p>Breve descripción del artículo 22...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-23">
+            </a>
+            <a href="articulo-23.html" class="articulo-card">
                 <img srcset="blog23-small.jpg 320w, blog23.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog23.jpg" alt="Título del artículo 23" loading="lazy">
                 <div class="articulo-content">
                     <h3>Título del artículo 23</h3>
                     <p>Breve descripción del artículo 23...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-24">
+            </a>
+            <a href="articulo-24.html" class="articulo-card">
                 <img srcset="blog24-small.jpg 320w, blog24.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog24.jpg" alt="Título del artículo 24" loading="lazy">
                 <div class="articulo-content">
                     <h3>Título del artículo 24</h3>
                     <p>Breve descripción del artículo 24...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-25">
+            </a>
+            <a href="articulo-25.html" class="articulo-card">
                 <img srcset="blog25-small.jpg 320w, blog25.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog25.jpg" alt="Título del artículo 25" loading="lazy">
                 <div class="articulo-content">
                     <h3>Título del artículo 25</h3>
                     <p>Breve descripción del artículo 25...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-26">
+            </a>
+            <a href="articulo-26.html" class="articulo-card">
                 <img srcset="blog26-small.jpg 320w, blog26.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog26.jpg" alt="Título del artículo 26" loading="lazy">
                 <div class="articulo-content">
                     <h3>Título del artículo 26</h3>
                     <p>Breve descripción del artículo 26...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-27">
+            </a>
+            <a href="articulo-27.html" class="articulo-card">
                 <img srcset="blog27-small.jpg 320w, blog27.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog27.jpg" alt="Título del artículo 27" loading="lazy">
                 <div class="articulo-content">
                     <h3>Título del artículo 27</h3>
                     <p>Breve descripción del artículo 27...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-28">
+            </a>
+            <a href="articulo-28.html" class="articulo-card">
                 <img srcset="blog28-small.jpg 320w, blog28.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog28.jpg" alt="Título del artículo 28" loading="lazy">
                 <div class="articulo-content">
                     <h3>Título del artículo 28</h3>
                     <p>Breve descripción del artículo 28...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-29">
+            </a>
+            <a href="articulo-29.html" class="articulo-card">
                 <img srcset="blog29-small.jpg 320w, blog29.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog29.jpg" alt="Título del artículo 29" loading="lazy">
                 <div class="articulo-content">
                     <h3>Título del artículo 29</h3>
                     <p>Breve descripción del artículo 29...</p>
                 </div>
-            </div>
-            <div class="articulo-card" data-modal="articulo-30">
+            </a>
+            <a href="articulo-30.html" class="articulo-card">
                 <img srcset="blog30-small.jpg 320w, blog30.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="blog30.jpg" alt="Título del artículo 30" loading="lazy">
                 <div class="articulo-content">
                     <h3>Título del artículo 30</h3>
                     <p>Breve descripción del artículo 30...</p>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="articulos-buttons">
             <button id="ver-mas-btn" class="ver-mas-btn">Ver más</button>
             <button id="ver-menos-btn" class="ver-menos-btn">Ver menos</button>
-        </div>
-        <div id="modal-articulos" class="modal">
-            <div class="modal-content">
-                <button class="modal-back">Atrás</button>
-                <div class="modal-body" id="modal-articulos-content"></div>
-            </div>
-        </div>
-        <div class="hidden-content" style="display: none;">
-            <article id="articulo-1" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Cómo desconocer un cargo indebido en el resumen de la tarjeta</h2>
-                <meta itemprop="description" content="Guía para desconocer cargos indebidos en tu tarjeta de crédito o débito.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog1.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-1.html">
-                <img src="blog1.jpg" alt="Cómo desconocer un cargo indebido en la tarjeta de crédito o débito" loading="lazy">
-                <p>Si te llegó en el resumen de tu tarjeta de crédito o débito una compra que no realizaste podés desconocerlos. Te enseñamos cómo hacerlo... [TEXTO COMPLETO ACA]</p>
-                <p>¿Necesitás asesoramiento? <a href="#contacto" class="close-modal-link">Contactame</a>.</p>
-            </article>
-            <article id="articulo-2" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">¿Compraste online y el producto no era lo que imaginaste?</h2>
-                <meta itemprop="description" content="Conocé tus derechos para devolver compras online en Argentina.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog2.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-2.html">
-                <img src="blog2.jpg" alt="Devolución de compras online en Argentina" loading="lazy">
-                <p>Si realizaste una compra online tenés 10 días desde que te llegó para devolverlo totalmente gratis. Te enseñamos cómo hacerlo... [TEXTO COMPLETO ACA]</p>
-                <p>¿Tenés dudas legales? <a href="#contacto" class="close-modal-link">Consultame</a>.</p>
-            </article>
-            <article id="articulo-3" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Todo lo que tenés que saber sobre la garantía de un producto o servicio</h2>
-                <meta itemprop="description" content="Guía para reclamar la garantía de productos o servicios en Argentina.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog3.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-3.html">
-                <img src="blog3.jpg" alt="Garantía de productos y servicios en Argentina" loading="lazy">
-                <p>Si el producto tiene una falla tenés derecho a la garantía. Te enseñamos cómo reclamarla... [TEXTO COMPLETO ACA]</p>
-                <p>¿Querés saber más? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-4" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">¿Compraste un producto online y te cancelaron la compra por "falta de stock"?</h2>
-                <meta itemprop="description" content="Qué hacer si te cancelan una compra online por falta de stock.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog4.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-4.html">
-                <img src="blog4.jpg" alt="Cancelación de compras online por falta de stock" loading="lazy">
-                <p>Si el producto estaba publicado al momento de la compra, no pueden alegar falta de stock. Te contamos qué podés hacer... [TEXTO COMPLETO ACA]</p>
-                <p>¿Necesitás ayuda? <a href="#contacto" class="close-modal-link">Visitá Contacto</a>.</p>
-            </article>
-            <article id="articulo-5" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">¿Hasta qué edad se debe pagar cuota alimentaria?</h2>
-                <meta itemprop="description" content="Todo sobre la cuota alimentaria y sus plazos en Argentina.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog5.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-5.html">
-                <img src="blog5.jpg" alt="Cuota alimentaria por edad en Argentina" loading="lazy">
-                <p>Ingresá a este artículo que te vamos a enseñar todo sobre alimentos... [TEXTO COMPLETO ACA]</p>
-                <p>¿Querés una consulta? <a href="#contacto" class="close-modal-link">Andá a Contacto</a>.</p>
-            </article>
-            <article id="articulo-6" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">¿En qué se diferencia el matrimonio de la unión convivencial?</h2>
-                <meta itemprop="description" content="Diferencias entre matrimonio y unión convivencial en Argentina.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog6.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-6.html">
-                <img src="blog6.jpg" alt="Diferencias entre matrimonio y unión convivencial" loading="lazy">
-                <p>Te vamos a contar todas las diferencias y vamos a derribar los mitos más frecuentes... [TEXTO COMPLETO ACA]</p>
-                <p>¿Tenés preguntas? <a href="#contacto" class="close-modal-link">Contactame</a>.</p>
-            </article>
-            <article id="articulo-7" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">ARTÍCULO 7</h2>
-                <meta itemprop="description" content="Contenido del artículo 7 por Dr. Cárdenas.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog7.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-7.html">
-                <img src="blog7.jpg" alt="Artículo 7 sobre temas legales" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-8" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 8</h2>
-                <meta itemprop="description" content="Descripción del artículo 8.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog8.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-8.html">
-                <img src="blog8.jpg" alt="Título del artículo 8" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-9" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 9</h2>
-                <meta itemprop="description" content="Descripción del artículo 9.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog9.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-9.html">
-                <img src="blog9.jpg" alt="Título del artículo 9" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-10" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 10</h2>
-                <meta itemprop="description" content="Descripción del artículo 10.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog10.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-10.html">
-                <img src="blog10.jpg" alt="Título del artículo 10" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-11" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 11</h2>
-                <meta itemprop="description" content="Descripción del artículo 11.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog11.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-11.html">
-                <img src="blog11.jpg" alt="Título del artículo 11" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-12" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 12</h2>
-                <meta itemprop="description" content="Descripción del artículo 12.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog12.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-12.html">
-                <img src="blog12.jpg" alt="Título del artículo 12" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-13" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 13</h2>
-                <meta itemprop="description" content="Descripción del artículo 13.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog13.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-13.html">
-                <img src="blog13.jpg" alt="Título del artículo 13" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-14" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 14</h2>
-                <meta itemprop="description" content="Descripción del artículo 14.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog14.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-14.html">
-                <img src="blog14.jpg" alt="Título del artículo 14" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-15" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 15</h2>
-                <meta itemprop="description" content="Descripción del artículo 15.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog15.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-15.html">
-                <img src="blog15.jpg" alt="Título del artículo 15" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-16" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 16</h2>
-                <meta itemprop="description" content="Descripción del artículo 16.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog16.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-16.html">
-                <img src="blog16.jpg" alt="Título del artículo 16" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-17" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 17</h2>
-                <meta itemprop="description" content="Descripción del artículo 17.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog17.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-17.html">
-                <img src="blog17.jpg" alt="Título del artículo 17" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-18" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 18</h2>
-                <meta itemprop="description" content="Descripción del artículo 18.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog18.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-18.html">
-                <img src="blog18.jpg" alt="Título del artículo 18" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-19" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 19</h2>
-                <meta itemprop="description" content="Descripción del artículo 19.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog19.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-19.html">
-                <img src="blog19.jpg" alt="Título del artículo 19" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-20" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 20</h2>
-                <meta itemprop="description" content="Descripción del artículo 20.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog20.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-20.html">
-                <img src="blog20.jpg" alt="Título del artículo 20" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-21" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 21</h2>
-                <meta itemprop="description" content="Descripción del artículo 21.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog21.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-21.html">
-                <img src="blog21.jpg" alt="Título del artículo 21" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-22" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 22</h2>
-                <meta itemprop="description" content="Descripción del artículo 22.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog22.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-22.html">
-                <img src="blog22.jpg" alt="Título del artículo 22" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-23" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 23</h2>
-                <meta itemprop="description" content="Descripción del artículo 23.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog23.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-23.html">
-                <img src="blog23.jpg" alt="Título del artículo 23" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-24" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 24</h2>
-                <meta itemprop="description" content="Descripción del artículo 24.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog24.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-24.html">
-                <img src="blog24.jpg" alt="Título del artículo 24" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-25" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 25</h2>
-                <meta itemprop="description" content="Descripción del artículo 25.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog25.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-25.html">
-                <img src="blog25.jpg" alt="Título del artículo 25" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-26" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 26</h2>
-                <meta itemprop="description" content="Descripción del artículo 26.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog26.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-26.html">
-                <img src="blog26.jpg" alt="Título del artículo 26" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-27" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 27</h2>
-                <meta itemprop="description" content="Descripción del artículo 27.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog27.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-27.html">
-                <img src="blog27.jpg" alt="Título del artículo 27" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-28" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 28</h2>
-                <meta itemprop="description" content="Descripción del artículo 28.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog28.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-28.html">
-                <img src="blog28.jpg" alt="Título del artículo 28" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-29" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 29</h2>
-                <meta itemprop="description" content="Descripción del artículo 29.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog29.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-29.html">
-                <img src="blog29.jpg" alt="Título del artículo 29" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
-            <article id="articulo-30" itemscope itemtype="https://schema.org/Article">
-                <h2 itemprop="headline">Título del artículo 30</h2>
-                <meta itemprop="description" content="Descripción del artículo 30.">
-                <meta itemprop="author" content="Dr. Cárdenas">
-                <meta itemprop="image" content="https://www.estudiojuridicoenzocardenas.com/blog30.jpg">
-                <meta itemprop="url" content="https://www.estudiojuridicoenzocardenas.com/articulo-30.html">
-                <img src="blog30.jpg" alt="Título del artículo 30" loading="lazy">
-                <p>[TEXTO COMPLETO ACA]</p>
-                <p>¿Querés más info? <a href="#contacto" class="close-modal-link">Escribime</a>.</p>
-            </article>
         </div>
     </section>
 
     <section id="sobre-mi">
         <div class="sobre-mi-container">
             <div class="sobre-mi-img">
-                <img srcset="enzo-small.jpg 320w, enzo.jpg 800w" sizes="(max-width: 600px) 320px, 800px" src="enzo.jpg" alt="Dr. Cárdenas, abogado en Buenos Aires" loading="lazy">
+                <img src="enzo.jpg" alt="Dr. Cárdenas, abogado en Buenos Aires" loading="lazy">
             </div>
             <div class="sobre-mi-text">
                 <h2>Sobre Mí</h2>
