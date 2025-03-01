@@ -10,40 +10,19 @@ function debounce(func, wait) {
     };
 }
 
-// Variables para el throttling del scroll
-let lastScrollPosition = 0;
-let ticking = false;
-
-// Función optimizada para manejar el scroll
-const handleScroll = () => {
-    lastScrollPosition = window.scrollY;
-    
-    if (!ticking) {
-        window.requestAnimationFrame(() => {
-            // Efecto de la barra de navegación
-            const nav = document.querySelector('nav');
-            if (nav) nav.classList.toggle('scrolled', lastScrollPosition > 50);
-            
-            // Verificar visibilidad de FAQs (mantenemos tu función original)
-            checkFaqVisibility();
-            
-            ticking = false;
-        });
-        
-        ticking = true;
-    }
-    
-    // Cerrar menú móvil al hacer scroll
+const handleScroll = debounce(() => {
+    const nav = document.querySelector('nav');
+    if (nav) nav.classList.toggle('scrolled', window.scrollY > 50);
+    checkFaqVisibility();
     const navLinks = document.querySelector('.nav-links');
-    const menuToggle = document.querySelector('.menu-toggle');
     if (navLinks && navLinks.classList.contains('active')) {
         navLinks.classList.remove('active');
-        if (menuToggle) menuToggle.classList.remove('active');
+        document.querySelector('.menu-toggle').classList.remove('active');
     }
-};
+}, 15);
 
-// Event listener optimizado
-window.addEventListener('scroll', handleScroll, { passive: true });
+window.addEventListener('scroll', handleScroll);
+
 document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
@@ -86,10 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeClientFaqAnswers();
                 scrollToSection(href);
             } else if (href.includes('#')) {
-                e.preventDefault();
+                e.preventDefault(); // Prevent default to handle manually
                 closeMenuAndModals();
                 closeClientFaqAnswers();
                 const targetId = href.split('#')[1];
+                // Navigate to the page and scroll after load
                 window.location.href = href;
                 setTimeout(() => scrollToSection('#' + targetId), 100);
             }
@@ -130,10 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const verMasBtn = document.getElementById('ver-mas-btn');
     const verMenosBtn = document.getElementById('ver-menos-btn');
-    if (verMasBtn) verMasBtn.addEventListener('click', () => {
-        const modalId = verMasBtn.getAttribute('data-modal');
-        openArticlesModal(modalId);
-    });
+    if (verMasBtn) verMasBtn.addEventListener('click', loadMoreArticles);
     if (verMenosBtn) verMenosBtn.addEventListener('click', collapseArticles);
 
     const clientFaqItems = document.querySelectorAll('.faq-client-item h3');
@@ -156,7 +133,6 @@ function closeMenuAndModals() {
     if (navLinks) navLinks.classList.remove('active');
     if (menuToggle) menuToggle.classList.remove('active');
     closeModal('modal-preguntas');
-    closeModal('modal-articulos');
 }
 
 function openModal(modalId, contentId) {
@@ -269,7 +245,7 @@ function rotateTestimonials() {
 }
 
 function shuffleArticles() {
-    const articlesContainer = document.querySelector('.articulos-content #articulos-list');
+    const articlesContainer = document.querySelector('.articulos-preview');
     if (!articlesContainer) return;
     const articles = Array.from(articlesContainer.children);
     for (let i = articles.length - 1; i > 0; i--) {
@@ -279,9 +255,8 @@ function shuffleArticles() {
 }
 
 function setArticleVisibility() {
-    const articles = document.querySelectorAll('#articulos-list .articulo-card');
-    const previewContainer = document.querySelector('.articulos-preview');
-    if (articles.length === 0 || !previewContainer) return;
+    const articles = document.querySelectorAll('.articulo-card');
+    if (articles.length === 0) return;
     const screenWidth = window.innerWidth;
     let initialVisible;
     if (screenWidth <= 767) {
@@ -291,14 +266,11 @@ function setArticleVisibility() {
     } else {
         initialVisible = 6;
     }
-    previewContainer.innerHTML = '';
     articles.forEach((article, index) => {
-        const clonedArticle = article.cloneNode(true);
         if (index < initialVisible) {
-            clonedArticle.classList.remove('hidden');
-            previewContainer.appendChild(clonedArticle);
+            article.classList.remove('hidden');
         } else {
-            clonedArticle.classList.add('hidden');
+            article.classList.add('hidden');
         }
     });
     const verMasBtn = document.getElementById('ver-mas-btn');
@@ -307,62 +279,46 @@ function setArticleVisibility() {
     if (verMenosBtn) verMenosBtn.style.display = 'none';
 }
 
-function openArticlesModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (!modal) return;
-    const modalPreview = modal.querySelector('.articulos-modal-preview');
-    const sourceArticles = document.querySelectorAll('#articulos-list .articulo-card');
-    const initialVisible = getInitialVisibleCount();
-    const lastVisibleIndex = initialVisible - 1;
-
-    modalPreview.innerHTML = '';
-    sourceArticles.forEach(article => {
-        const clonedArticle = article.cloneNode(true);
-        clonedArticle.classList.remove('hidden');
-        modalPreview.appendChild(clonedArticle);
-    });
-
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    const nav = document.querySelector('nav');
-    const whatsappBtn = document.querySelector('.whatsapp-btn');
-    if (nav) nav.style.display = 'none';
-    if (whatsappBtn) whatsappBtn.style.display = 'none';
-
-    requestAnimationFrame(() => {
-        const modalContainer = modal.querySelector('.modal-content');
-        modalContainer.classList.add('scrollable');
-        modalContainer.style.height = '100%';
-        setTimeout(() => {
-            const lastVisibleArticle = modalPreview.children[lastVisibleIndex];
-            if (lastVisibleArticle) {
-                lastVisibleArticle.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }, 100);
-    });
-}
-
-function getInitialVisibleCount() {
+function loadMoreArticles() {
+    const articles = document.querySelectorAll('.articulo-card.hidden');
     const screenWidth = window.innerWidth;
-    if (screenWidth <= 767) return 4;
-    else if (screenWidth <= 1024) return 6;
-    else return 6;
+    let increment;
+    if (screenWidth <= 767) {
+        increment = 4;
+    } else if (screenWidth <= 1024) {
+        increment = 6;
+    } else {
+        increment = 6;
+    }
+    const articlesToShow = Array.from(articles).slice(0, increment);
+    
+    articlesToShow.forEach(article => article.classList.remove('hidden'));
+    
+    const remainingHidden = document.querySelectorAll('.articulo-card.hidden').length;
+    const verMasBtn = document.getElementById('ver-mas-btn');
+    const verMenosBtn = document.getElementById('ver-menos-btn');
+    if (verMasBtn) verMasBtn.style.display = remainingHidden > 0 ? 'inline-block' : 'none';
+    if (verMenosBtn) verMenosBtn.style.display = remainingHidden < articles.length ? 'inline-block' : 'none';
 }
 
 function collapseArticles() {
-    const articles = document.querySelectorAll('#articulos-list .articulo-card');
-    const previewContainer = document.querySelector('.articulos-preview');
-    if (articles.length === 0 || !previewContainer) return;
-    const initialVisible = getInitialVisibleCount();
+    const articles = document.querySelectorAll('.articulo-card');
+    if (articles.length === 0) return;
+    const screenWidth = window.innerWidth;
+    let initialVisible;
+    if (screenWidth <= 767) {
+        initialVisible = 4;
+    } else if (screenWidth <= 1024) {
+        initialVisible = 6;
+    } else {
+        initialVisible = 6;
+    }
     
-    previewContainer.innerHTML = '';
     articles.forEach((article, index) => {
-        const clonedArticle = article.cloneNode(true);
         if (index < initialVisible) {
-            clonedArticle.classList.remove('hidden');
-            previewContainer.appendChild(clonedArticle);
+            article.classList.remove('hidden');
         } else {
-            clonedArticle.classList.add('hidden');
+            article.classList.add('hidden');
         }
     });
     
@@ -380,31 +336,8 @@ function collapseArticles() {
 
 function scrollToSection(targetId) {
     const target = document.querySelector(targetId);
-    if (!target) return;
-
-    const startPosition = window.pageYOffset;
-    const targetPosition = target.getBoundingClientRect().top + startPosition - 70;
-    const distance = targetPosition - startPosition;
-    const duration = 200;
-
-    let startTime = null;
-
-    function scrollAnimation(currentTime) {
-        if (!startTime) startTime = currentTime;
-        const timeElapsed = currentTime - startTime;
-        const progress = Math.min(timeElapsed / duration, 1);
-        const ease = easeInOutQuad(progress);
-
-        window.scrollTo(0, startPosition + distance * ease);
-
-        if (progress < 1) {
-            requestAnimationFrame(scrollAnimation);
-        }
+    if (target) {
+        const targetPosition = target.getBoundingClientRect().top + window.scrollY - 70;
+        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
     }
-
-    function easeInOutQuad(t) {
-        return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-    }
-
-    requestAnimationFrame(scrollAnimation);
 }
