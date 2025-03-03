@@ -90,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeMenuAndModals();
                 closeClientFaqAnswers();
                 const targetId = href.split('#')[1];
-                // Navigate to the page and scroll after load
                 window.location.href = href;
                 setTimeout(() => scrollToSection('#' + targetId), 100);
             }
@@ -141,11 +140,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     rotateTestimonials();
 
+    // Modificamos el manejo del hash para evitar saltos no deseados en móviles
     if (window.location.hash) {
-        setTimeout(() => {
-            scrollToSection(window.location.hash);
-        }, 100);
+        const isMobile = window.innerWidth <= 767;
+        const articlesSection = document.getElementById('articulos');
+        const articlesRect = articlesSection?.getBoundingClientRect();
+        const isInArticles = articlesRect && (articlesRect.top < window.innerHeight && articlesRect.bottom > 0);
+
+        // Solo ejecutamos el scroll inicial si no estamos en Artículos en móvil
+        if (!(isMobile && isInArticles)) {
+            setTimeout(() => {
+                scrollToSection(window.location.hash);
+            }, 100);
+        }
     }
+
+    // Agregamos un listener para detectar scroll inverso en móviles y prevenir saltos
+    let lastScrollTop = 0;
+    window.addEventListener('scroll', () => {
+        const isMobile = window.innerWidth <= 767;
+        const articlesSection = document.getElementById('articulos');
+        const articlesRect = articlesSection?.getBoundingClientRect();
+        const isInArticles = articlesRect && (articlesRect.top < window.innerHeight && articlesRect.bottom > 0);
+
+        if (isMobile && isInArticles) {
+            const currentScroll = window.scrollY;
+            const scrollingUp = currentScroll < lastScrollTop;
+
+            if (scrollingUp) {
+                // Prevenimos cualquier intento de navegación automática
+                window.scrollTo({ top: currentScroll, behavior: 'instant' });
+            }
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+        }
+    });
 });
 
 function closeMenuAndModals() {
