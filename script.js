@@ -18,6 +18,12 @@ const handleScroll = debounce(() => {
     const articlesRect = articlesSection?.getBoundingClientRect();
     const isInArticles = articlesRect && (articlesRect.top < window.innerHeight && articlesRect.bottom > 0);
 
+    // Solo en móviles, evitamos cualquier acción si estamos en Artículos
+    const isMobile = window.innerWidth <= 767;
+    if (isMobile && isInArticles) {
+        return; // No hacemos nada mientras scrolleamos en Artículos en móvil
+    }
+
     if (!isInArticles) {
         checkFaqVisibility();
     }
