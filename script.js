@@ -17,23 +17,30 @@ const handleScroll = debounce(() => {
     const articlesSection = document.getElementById('articulos');
     const articlesRect = articlesSection?.getBoundingClientRect();
     const isInArticles = articlesRect && (articlesRect.top < window.innerHeight && articlesRect.bottom > 0);
-
-    // Solo en móviles, evitamos cualquier acción si estamos en Artículos
     const isMobile = window.innerWidth <= 767;
+
+    // Rastreamos la dirección del scroll
+    const currentScroll = window.scrollY;
+    if (typeof handleScroll.lastScroll === 'undefined') handleScroll.lastScroll = currentScroll;
+    const scrollingUp = currentScroll < handleScroll.lastScroll;
+    handleScroll.lastScroll = currentScroll;
+
+    // En móviles, si estamos en Artículos, evitamos cualquier acción al scrollear hacia arriba o abajo
     if (isMobile && isInArticles) {
-        return; // No hacemos nada mientras scrolleamos en Artículos en móvil
+        return; // Bloqueamos todo mientras estamos en Artículos en móvil
     }
 
+    // Solo ejecutamos estas acciones si no estamos en Artículos
     if (!isInArticles) {
         checkFaqVisibility();
-    }
 
-    const navLinks = document.querySelector('.nav-links');
-    if (navLinks && navLinks.classList.contains('active') && !isInArticles) {
-        navLinks.classList.remove('active');
-        document.querySelector('.menu-toggle').classList.remove('active');
+        const navLinks = document.querySelector('.nav-links');
+        if (navLinks && navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+            document.querySelector('.menu-toggle').classList.remove('active');
+        }
     }
-}, 15);
+}, 50); // Aumentamos el debounce a 50ms para mayor estabilidad en móviles
 
 window.addEventListener('scroll', handleScroll);
 
