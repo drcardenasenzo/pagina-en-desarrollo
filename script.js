@@ -13,9 +13,17 @@ function debounce(func, wait) {
 const handleScroll = debounce(() => {
     const nav = document.querySelector('nav');
     if (nav) nav.classList.toggle('scrolled', window.scrollY > 50);
-    checkFaqVisibility();
+
+    const articlesSection = document.getElementById('articulos');
+    const articlesRect = articlesSection?.getBoundingClientRect();
+    const isInArticles = articlesRect && (articlesRect.top < window.innerHeight && articlesRect.bottom > 0);
+
+    if (!isInArticles) {
+        checkFaqVisibility();
+    }
+
     const navLinks = document.querySelector('.nav-links');
-    if (navLinks && navLinks.classList.contains('active')) {
+    if (navLinks && navLinks.classList.contains('active') && !isInArticles) {
         navLinks.classList.remove('active');
         document.querySelector('.menu-toggle').classList.remove('active');
     }
@@ -329,15 +337,59 @@ function collapseArticles() {
 
     const articlesSection = document.getElementById('articulos');
     if (articlesSection) {
-        const sectionTop = articlesSection.getBoundingClientRect().top + window.scrollY - 70;
-        window.scrollTo({ top: sectionTop, behavior: 'smooth' });
+        const targetPosition = articlesSection.getBoundingClientRect().top + window.scrollY - 70;
+        const startPosition = window.scrollY;
+
+        // If already below the target, scroll instantly to prevent showing lower sections
+        if (startPosition > targetPosition) {
+            window.scrollTo({ top: targetPosition, behavior: 'instant' });
+            // Follow with a smooth micro-animation to ensure visibility
+            setTimeout(() => {
+                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+            }, 10);
+        } else {
+            // Smooth scroll if starting above or at the target
+            const distance = targetPosition - startPosition;
+            const duration = 200; // Shortened for quick but smooth transition
+            let startTime = null;
+
+            function animation(currentTime) {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(timeElapsed / duration, 1);
+                const ease = Math.sin(progress * (Math.PI / 2));
+                window.scrollTo(0, startPosition + distance * ease);
+
+                if (timeElapsed < duration) {
+                    requestAnimationFrame(animation);
+                }
+            }
+
+            requestAnimationFrame(animation);
+        }
     }
 }
-
 function scrollToSection(targetId) {
     const target = document.querySelector(targetId);
     if (target) {
         const targetPosition = target.getBoundingClientRect().top + window.scrollY - 70;
-        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+        const startPosition = window.scrollY;
+        const distance = targetPosition - startPosition;
+        const duration = 300; // 100ms, muy rápido
+        let startTime = null;
+
+        function animation(currentTime) {
+            if (startTime === null) startTime = currentTime;
+            const timeElapsed = currentTime - startTime;
+            const progress = Math.min(timeElapsed / duration, 1);
+            const ease = Math.sin(progress * (Math.PI / 2));
+            window.scrollTo(0, startPosition + distance * ease);
+
+            if (timeElapsed < duration) {
+                requestAnimationFrame(animation);
+            }
+        }
+
+        requestAnimationFrame(animation);
     }
 }

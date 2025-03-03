@@ -13,9 +13,8 @@
 }
 
 html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
 }
-
 body {
     background: var(--blanco);
     color: var(--gris-oscuro);
@@ -152,20 +151,13 @@ section {
     background-image: url('portada.jpg');
     background-size: cover;
     background-position: center 30%;
+    background-attachment: fixed;
     position: relative;
     color: var(--blanco);
     text-align: center;
     padding: 8rem 10% 6rem 10%;
     overflow: hidden;
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
-}
-
-/* Restored parallax effect for desktop and tablet */
-.parallax {
-    background-position: center 30%;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    will-change: transform;
 }
 
 #inicio::before {
@@ -176,10 +168,9 @@ section {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.3);
-    z-index: 0;
+    z-index: 1;
 }
 
-/* Restored moving reflection in #inicio */
 #inicio::after {
     content: '';
     position: absolute;
@@ -188,7 +179,7 @@ section {
     background: rgba(255, 255, 255, 0.1);
     transform: rotate(30deg);
     animation: subtleMove 10s infinite;
-    z-index: 0;
+    z-index: 1;
 }
 
 @keyframes subtleMove {
@@ -199,7 +190,7 @@ section {
 
 .inicio-content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 
 .inicio-content h1 {
@@ -855,6 +846,8 @@ h1:hover::after, h2:hover::after {
     }
     #inicio {
         padding: 9rem 5% 5rem 5%;
+        background-position: center 30%;
+        background-attachment: fixed;
     }
     .sobre-mi-container {
         flex-direction: row;
@@ -1017,7 +1010,8 @@ h1:hover::after, h2:hover::after {
     }
     #inicio {
         padding: 8rem 5% 4rem 5%;
-        background-attachment: scroll; /* No parallax on mobile */
+        background-position: center 30%;
+        background-attachment: scroll;
     }
     .sobre-mi-container {
         flex-direction: column;
