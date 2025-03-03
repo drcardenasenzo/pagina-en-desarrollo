@@ -140,6 +140,85 @@ document.addEventListener('DOMContentLoaded', () => {
 
     rotateTestimonials();
 
+    if (window.location.hash) {
+        setTimeout(() => {
+            scrollToSection(window.location.hash);
+        }, 100);
+    }
+
+    // Manejo de eventos táctiles en móviles para prevenir saltos en Artículos
+    const articlesSection = document.getElementById('articulos');
+    if (articlesSection) {
+        let touchStartY = 0;
+        let lastScrollY = window.scrollY;
+        let isScrollingInArticles = false;
+
+        articlesSection.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+            lastScrollY = window.scrollY;
+            const articlesRect = articlesSection.getBoundingClientRect();
+            isScrollingInArticles = articlesRect.top < window.innerHeight && articlesRect.bottom > 0;
+        });
+
+        articlesSection.addEventListener('touchmove', (e) => {
+            if (!isScrollingInArticles || window.innerWidth > 767) return;
+
+            const touchCurrentY = e.touches[0].clientY;
+            const deltaY = touchStartY - touchCurrentY; // Positivo = scroll hacia abajo, Negativo = scroll hacia arriba
+            const currentScrollY = window.scrollY;
+            const articlesRect = articlesSection.getBoundingClientRect();
+
+            // Si estamos en Artículos y el scroll intenta salir de sus límites
+            if (deltaY < 0 && currentScrollY <= articlesRect.top + window.scrollY - 70) {
+                // Scroll hacia arriba llegando al tope de Artículos
+                e.preventDefault();
+                window.scrollTo({ top: articlesRect.top + window.scrollY - 70, behavior: 'instant' });
+            } else if (deltaY > 0 && currentScrollY + window.innerHeight >= articlesRect.bottom + window.scrollY) {
+                // Scroll hacia abajo llegando al final de Artículos
+                e.preventDefault();
+                window.scrollTo({ top: articlesRect.bottom + window.scrollY - window.innerHeight, behavior: 'instant' });
+            }
+        }, { passive: false });
+    }
+});
+    const logo = document.querySelector('.logo');
+    if (logo) {
+        logo.addEventListener('click', (e) => {
+            const href = logo.getAttribute('href');
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                closeMenuAndModals();
+                scrollToSection(href);
+            } else if (href.includes('#')) {
+                e.preventDefault();
+                closeMenuAndModals();
+                const targetId = href.split('#')[1];
+                window.location.href = href;
+                setTimeout(() => scrollToSection('#' + targetId), 100);
+            }
+        });
+    }
+
+    if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+        shuffleArticles();
+    }
+
+    setArticleVisibility();
+
+    window.addEventListener('resize', debounce(setArticleVisibility, 100));
+
+    const verMasBtn = document.getElementById('ver-mas-btn');
+    const verMenosBtn = document.getElementById('ver-menos-btn');
+    if (verMasBtn) verMasBtn.addEventListener('click', loadMoreArticles);
+    if (verMenosBtn) verMenosBtn.addEventListener('click', collapseArticles);
+
+    const clientFaqItems = document.querySelectorAll('.faq-client-item h3');
+    clientFaqItems.forEach(item => {
+        item.addEventListener('click', () => toggleClientAnswer(item, clientFaqItems));
+    });
+
+    rotateTestimonials();
+
     // Modificamos el manejo del hash para evitar saltos no deseados en móviles
     if (window.location.hash) {
         const isMobile = window.innerWidth <= 767;
