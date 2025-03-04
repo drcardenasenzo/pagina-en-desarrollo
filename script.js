@@ -13,35 +13,35 @@ function debounce(func, wait) {
 const handleScroll = debounce(() => {
     const nav = document.querySelector('nav');
     if (nav) nav.classList.toggle('scrolled', window.scrollY > 50);
+    checkFaqVisibility();
 
-    const articlesSection = document.getElementById('articulos');
-    const articlesRect = articlesSection?.getBoundingClientRect();
-    const isInArticles = articlesRect && (articlesRect.top < window.innerHeight && articlesRect.bottom > 0);
-    const isMobile = window.innerWidth <= 767;
+    const navLinks = document.querySelector('.nav-links');
+    if (!navLinks || !navLinks.classList.contains('active')) return;
 
-    // Rastreamos la dirección del scroll
-    const currentScroll = window.scrollY;
-    if (typeof handleScroll.lastScroll === 'undefined') handleScroll.lastScroll = currentScroll;
-    const scrollingUp = currentScroll < handleScroll.lastScroll;
-    handleScroll.lastScroll = currentScroll;
+    // Obtener todas las secciones
+    const sections = document.querySelectorAll('section');
+    const scrollPosition = window.scrollY + 70; // Ajuste por la altura del nav fijo
 
-    // En móviles, si estamos en Artículos, evitamos cualquier acción al scrollear hacia arriba o abajo
-    if (isMobile && isInArticles) {
-        return; // Bloqueamos todo mientras estamos en Artículos en móvil
-    }
+    // Verificar en qué sección está el usuario
+    let currentSection = null;
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionBottom = sectionTop + section.offsetHeight;
+        if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+            currentSection = section;
+        }
+    });
 
-    // Solo ejecutamos estas acciones si no estamos en Artículos
-    if (!isInArticles) {
-        checkFaqVisibility();
-
-        const navLinks = document.querySelector('.nav-links');
-        if (navLinks && navLinks.classList.contains('active')) {
+    // Si el usuario está en una sección diferente a la actual, cerrar el menú
+    const activeLink = navLinks.querySelector('a.active');
+    if (currentSection && activeLink) {
+        const activeSectionId = activeLink.getAttribute('href').substring(1); // Quita el #
+        if (currentSection.id !== activeSectionId) {
             navLinks.classList.remove('active');
             document.querySelector('.menu-toggle').classList.remove('active');
         }
     }
-}, 50); // Aumentamos el debounce a 50ms para mayor estabilidad en móviles
-
+}, 15);
 window.addEventListener('scroll', handleScroll);
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -85,13 +85,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeMenuAndModals();
                 closeClientFaqAnswers();
                 scrollToSection(href);
+                // Marcar el enlace como activo
+                document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
             } else if (href.includes('#')) {
-                e.preventDefault(); // Prevent default to handle manually
+                e.preventDefault();
                 closeMenuAndModals();
                 closeClientFaqAnswers();
                 const targetId = href.split('#')[1];
                 window.location.href = href;
-                setTimeout(() => scrollToSection('#' + targetId), 100);
+                setTimeout(() => {
+                    scrollToSection('#' + targetId);
+                    document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                }, 100);
             }
             if (window.innerWidth <= 767) {
                 setTimeout(() => {
@@ -145,114 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
             scrollToSection(window.location.hash);
         }, 100);
     }
-
-    // Manejo de eventos táctiles en móviles para prevenir saltos en Artículos
-    const articlesSection = document.getElementById('articulos');
-    if (articlesSection) {
-        let touchStartY = 0;
-        let lastScrollY = window.scrollY;
-        let isScrollingInArticles = false;
-
-        articlesSection.addEventListener('touchstart', (e) => {
-            touchStartY = e.touches[0].clientY;
-            lastScrollY = window.scrollY;
-            const articlesRect = articlesSection.getBoundingClientRect();
-            isScrollingInArticles = articlesRect.top < window.innerHeight && articlesRect.bottom > 0;
-        });
-
-        articlesSection.addEventListener('touchmove', (e) => {
-            if (!isScrollingInArticles || window.innerWidth > 767) return;
-
-            const touchCurrentY = e.touches[0].clientY;
-            const deltaY = touchStartY - touchCurrentY; // Positivo = scroll hacia abajo, Negativo = scroll hacia arriba
-            const currentScrollY = window.scrollY;
-            const articlesRect = articlesSection.getBoundingClientRect();
-
-            // Si estamos en Artículos y el scroll intenta salir de sus límites
-            if (deltaY < 0 && currentScrollY <= articlesRect.top + window.scrollY - 70) {
-                // Scroll hacia arriba llegando al tope de Artículos
-                e.preventDefault();
-                window.scrollTo({ top: articlesRect.top + window.scrollY - 70, behavior: 'instant' });
-            } else if (deltaY > 0 && currentScrollY + window.innerHeight >= articlesRect.bottom + window.scrollY) {
-                // Scroll hacia abajo llegando al final de Artículos
-                e.preventDefault();
-                window.scrollTo({ top: articlesRect.bottom + window.scrollY - window.innerHeight, behavior: 'instant' });
-            }
-        }, { passive: false });
-    }
-});
-    const logo = document.querySelector('.logo');
-    if (logo) {
-        logo.addEventListener('click', (e) => {
-            const href = logo.getAttribute('href');
-            if (href.startsWith('#')) {
-                e.preventDefault();
-                closeMenuAndModals();
-                scrollToSection(href);
-            } else if (href.includes('#')) {
-                e.preventDefault();
-                closeMenuAndModals();
-                const targetId = href.split('#')[1];
-                window.location.href = href;
-                setTimeout(() => scrollToSection('#' + targetId), 100);
-            }
-        });
-    }
-
-    if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
-        shuffleArticles();
-    }
-
-    setArticleVisibility();
-
-    window.addEventListener('resize', debounce(setArticleVisibility, 100));
-
-    const verMasBtn = document.getElementById('ver-mas-btn');
-    const verMenosBtn = document.getElementById('ver-menos-btn');
-    if (verMasBtn) verMasBtn.addEventListener('click', loadMoreArticles);
-    if (verMenosBtn) verMenosBtn.addEventListener('click', collapseArticles);
-
-    const clientFaqItems = document.querySelectorAll('.faq-client-item h3');
-    clientFaqItems.forEach(item => {
-        item.addEventListener('click', () => toggleClientAnswer(item, clientFaqItems));
-    });
-
-    rotateTestimonials();
-
-    // Modificamos el manejo del hash para evitar saltos no deseados en móviles
-    if (window.location.hash) {
-        const isMobile = window.innerWidth <= 767;
-        const articlesSection = document.getElementById('articulos');
-        const articlesRect = articlesSection?.getBoundingClientRect();
-        const isInArticles = articlesRect && (articlesRect.top < window.innerHeight && articlesRect.bottom > 0);
-
-        // Solo ejecutamos el scroll inicial si no estamos en Artículos en móvil
-        if (!(isMobile && isInArticles)) {
-            setTimeout(() => {
-                scrollToSection(window.location.hash);
-            }, 100);
-        }
-    }
-
-    // Agregamos un listener para detectar scroll inverso en móviles y prevenir saltos
-    let lastScrollTop = 0;
-    window.addEventListener('scroll', () => {
-        const isMobile = window.innerWidth <= 767;
-        const articlesSection = document.getElementById('articulos');
-        const articlesRect = articlesSection?.getBoundingClientRect();
-        const isInArticles = articlesRect && (articlesRect.top < window.innerHeight && articlesRect.bottom > 0);
-
-        if (isMobile && isInArticles) {
-            const currentScroll = window.scrollY;
-            const scrollingUp = currentScroll < lastScrollTop;
-
-            if (scrollingUp) {
-                // Prevenimos cualquier intento de navegación automática
-                window.scrollTo({ top: currentScroll, behavior: 'instant' });
-            }
-            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
-        }
-    });
 });
 
 function closeMenuAndModals() {
@@ -457,38 +356,11 @@ function collapseArticles() {
 
     const articlesSection = document.getElementById('articulos');
     if (articlesSection) {
-        const targetPosition = articlesSection.getBoundingClientRect().top + window.scrollY - 70;
-        const startPosition = window.scrollY;
-
-        // If already below the target, scroll instantly to prevent showing lower sections
-        if (startPosition > targetPosition) {
-            window.scrollTo({ top: targetPosition, behavior: 'instant' });
-            // Follow with a smooth micro-animation to ensure visibility
-            setTimeout(() => {
-                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-            }, 10);
-        } else {
-            // Smooth scroll if starting above or at the target
-            const distance = targetPosition - startPosition;
-            const duration = 200; // Shortened for quick but smooth transition
-            let startTime = null;
-
-            function animation(currentTime) {
-                if (startTime === null) startTime = currentTime;
-                const timeElapsed = currentTime - startTime;
-                const progress = Math.min(timeElapsed / duration, 1);
-                const ease = Math.sin(progress * (Math.PI / 2));
-                window.scrollTo(0, startPosition + distance * ease);
-
-                if (timeElapsed < duration) {
-                    requestAnimationFrame(animation);
-                }
-            }
-
-            requestAnimationFrame(animation);
-        }
+        const sectionTop = articlesSection.getBoundingClientRect().top + window.scrollY - 70;
+        window.scrollTo({ top: sectionTop, behavior: 'smooth' });
     }
 }
+
 function scrollToSection(targetId) {
     const target = document.querySelector(targetId);
     if (target) {
