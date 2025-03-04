@@ -1132,7 +1132,3 @@ h1:hover::after, h2:hover::after {
         max-width: 700px;
     }
 }
-.nav-links a.active {
-    color: var(--dorado-suave);
-    font-weight: bold;
-}

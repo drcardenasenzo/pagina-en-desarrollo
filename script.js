@@ -14,7 +14,11 @@ const handleScroll = debounce(() => {
     const nav = document.querySelector('nav');
     if (nav) nav.classList.toggle('scrolled', window.scrollY > 50);
     checkFaqVisibility();
-    // No cerramos el menú aquí, solo se cerrará al hacer clic en un enlace
+    const navLinks = document.querySelector('.nav-links');
+    if (navLinks && navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+        document.querySelector('.menu-toggle').classList.remove('active');
+    }
 }, 15);
 
 window.addEventListener('scroll', handleScroll);
@@ -310,10 +314,6 @@ function collapseArticles() {
         initialVisible = 6;
     }
     
-    // Guardar la posición del botón "Ver menos" antes de colapsar
-    const verMenosBtn = document.getElementById('ver-menos-btn');
-    const buttonPosition = verMenosBtn.getBoundingClientRect().top + window.scrollY;
-
     articles.forEach((article, index) => {
         if (index < initialVisible) {
             article.classList.remove('hidden');
@@ -323,13 +323,15 @@ function collapseArticles() {
     });
     
     const verMasBtn = document.getElementById('ver-mas-btn');
+    const verMenosBtn = document.getElementById('ver-menos-btn');
     if (verMasBtn) verMasBtn.style.display = articles.length > initialVisible ? 'inline-block' : 'none';
     if (verMenosBtn) verMenosBtn.style.display = 'none';
 
-    // Mantener la posición cerca del botón "Ver menos" después de colapsar
-    requestAnimationFrame(() => {
-        window.scrollTo({ top: buttonPosition - 100, behavior: 'smooth' }); // Ajuste de 100px para mejor visibilidad
-    });
+    const articlesSection = document.getElementById('articulos');
+    if (articlesSection) {
+        const sectionTop = articlesSection.getBoundingClientRect().top + window.scrollY - 70;
+        window.scrollTo({ top: sectionTop, behavior: 'smooth' });
+    }
 }
 
 function scrollToSection(targetId) {
