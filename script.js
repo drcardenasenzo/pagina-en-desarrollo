@@ -14,34 +14,9 @@ const handleScroll = debounce(() => {
     const nav = document.querySelector('nav');
     if (nav) nav.classList.toggle('scrolled', window.scrollY > 50);
     checkFaqVisibility();
-
-    const navLinks = document.querySelector('.nav-links');
-    if (!navLinks || !navLinks.classList.contains('active')) return;
-
-    // Obtener todas las secciones
-    const sections = document.querySelectorAll('section');
-    const scrollPosition = window.scrollY + 70; // Ajuste por la altura del nav fijo
-
-    // Verificar en qué sección está el usuario
-    let currentSection = null;
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionBottom = sectionTop + section.offsetHeight;
-        if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
-            currentSection = section;
-        }
-    });
-
-    // Si el usuario está en una sección diferente a la actual, cerrar el menú
-    const activeLink = navLinks.querySelector('a.active');
-    if (currentSection && activeLink) {
-        const activeSectionId = activeLink.getAttribute('href').substring(1); // Quita el #
-        if (currentSection.id !== activeSectionId) {
-            navLinks.classList.remove('active');
-            document.querySelector('.menu-toggle').classList.remove('active');
-        }
-    }
+    // No cerramos el menú aquí, solo se cerrará al hacer clic en un enlace
 }, 15);
+
 window.addEventListener('scroll', handleScroll);
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -85,20 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeMenuAndModals();
                 closeClientFaqAnswers();
                 scrollToSection(href);
-                // Marcar el enlace como activo
-                document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
             } else if (href.includes('#')) {
-                e.preventDefault();
+                e.preventDefault(); // Prevent default to handle manually
                 closeMenuAndModals();
                 closeClientFaqAnswers();
                 const targetId = href.split('#')[1];
+                // Navigate to the page and scroll after load
                 window.location.href = href;
-                setTimeout(() => {
-                    scrollToSection('#' + targetId);
-                    document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-                }, 100);
+                setTimeout(() => scrollToSection('#' + targetId), 100);
             }
             if (window.innerWidth <= 767) {
                 setTimeout(() => {
@@ -341,6 +310,10 @@ function collapseArticles() {
         initialVisible = 6;
     }
     
+    // Guardar la posición del botón "Ver menos" antes de colapsar
+    const verMenosBtn = document.getElementById('ver-menos-btn');
+    const buttonPosition = verMenosBtn.getBoundingClientRect().top + window.scrollY;
+
     articles.forEach((article, index) => {
         if (index < initialVisible) {
             article.classList.remove('hidden');
@@ -350,15 +323,13 @@ function collapseArticles() {
     });
     
     const verMasBtn = document.getElementById('ver-mas-btn');
-    const verMenosBtn = document.getElementById('ver-menos-btn');
     if (verMasBtn) verMasBtn.style.display = articles.length > initialVisible ? 'inline-block' : 'none';
     if (verMenosBtn) verMenosBtn.style.display = 'none';
 
-    const articlesSection = document.getElementById('articulos');
-    if (articlesSection) {
-        const sectionTop = articlesSection.getBoundingClientRect().top + window.scrollY - 70;
-        window.scrollTo({ top: sectionTop, behavior: 'smooth' });
-    }
+    // Mantener la posición cerca del botón "Ver menos" después de colapsar
+    requestAnimationFrame(() => {
+        window.scrollTo({ top: buttonPosition - 100, behavior: 'smooth' }); // Ajuste de 100px para mejor visibilidad
+    });
 }
 
 function scrollToSection(targetId) {
