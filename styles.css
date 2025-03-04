@@ -15,6 +15,7 @@
 html {
     scroll-behavior: auto;
 }
+
 body {
     background: var(--blanco);
     color: var(--gris-oscuro);
@@ -510,9 +511,7 @@ h1:hover::after, h2:hover::after {
 .articulos-buttons {
     text-align: center;
     margin-top: 2rem;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
+    position: relative; /* Necesario para que "Ver menos" absoluto funcione dentro de la sección */
 }
 
 .ver-mas-btn, .ver-menos-btn {
@@ -527,6 +526,11 @@ h1:hover::after, h2:hover::after {
     transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     outline: none;
+    margin: 0 auto; /* Centra el botón */
+}
+
+.ver-menos-btn {
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
 }
 
 .ver-mas-btn:hover, .ver-menos-btn:hover {

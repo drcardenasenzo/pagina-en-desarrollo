@@ -19,6 +19,7 @@ const handleScroll = debounce(() => {
         navLinks.classList.remove('active');
         document.querySelector('.menu-toggle').classList.remove('active');
     }
+    updateVerMenosPosition(); // Controla la posición y visibilidad de "Ver menos"
 }, 15);
 
 window.addEventListener('scroll', handleScroll);
@@ -65,11 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeClientFaqAnswers();
                 scrollToSection(href);
             } else if (href.includes('#')) {
-                e.preventDefault(); // Prevent default to handle manually
+                e.preventDefault();
                 closeMenuAndModals();
                 closeClientFaqAnswers();
                 const targetId = href.split('#')[1];
-                // Navigate to the page and scroll after load
                 window.location.href = href;
                 setTimeout(() => scrollToSection('#' + targetId), 100);
             }
@@ -125,6 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
             scrollToSection(window.location.hash);
         }, 100);
     }
+
+    updateVerMenosPosition(); // Llamada inicial para "Ver menos"
 });
 
 function closeMenuAndModals() {
@@ -276,29 +278,24 @@ function setArticleVisibility() {
     const verMasBtn = document.getElementById('ver-mas-btn');
     const verMenosBtn = document.getElementById('ver-menos-btn');
     if (verMasBtn) verMasBtn.style.display = articles.length > initialVisible ? 'inline-block' : 'none';
-    if (verMenosBtn) verMenosBtn.style.display = 'none';
+    if (verMenosBtn) verMenosBtn.style.display = 'none'; // "Ver menos" oculto al inicio
 }
 
 function loadMoreArticles() {
     const articles = document.querySelectorAll('.articulo-card.hidden');
-    const screenWidth = window.innerWidth;
-    let increment;
-    if (screenWidth <= 767) {
-        increment = 4;
-    } else if (screenWidth <= 1024) {
-        increment = 6;
-    } else {
-        increment = 6;
-    }
-    const articlesToShow = Array.from(articles).slice(0, increment);
+    articles.forEach(article => article.classList.remove('hidden')); // Muestra todos los artículos
     
-    articlesToShow.forEach(article => article.classList.remove('hidden'));
-    
-    const remainingHidden = document.querySelectorAll('.articulo-card.hidden').length;
     const verMasBtn = document.getElementById('ver-mas-btn');
     const verMenosBtn = document.getElementById('ver-menos-btn');
-    if (verMasBtn) verMasBtn.style.display = remainingHidden > 0 ? 'inline-block' : 'none';
-    if (verMenosBtn) verMenosBtn.style.display = remainingHidden < articles.length ? 'inline-block' : 'none';
+    if (verMasBtn) verMasBtn.style.display = 'none'; // Oculta "Ver más"
+    if (verMenosBtn) {
+        verMenosBtn.style.display = 'inline-block'; // Muestra "Ver menos"
+        verMenosBtn.style.position = 'fixed'; // Fijo en pantalla
+        verMenosBtn.style.bottom = '2rem'; // Posición inicial
+        verMenosBtn.style.left = '50%';
+        verMenosBtn.style.transform = 'translateX(-50%)';
+        verMenosBtn.style.zIndex = '1000'; // Por encima de otros elementos
+    }
 }
 
 function collapseArticles() {
@@ -324,13 +321,48 @@ function collapseArticles() {
     
     const verMasBtn = document.getElementById('ver-mas-btn');
     const verMenosBtn = document.getElementById('ver-menos-btn');
-    if (verMasBtn) verMasBtn.style.display = articles.length > initialVisible ? 'inline-block' : 'none';
-    if (verMenosBtn) verMenosBtn.style.display = 'none';
+    if (verMasBtn) verMasBtn.style.display = 'inline-block'; // Muestra "Ver más"
+    if (verMenosBtn) verMenosBtn.style.display = 'none'; // Oculta "Ver menos"
 
+    // Usa la misma animación del menú para ir a la sección "Artículos"
+    scrollToSection('#articulos');
+}
+
+function updateVerMenosPosition() {
     const articlesSection = document.getElementById('articulos');
-    if (articlesSection) {
-        const sectionTop = articlesSection.getBoundingClientRect().top + window.scrollY - 70;
-        window.scrollTo({ top: sectionTop, behavior: 'smooth' });
+    const verMenosBtn = document.getElementById('ver-menos-btn');
+    const articlesButtons = document.querySelector('.articulos-buttons');
+    if (!articlesSection || !verMenosBtn || !articlesButtons || verMenosBtn.style.display === 'none') return;
+
+    const sectionRect = articlesSection.getBoundingClientRect();
+    const sectionTop = sectionRect.top + window.scrollY;
+    const sectionBottom = sectionRect.bottom + window.scrollY;
+    const buttonsTop = articlesButtons.getBoundingClientRect().top + window.scrollY; // Posición original de los botones
+    const currentScroll = window.scrollY;
+    const windowBottom = currentScroll + window.innerHeight;
+
+    if (currentScroll < buttonsTop) {
+        // Si estás por encima de la posición original de "Ver más", oculta "Ver menos"
+        verMenosBtn.style.display = 'none';
+    } else if (currentScroll >= buttonsTop && windowBottom <= sectionBottom) {
+        // Dentro de la sección "Artículos" pero antes del final, "Ver menos" sigue la pantalla
+        verMenosBtn.style.display = 'inline-block';
+        verMenosBtn.style.position = 'fixed';
+        verMenosBtn.style.bottom = '2rem';
+        verMenosBtn.style.top = 'auto';
+        verMenosBtn.style.left = '50%';
+        verMenosBtn.style.transform = 'translateX(-50%)';
+    } else if (windowBottom > sectionBottom && currentScroll >= buttonsTop) {
+        // Al llegar al final de la sección "Artículos", "Ver menos" se queda fijo al final
+        verMenosBtn.style.display = 'inline-block';
+        verMenosBtn.style.position = 'absolute';
+        verMenosBtn.style.bottom = 'auto';
+        verMenosBtn.style.top = `${sectionBottom - 70}px`; // Fijo al final de la sección
+        verMenosBtn.style.left = '50%';
+        verMenosBtn.style.transform = 'translateX(-50%)';
+    } else if (currentScroll >= sectionBottom) {
+        // Si pasaste la sección hacia abajo (hacia "Sobre Mí"), oculta "Ver menos"
+        verMenosBtn.style.display = 'none';
     }
 }
 
@@ -340,14 +372,14 @@ function scrollToSection(targetId) {
         const targetPosition = target.getBoundingClientRect().top + window.scrollY - 70;
         const startPosition = window.scrollY;
         const distance = targetPosition - startPosition;
-        const duration = 300; // 100ms, muy rápido
+        const duration = 300; // Misma duración que el menú
         let startTime = null;
 
         function animation(currentTime) {
             if (startTime === null) startTime = currentTime;
             const timeElapsed = currentTime - startTime;
             const progress = Math.min(timeElapsed / duration, 1);
-            const ease = Math.sin(progress * (Math.PI / 2));
+            const ease = Math.sin(progress * (Math.PI / 2)); // Misma curva de suavizado del menú
             window.scrollTo(0, startPosition + distance * ease);
 
             if (timeElapsed < duration) {
