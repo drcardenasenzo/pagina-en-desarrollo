@@ -15,6 +15,7 @@
 html {
     scroll-behavior: auto;
 }
+
 body {
     background: var(--blanco);
     color: var(--gris-oscuro);
@@ -696,7 +697,7 @@ h1:hover::after, h2:hover::after {
 }
 
 #articulos {
-    padding-top: 3.8rem; /* Reduced slightly from 4rem for desktop */
+    padding-top: 3.8rem;
 }
 
 #contacto {
@@ -966,6 +967,12 @@ h1:hover::after, h2:hover::after {
     .article-page p {
         max-width: 900px;
     }
+    /* Ajuste para el botón "Atrás" en tablet */
+    .atras-btn {
+        top: 100px; /* Más abajo para evitar superposición */
+        left: 15px;
+        padding: 0.7rem 1.2rem;
+    }
 }
 
 @media (max-width: 767px) {
@@ -1057,7 +1064,7 @@ h1:hover::after, h2:hover::after {
         margin-top: -0.5rem;
     }
     .articulos-buttons {
-        margin-top: 1.5rem;
+        display: none; /* Ocultar los botones en móvil */
     }
     .modal-content {
         padding: 10px;
@@ -1131,4 +1138,35 @@ h1:hover::after, h2:hover::after {
     .article-page p {
         max-width: 700px;
     }
+    /* Ajuste para el botón "Atrás" en móvil */
+    .atras-btn {
+        top: 80px; /* Más abajo para evitar superposición */
+        left: 10px;
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Estilo base para el botón "Atrás" en páginas de artículos individuales (PC) */
+.atras-btn {
+    position: fixed;
+    top: 100px; /* Perfecto en PC */
+    left: 20px;
+    padding: 0.8rem 1.5rem;
+    background: var(--azul-profundo);
+    color: var(--blanco);
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 999; /* Debajo del menú (z-index: 1000) */
+}
+
+.atras-btn:hover {
+    background: var(--dorado-suave);
+    color: var(--azul-profundo);
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }

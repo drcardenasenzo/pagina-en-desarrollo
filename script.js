@@ -65,11 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeClientFaqAnswers();
                 scrollToSection(href);
             } else if (href.includes('#')) {
-                e.preventDefault(); // Prevent default to handle manually
+                e.preventDefault();
                 closeMenuAndModals();
                 closeClientFaqAnswers();
                 const targetId = href.split('#')[1];
-                // Navigate to the page and scroll after load
                 window.location.href = href;
                 setTimeout(() => scrollToSection('#' + targetId), 100);
             }
@@ -110,8 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const verMasBtn = document.getElementById('ver-mas-btn');
     const verMenosBtn = document.getElementById('ver-menos-btn');
-    if (verMasBtn) verMasBtn.addEventListener('click', loadMoreArticles);
-    if (verMenosBtn) verMenosBtn.addEventListener('click', collapseArticles);
+    if (verMasBtn && window.innerWidth > 767) verMasBtn.addEventListener('click', loadMoreArticles);
+    if (verMenosBtn && window.innerWidth > 767) verMenosBtn.addEventListener('click', collapseArticles);
 
     const clientFaqItems = document.querySelectorAll('.faq-client-item h3');
     clientFaqItems.forEach(item => {
@@ -119,6 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     rotateTestimonials();
+
+    // Agregar botón "Atrás" en páginas de artículos individuales
+    if (window.location.pathname.includes('articulo-')) {
+        addAtrasButton();
+    }
 
     if (window.location.hash) {
         setTimeout(() => {
@@ -260,7 +264,7 @@ function setArticleVisibility() {
     const screenWidth = window.innerWidth;
     let initialVisible;
     if (screenWidth <= 767) {
-        initialVisible = 4;
+        initialVisible = 9; // Mostrar 9 artículos en móvil
     } else if (screenWidth <= 1024) {
         initialVisible = 6;
     } else {
@@ -275,25 +279,28 @@ function setArticleVisibility() {
     });
     const verMasBtn = document.getElementById('ver-mas-btn');
     const verMenosBtn = document.getElementById('ver-menos-btn');
-    if (verMasBtn) verMasBtn.style.display = articles.length > initialVisible ? 'inline-block' : 'none';
-    if (verMenosBtn) verMenosBtn.style.display = 'none';
+    if (screenWidth > 767) {
+        if (verMasBtn) verMasBtn.style.display = articles.length > initialVisible ? 'inline-block' : 'none';
+        if (verMenosBtn) verMenosBtn.style.display = 'none';
+    } else {
+        if (verMasBtn) verMasBtn.style.display = 'none';
+        if (verMenosBtn) verMenosBtn.style.display = 'none';
+    }
 }
 
 function loadMoreArticles() {
     const articles = document.querySelectorAll('.articulo-card.hidden');
     const screenWidth = window.innerWidth;
     let increment;
-    if (screenWidth <= 767) {
-        increment = 4;
-    } else if (screenWidth <= 1024) {
+    if (screenWidth <= 1024) {
         increment = 6;
     } else {
         increment = 6;
     }
     const articlesToShow = Array.from(articles).slice(0, increment);
-    
+
     articlesToShow.forEach(article => article.classList.remove('hidden'));
-    
+
     const remainingHidden = document.querySelectorAll('.articulo-card.hidden').length;
     const verMasBtn = document.getElementById('ver-mas-btn');
     const verMenosBtn = document.getElementById('ver-menos-btn');
@@ -306,14 +313,12 @@ function collapseArticles() {
     if (articles.length === 0) return;
     const screenWidth = window.innerWidth;
     let initialVisible;
-    if (screenWidth <= 767) {
-        initialVisible = 4;
-    } else if (screenWidth <= 1024) {
+    if (screenWidth <= 1024) {
         initialVisible = 6;
     } else {
         initialVisible = 6;
     }
-    
+
     articles.forEach((article, index) => {
         if (index < initialVisible) {
             article.classList.remove('hidden');
@@ -321,16 +326,58 @@ function collapseArticles() {
             article.classList.add('hidden');
         }
     });
-    
+
     const verMasBtn = document.getElementById('ver-mas-btn');
     const verMenosBtn = document.getElementById('ver-menos-btn');
     if (verMasBtn) verMasBtn.style.display = articles.length > initialVisible ? 'inline-block' : 'none';
     if (verMenosBtn) verMenosBtn.style.display = 'none';
 
     const articlesSection = document.getElementById('articulos');
-    if (articlesSection) {
-        const sectionTop = articlesSection.getBoundingClientRect().top + window.scrollY - 70;
-        window.scrollTo({ top: sectionTop, behavior: 'smooth' });
+    if (articlesSection && screenWidth > 767) { // Solo en PC y tablet
+        const verMenosBtnRect = verMenosBtn.getBoundingClientRect();
+        const buttonPosition = verMenosBtnRect.top + window.scrollY; // Posición absoluta del botón
+        const targetPosition = articlesSection.getBoundingClientRect().top + window.scrollY - 70; // Posición de #articulos
+
+        if (buttonPosition > targetPosition) {
+            // Deshabilitamos el scroll nativo
+            document.body.style.overflow = 'hidden';
+
+            const startPosition = buttonPosition;
+            const distance = targetPosition - startPosition; // Negativo porque subimos
+            const duration = 300; // 300ms, igual que el menú
+            let startTime = null;
+
+            // Forzamos el scroll inicial al botón
+            window.scrollTo({ top: buttonPosition, behavior: 'instant' });
+
+            function animation(currentTime) {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(timeElapsed / duration, 1);
+                const ease = Math.sin(progress * (Math.PI / 2)); // Suavizado sinusoidal
+                const newPosition = startPosition + distance * ease;
+
+                // Solo permitimos mover hacia arriba
+                if (newPosition <= buttonPosition) {
+                    window.scrollTo({ top: newPosition, behavior: 'instant' });
+                }
+
+                if (timeElapsed < duration) {
+                    requestAnimationFrame(animation);
+                } else {
+                    // Restauramos el scroll nativo al finalizar
+                    document.body.style.overflow = 'auto';
+                }
+            }
+
+            requestAnimationFrame(animation);
+        } else {
+            // Si ya estamos arriba, usamos scrollToSection y restauramos overflow
+            scrollToSection('#articulos');
+            setTimeout(() => {
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
     }
 }
 
@@ -340,7 +387,7 @@ function scrollToSection(targetId) {
         const targetPosition = target.getBoundingClientRect().top + window.scrollY - 70;
         const startPosition = window.scrollY;
         const distance = targetPosition - startPosition;
-        const duration = 300; // 100ms, muy rápido
+        const duration = 300; // 300ms, igual que el menú
         let startTime = null;
 
         function animation(currentTime) {
@@ -357,4 +404,20 @@ function scrollToSection(targetId) {
 
         requestAnimationFrame(animation);
     }
+}
+
+// Función para agregar el botón "Atrás" en páginas de artículos individuales
+function addAtrasButton() {
+    const body = document.body;
+    const button = document.createElement('a');
+    button.href = 'index.html#articulos';
+    button.className = 'atras-btn';
+    button.textContent = 'Atrás';
+    body.appendChild(button);
+
+    button.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = 'index.html#articulos';
+        setTimeout(() => scrollToSection('#articulos'), 100);
+    });
 }
