@@ -319,6 +319,14 @@ function collapseArticles() {
         initialVisible = 6;
     }
 
+    // Calcular la posición inicial de #articulos antes de colapsar
+    const articlesSection = document.getElementById('articulos');
+    let scrollPositionBeforeCollapse = window.scrollY;
+    if (articlesSection) {
+        scrollPositionBeforeCollapse = articlesSection.getBoundingClientRect().top + window.scrollY - 70;
+    }
+
+    // Colapsar los artículos
     articles.forEach((article, index) => {
         if (index < initialVisible) {
             article.classList.remove('hidden');
@@ -332,72 +340,38 @@ function collapseArticles() {
     if (verMasBtn) verMasBtn.style.display = articles.length > initialVisible ? 'inline-block' : 'none';
     if (verMenosBtn) verMenosBtn.style.display = 'none';
 
-    const articlesSection = document.getElementById('articulos');
-    if (articlesSection && screenWidth > 767) { // Solo en PC y tablet
-        const verMenosBtnRect = verMenosBtn.getBoundingClientRect();
-        const buttonPosition = verMenosBtnRect.top + window.scrollY; // Posición absoluta del botón
-        const targetPosition = articlesSection.getBoundingClientRect().top + window.scrollY - 70; // Posición de #articulos
+    // Desplazarse a #articulos con animación más lenta solo en PC y tablets
+    if (screenWidth > 767) {
+        // Mantener la posición del scroll fija durante el colapso para evitar el salto
+        window.scrollTo({
+            top: scrollPositionBeforeCollapse,
+            behavior: 'instant'
+        });
 
-        if (buttonPosition > targetPosition) {
-            // Deshabilitamos el scroll nativo
-            document.body.style.overflow = 'hidden';
-
-            const startPosition = buttonPosition;
-            const distance = targetPosition - startPosition; // Negativo porque subimos
-            const duration = 300; // 300ms, igual que el menú
-            let startTime = null;
-
-            // Forzamos el scroll inicial al botón
-            window.scrollTo({ top: buttonPosition, behavior: 'instant' });
-
-            function animation(currentTime) {
-                if (startTime === null) startTime = currentTime;
-                const timeElapsed = currentTime - startTime;
-                const progress = Math.min(timeElapsed / duration, 1);
-                const ease = Math.sin(progress * (Math.PI / 2)); // Suavizado sinusoidal
-                const newPosition = startPosition + distance * ease;
-
-                // Solo permitimos mover hacia arriba
-                if (newPosition <= buttonPosition) {
-                    window.scrollTo({ top: newPosition, behavior: 'instant' });
-                }
-
-                if (timeElapsed < duration) {
-                    requestAnimationFrame(animation);
-                } else {
-                    // Restauramos el scroll nativo al finalizar
-                    document.body.style.overflow = 'auto';
-                }
-            }
-
-            requestAnimationFrame(animation);
-        } else {
-            // Si ya estamos arriba, usamos scrollToSection y restauramos overflow
-            scrollToSection('#articulos');
-            setTimeout(() => {
-                document.body.style.overflow = 'auto';
-            }, 300);
-        }
+        // Iniciar la animación más lenta y estética después de que el colapso esté completo
+        setTimeout(() => {
+            scrollToSection('#articulos', 600); // 600ms para una transición más lenta
+        }, 50); // Retraso para que el colapso se complete antes de la animación
     }
 }
 
-function scrollToSection(targetId) {
+function scrollToSection(targetId, duration = 300) {
     const target = document.querySelector(targetId);
     if (target) {
         const targetPosition = target.getBoundingClientRect().top + window.scrollY - 70;
         const startPosition = window.scrollY;
         const distance = targetPosition - startPosition;
-        const duration = 300; // 300ms, igual que el menú
+        const animDuration = duration; // Usar el parámetro duration, por defecto 300ms
         let startTime = null;
 
         function animation(currentTime) {
             if (startTime === null) startTime = currentTime;
             const timeElapsed = currentTime - startTime;
-            const progress = Math.min(timeElapsed / duration, 1);
+            const progress = Math.min(timeElapsed / animDuration, 1);
             const ease = Math.sin(progress * (Math.PI / 2));
             window.scrollTo(0, startPosition + distance * ease);
 
-            if (timeElapsed < duration) {
+            if (timeElapsed < animDuration) {
                 requestAnimationFrame(animation);
             }
         }
