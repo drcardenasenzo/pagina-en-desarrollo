@@ -53,7 +53,7 @@ nav.scrolled {
     position: relative;
     margin-right: 1rem;
     margin-left: 1rem;
-    -webkit-tap-highlight-color: transparent; /* Elimina recuadro azulado */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .hamburger {
@@ -118,7 +118,7 @@ nav a {
     margin: 0 1.5rem;
     position: relative;
     transition: color 0.3s ease, transform 0.2s ease;
-    -webkit-tap-highlight-color: transparent; /* Elimina recuadro azulado */
+    -webkit-tap-highlight-color: transparent;
 }
 
 nav a:hover {
@@ -140,7 +140,6 @@ nav a:hover::after {
     width: 100%;
 }
 
-/* En PC, quitar línea dorada solo del logo */
 nav .logo::after {
     display: none;
 }
@@ -223,7 +222,7 @@ section {
     transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     animation: float 3s ease-in-out infinite;
-    -webkit-tap-highlight-color: transparent; /* Elimina recuadro azulado */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .inicio-cta:hover {
@@ -277,7 +276,7 @@ h1:hover::after, h2:hover::after {
     overflow: hidden;
     cursor: pointer;
     will-change: transform;
-    -webkit-tap-highlight-color: transparent; /* Elimina recuadro azulado */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .area-card:hover {
@@ -350,7 +349,7 @@ h1:hover::after, h2:hover::after {
     transition: background 0.3s ease;
     z-index: 2001;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    -webkit-tap-highlight-color: transparent; /* Elimina recuadro azulado */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .modal-back:hover {
@@ -407,7 +406,7 @@ h1:hover::after, h2:hover::after {
     z-index: 2000;
     transition: all 0.3s ease;
     animation: float 3s ease-in-out infinite;
-    -webkit-tap-highlight-color: transparent; /* Elimina recuadro azulado */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .modal-whatsapp-btn:hover {
@@ -427,7 +426,7 @@ h1:hover::after, h2:hover::after {
     color: var(--azul-profundo);
     cursor: pointer;
     transition: color 0.3s ease;
-    -webkit-tap-highlight-color: transparent; /* Elimina recuadro azulado */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .faq-item h3:hover {
@@ -474,7 +473,7 @@ h1:hover::after, h2:hover::after {
     display: flex;
     flex-direction: column;
     height: 420px;
-    -webkit-tap-highlight-color: transparent; /* Elimina recuadro azulado */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .articulo-card:hover {
@@ -541,7 +540,7 @@ h1:hover::after, h2:hover::after {
     transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     outline: none;
-    -webkit-tap-highlight-color: transparent; /* Elimina recuadro azulado */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .ver-mas-btn:hover, .ver-menos-btn:hover {
@@ -557,7 +556,6 @@ h1:hover::after, h2:hover::after {
     transform: scale(1);
 }
 
-/* Article-specific styles for individual article pages */
 .article-page h1 {
     padding-top: 100px;
 }
@@ -638,7 +636,7 @@ h1:hover::after, h2:hover::after {
     color: var(--azul-profundo);
     cursor: pointer;
     transition: color 0.3s ease;
-    -webkit-tap-highlight-color: transparent; /* Elimina recuadro azulado */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .faq-client-item h3:hover {
@@ -763,7 +761,7 @@ h1:hover::after, h2:hover::after {
     transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     animation: float 3s ease-in-out infinite;
-    -webkit-tap-highlight-color: transparent; /* Elimina recuadro azulado */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .contacto-whatsapp-btn:hover {
@@ -817,7 +815,7 @@ h1:hover::after, h2:hover::after {
     z-index: 1000;
     transition: all 0.3s ease;
     animation: float 3s ease-in-out infinite;
-    -webkit-tap-highlight-color: transparent; /* Elimina recuadro azulado */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .whatsapp-btn:hover {
@@ -859,7 +857,6 @@ h1:hover::after, h2:hover::after {
         width: 100%;
         text-align: center;
     }
-    /* En tablets, quitar línea dorada de todos los enlaces */
     nav a::after {
         display: none;
     }
@@ -986,14 +983,13 @@ h1:hover::after, h2:hover::after {
         font-size: 0.9rem;
     }
     .article-page h1 {
-        padding-top: 160px; /* Bajamos el título en tablets */
+        padding-top: 160px;
     }
     .article-page p {
         max-width: 900px;
     }
-    /* Ajuste para el botón "Atrás" en tablet */
     .atras-btn {
-        top: 150px; /* Más abajo para evitar superposición */
+        top: 150px;
         left: 15px;
         padding: 0.6rem 1.2rem;
         font-size: 0.9rem;
@@ -1002,7 +998,7 @@ h1:hover::after, h2:hover::after {
 
 @media (max-width: 767px) {
     nav {
-        padding: 1.5rem;
+        padding: 1.2rem 1.5rem;
     }
     .menu-toggle {
         display: block;
@@ -1041,7 +1037,7 @@ h1:hover::after, h2:hover::after {
         padding: 4rem 5% 6rem 5%;
     }
     #inicio {
-        padding: 8rem 5% 4rem 5%;
+        padding: 7.4rem 5% 4rem 5%; /* Ajustado: 8rem - 0.6rem */
         background-position: center 30%;
         background-attachment: scroll;
     }
@@ -1065,7 +1061,7 @@ h1:hover::after, h2:hover::after {
         grid-template-columns: 1fr;
     }
     #areas {
-        padding-top: 6rem;
+        padding-top: 5.4rem; /* Ajustado: 6rem - 0.6rem */
     }
     .area-card {
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
@@ -1089,7 +1085,16 @@ h1:hover::after, h2:hover::after {
         margin-top: -0.5rem;
     }
     .articulos-buttons {
-        display: none; /* Ocultar los botones en móvil */
+        display: none;
+    }
+    #articulos {
+        padding-top: 3.2rem; /* Ajustado: 3.8rem - 0.6rem */
+    }
+    #sobre-mi {
+        padding: 4.4rem 5% 6rem 5%; /* Ajustado: 5rem - 0.6rem */
+    }
+    #contacto {
+        padding: 3.9rem 5% 6rem 5%; /* Ajustado: 4.5rem - 0.6rem */
     }
     .modal-content {
         padding: 10px;
@@ -1135,9 +1140,6 @@ h1:hover::after, h2:hover::after {
         font-size: 1.1rem;
         padding: 0 1rem;
     }
-    #contacto {
-        padding: 4.5rem 5% 6rem 5%;
-    }
     .contacto-container {
         flex-direction: column;
         gap: 2rem;
@@ -1161,36 +1163,34 @@ h1:hover::after, h2:hover::after {
         margin-top: 2.5rem;
     }
     .article-page h1 {
-        padding-top: 160px; /* Subimos sutilmente el título en móviles */
+        padding-top: 154px; /* Ajustado: 160px - 6px (equivalente a 0.6rem) */
     }
     .article-page p {
         max-width: 700px;
     }
-    /* Ajuste para el botón "Atrás" en móvil */
     .atras-btn {
-        top: 140px; /* Perfecto en móviles */
+        top: 140px;
         left: 10px;
         padding: 0.6rem 1.2rem;
         font-size: 0.9rem;
     }
 }
 
-/* Estilo base para el botón "Atrás" en páginas de artículos individuales (PC) */
 .atras-btn {
     position: fixed;
-    top: 100px; /* Perfecto en PC */
+    top: 100px;
     left: 20px;
-    padding: 0.6rem 1.2rem; /* Achicado desde 0.8rem 1.5rem */
+    padding: 0.6rem 1.2rem;
     background: var(--azul-profundo);
     color: var(--blanco);
     text-decoration: none;
     border-radius: 5px;
     font-weight: bold;
-    font-size: 0.9rem; /* Achicado desde 1rem */
+    font-size: 0.9rem;
     transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    z-index: 999; /* Debajo del menú (z-index: 1000) */
-    -webkit-tap-highlight-color: transparent; /* Elimina recuadro azulado */
+    z-index: 999;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .atras-btn:hover {
@@ -1200,16 +1200,14 @@ h1:hover::after, h2:hover::after {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Ajuste para tablets (max-width: 1024px) */
 @media (max-width: 1024px) {
     .atras-btn {
-        top: 150px; /* Más abajo en tablets */
+        top: 150px;
     }
 }
 
-/* Ajuste para móviles (max-width: 767px) */
 @media (max-width: 767px) {
     .atras-btn {
-        top: 140px; /* Queda igual en móviles */
+        top: 140px;
     }
 }
