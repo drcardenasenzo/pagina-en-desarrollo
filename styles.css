@@ -558,6 +558,25 @@ h1:hover::after, h2:hover::after {
 
 .article-page h1 {
     padding-top: 100px;
+    font-size: 2rem;
+    color: var(--azul-profundo);
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.article-page h1::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 3px;
+    background: var(--dorado-suave);
+    bottom: -10px;
+    left: 0;
+    transition: width 0.5s ease;
+}
+
+.article-page h1:hover::after {
+    width: 100px;
 }
 
 .article-page img {
@@ -567,10 +586,26 @@ h1:hover::after, h2:hover::after {
     display: block;
 }
 
-.article-page p {
+.article-page .article-content p {
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
+    font-size: 1.2rem;
+    text-align: justify;
+    margin-bottom: 20px;
+    text-indent: 50px;
+    line-height: 1.8;
+}
+
+.article-page .article-content p:first-child,
+.article-page .article-content p:last-child {
+    text-indent: 0;
+    margin-bottom: 10px;
+}
+
+.article-page .article-content p strong {
+    color: var(--gris-oscuro);
+    font-weight: 700;
 }
 
 #sobre-mi {
@@ -984,9 +1019,11 @@ h1:hover::after, h2:hover::after {
     }
     .article-page h1 {
         padding-top: 160px;
+        font-size: 1.8rem;
     }
-    .article-page p {
-        max-width: 900px;
+    .article-page .article-content p {
+        font-size: 1.1rem;
+        max-width: 90%;
     }
     .atras-btn {
         top: 150px;
@@ -1037,7 +1074,7 @@ h1:hover::after, h2:hover::after {
         padding: 4rem 5% 6rem 5%;
     }
     #inicio {
-        padding: 7.4rem 5% 4rem 5%; /* Ajustado: 8rem - 0.6rem */
+        padding: 7.4rem 5% 4rem 5%;
         background-position: center 30%;
         background-attachment: scroll;
     }
@@ -1061,7 +1098,7 @@ h1:hover::after, h2:hover::after {
         grid-template-columns: 1fr;
     }
     #areas {
-        padding-top: 5.4rem; /* Ajustado: 6rem - 0.6rem */
+        padding-top: 5.4rem;
     }
     .area-card {
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
@@ -1088,13 +1125,13 @@ h1:hover::after, h2:hover::after {
         display: none;
     }
     #articulos {
-        padding-top: 3.2rem; /* Ajustado: 3.8rem - 0.6rem */
+        padding-top: 3.2rem;
     }
     #sobre-mi {
-        padding: 4.4rem 5% 6rem 5%; /* Ajustado: 5rem - 0.6rem */
+        padding: 4.4rem 5% 6rem 5%;
     }
     #contacto {
-        padding: 3.9rem 5% 6rem 5%; /* Ajustado: 4.5rem - 0.6rem */
+        padding: 3.9rem 5% 6rem 5%;
     }
     .modal-content {
         padding: 10px;
@@ -1163,10 +1200,12 @@ h1:hover::after, h2:hover::after {
         margin-top: 2.5rem;
     }
     .article-page h1 {
-        padding-top: 154px; /* Ajustado: 160px - 6px (equivalente a 0.6rem) */
+        padding-top: 154px;
+        font-size: 1.6rem;
     }
-    .article-page p {
-        max-width: 700px;
+    .article-page .article-content p {
+        font-size: 1rem;
+        max-width: 95%;
     }
     .atras-btn {
         top: 140px;
