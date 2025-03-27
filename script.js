@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
-        shuffleArticles();
+        shuffleRecommendations();
     }
 
     setArticleVisibility();
@@ -130,11 +130,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
     }
 
-    // Manejar el botón "Atrás" del teléfono
     window.addEventListener('popstate', (event) => {
-        const modal = document.getElementById('modal-preguntas');
-        if (modal && modal.style.display === 'block') {
-            closeModal('modal-preguntas');
+        const state = event.state;
+        if (state && state.modalId) {
+            closeModal(state.modalId);
         }
     });
 });
@@ -181,7 +180,6 @@ function openModal(modalId, contentId) {
         }
     });
 
-    // Agregar estado al historial para que el botón "Atrás" del teléfono lo detecte
     history.pushState({ modalId, contentId }, '', `#modal-${modalId}-${contentId}`);
 }
 
@@ -259,13 +257,13 @@ function rotateTestimonials() {
     }, 5000);
 }
 
-function shuffleArticles() {
-    const articlesContainer = document.querySelector('.articulos-preview');
-    if (!articlesContainer) return;
-    const articles = Array.from(articlesContainer.children);
-    for (let i = articles.length - 1; i > 0; i--) {
+function shuffleRecommendations() {
+    const recommendationsContainer = document.querySelector('.articulos-preview');
+    if (!recommendationsContainer) return;
+    const recommendations = Array.from(recommendationsContainer.children);
+    for (let i = recommendations.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        articlesContainer.insertBefore(articles[j], articles[i]);
+        recommendationsContainer.insertBefore(recommendations[j], recommendations[i]);
     }
 }
 
@@ -275,7 +273,7 @@ function setArticleVisibility() {
     const screenWidth = window.innerWidth;
     let initialVisible;
     if (screenWidth <= 767) {
-        initialVisible = 9; // Mostrar 9 artículos en móvil
+        initialVisible = 9;
     } else if (screenWidth <= 1024) {
         initialVisible = 6;
     } else {
@@ -330,14 +328,12 @@ function collapseArticles() {
         initialVisible = 6;
     }
 
-    // Calcular la posición inicial de #articulos antes de colapsar
     const articlesSection = document.getElementById('articulos');
     let scrollPositionBeforeCollapse = window.scrollY;
     if (articlesSection) {
         scrollPositionBeforeCollapse = articlesSection.getBoundingClientRect().top + window.scrollY - 70;
     }
 
-    // Colapsar los artículos
     articles.forEach((article, index) => {
         if (index < initialVisible) {
             article.classList.remove('hidden');
@@ -351,18 +347,15 @@ function collapseArticles() {
     if (verMasBtn) verMasBtn.style.display = articles.length > initialVisible ? 'inline-block' : 'none';
     if (verMenosBtn) verMenosBtn.style.display = 'none';
 
-    // Desplazarse a #articulos con animación más lenta solo en PC y tablets
     if (screenWidth > 767) {
-        // Mantener la posición del scroll fija durante el colapso para evitar el salto
         window.scrollTo({
             top: scrollPositionBeforeCollapse,
             behavior: 'instant'
         });
 
-        // Iniciar la animación más lenta y estética después de que el colapso esté completo
         setTimeout(() => {
-            scrollToSection('#articulos', 600); // 600ms para una transición más lenta
-        }, 50); // Retraso para que el colapso se complete antes de la animación
+            scrollToSection('#articulos', 600);
+        }, 50);
     }
 }
 
@@ -372,7 +365,7 @@ function scrollToSection(targetId, duration = 300) {
         const targetPosition = target.getBoundingClientRect().top + window.scrollY - 70;
         const startPosition = window.scrollY;
         const distance = targetPosition - startPosition;
-        const animDuration = duration; // Usar el parámetro duration, por defecto 300ms
+        const animDuration = duration;
         let startTime = null;
 
         function animation(currentTime) {
@@ -391,7 +384,6 @@ function scrollToSection(targetId, duration = 300) {
     }
 }
 
-// Función para agregar el botón "Atrás" en páginas de artículos individuales
 function addAtrasButton() {
     const body = document.body;
     const button = document.createElement('a');
