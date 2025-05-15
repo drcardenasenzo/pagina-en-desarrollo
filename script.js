@@ -133,7 +133,17 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('popstate', (event) => {
         const state = event.state;
         if (state && state.modalId) {
-            closeModal(state.modalId);
+            // No cerramos el modal aquí, ya que queremos verificar si el historial cambió
+            const modal = document.getElementById(state.modalId);
+            if (modal && modal.style.display === 'block') {
+                closeModal(state.modalId);
+            }
+        } else {
+            // Si no hay estado (es decir, volvimos a la página inicial), cerramos cualquier modal abierto
+            const openModal = document.querySelector('.modal[style*="block"]');
+            if (openModal) {
+                closeModal(openModal.id);
+            }
         }
     });
 });
@@ -180,7 +190,9 @@ function openModal(modalId, contentId) {
         }
     });
 
-    history.pushState({ modalId, contentId }, '', `#modal-${modalId}-${contentId}`);
+    // Guardamos el estado actual del historial antes de abrir el modal
+    const currentUrl = window.location.href.split('#')[0];
+    history.pushState({ modalId, contentId, prevUrl: currentUrl }, '', `#modal-${modalId}-${contentId}`);
 }
 
 function closeModal(modalId) {
