@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Honorarios | Cárdenas y Asociados</title>
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; 
+        }
+        .container {
+            max-width: 800px;
+            margin: 0.5rem auto;
+            color: #4B5E6A;
+        }
+        .asset-card {
+            background-color: #FFFFFF;
+            border: 1px solid #dcdfe3;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .faq-item summary {
+            cursor: pointer;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            background-color: #F8F9FA;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        .faq-item summary:hover {
+            background-color: #E2E8F0;
+        }
+        .faq-item details[open] summary {
+            background-color: #D4D8DD;
+        }
+        .faq-item p {
+            padding: 1rem;
+            background-color: #fcfcfc;
+            border-top: 1px solid #dcdfe3;
+            border-radius: 0 0 0.75rem 0.75rem;
+        }
+        .clarification-item {
+            margin-bottom: 0.5rem;
+        }
+        .clarification-item::before {
+            content: '•';
+            font-weight: bold;
+            margin-right: 0.5rem;
+            color: #D4AF37;
+        }
+        #calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-[#f0f4f8] text-[#4B5E6A] p-2 sm:p-4">
+
+<div class="container mx-auto p-4 sm:p-6 bg-white shadow-xl rounded-lg">
+    <div class="flex flex-col items-center mb-6">
+        <img src="logo.jpg" alt="Logo Cárdenas y Asociados" class="w-24 h-24 mb-4 rounded-full shadow-lg border-2 border-white">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-[#1E3A8A] mb-1">Cárdenas y Asociados</h1>
+        <h2 class="text-xl sm:text-2xl font-bold text-center text-[#4B5E6A] mb-6">Calculadora de Honorarios</h2>
+        <p class="text-center text-sm sm:text-base text-[#4B5E6A] mb-8 max-w-lg">Ingresá los bienes de la herencia para estimar el valor de los honorarios de forma clara y sencilla.</p>
+    </div>
+
+    <!-- SECCIÓN DE CÁLCULO -->
+    <div id="calculator-section">
+        <div id="assets-container" class="space-y-4">
+            <!-- Asset card template -->
+            <div class="asset-card">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg sm:text-xl font-semibold text-[#4B5E6A]">Bien 1</h3>
+                    <button class="remove-asset-btn text-red-500 hover:text-red-700 font-bold hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                    <div>
+                        <label class="block text-sm sm:text-base text-[#4B5E6A] font-medium mb-1">Tipo de Bien</label>
+                        <select class="asset-type w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+                            <option value="inmueble">Inmueble</option>
+                            <option value="mueble">Mueble</option>
+                        </select>
+                    </div>
+                    <div class="asset-name-container hidden lg:col-span-2">
+                        <label class="block text-sm sm:text-base text-[#4B5E6A] font-medium mb-1">Nombre del Bien (Opcional)</label>
+                        <select class="asset-name w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+                            <option value="">Seleccionar...</option>
+                            <option value="auto">Auto</option>
+                            <option value="embarcacion">Embarcacion</option>
+                            <option value="joya">Joyas</option>
+                            <option value="cuadro">Cuadro</option>
+                            <option value="accion">Acciones de una empresa</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm sm:text-base text-[#4B5E6A] font-medium mb-1">Valor</label>
+                        <input type="text" class="asset-value w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]" placeholder="Ej: 150.000">
+                    </div>
+                    <div>
+                        <label class="block text-sm sm:text-base text-[#4B5E6A] font-medium mb-1">Moneda</label>
+                        <select class="asset-currency w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+                            <option value="usd">USD</option>
+                            <option value="ars">ARS</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="add-asset-btn" class="w-full mt-4 p-3 bg-[#D4AF37] text-white font-semibold rounded-md hover:bg-[#C29D32] transition-colors shadow-md">
+            + Agregar otro bien
+        </button>
+
+        <div class="mt-8">
+            <label class="block text-sm sm:text-base text-[#4B5E6A] font-medium mb-2">Representación de Herederos</label>
+            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                <div class="flex items-center">
+                    <input type="radio" id="all-heirs" name="heir-representation" value="all" class="h-4 w-4 text-[#1E3A8A] border-gray-300 focus:ring-[#1E3A8A]" checked>
+                    <label for="all-heirs" class="ml-2 text-sm sm:text-base text-[#4B5E6A]">Representar a todos los herederos</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="radio" id="one-heir" name="heir-representation" value="one" class="h-4 w-4 text-[#1E3A8A] border-gray-300 focus:ring-[#1E3A8A]">
+                    <label for="one-heir" class="ml-2 text-sm sm:text-base text-[#4B5E6A]">Representar a uno de varios herederos</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <label class="block text-sm sm:text-base text-[#4B5E6A] font-medium mb-2">Plan de Cuotas</label>
+            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                <div class="flex items-center">
+                    <input type="radio" id="24-installments" name="installments" value="24" class="h-4 w-4 text-[#1E3A8A] border-gray-300 focus:ring-[#1E3A8A]" checked>
+                    <label for="24-installments" class="ml-2 text-sm sm:text-base text-[#4B5E6A]">24 Cuotas</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="radio" id="36-installments" name="installments" value="36" class="h-4 w-4 text-[#1E3A8A] border-gray-300 focus:ring-[#1E3A8A]">
+                    <label for="36-installments" class="ml-2 text-sm sm:text-base text-[#4B5E6A]">36 Cuotas</label>
+                </div>
+            </div>
+        </div>
+
+        <button id="calculate-btn" class="w-full mt-8 p-4 bg-[#1E3A8A] text-[#D4AF37] font-bold rounded-lg shadow-md hover:bg-[#152E6A] transition-all duration-300 ease-in-out">
+            Calcular Honorarios
+        </button>
+    </div>
+
+    <!-- SECCIÓN DE RESULTADOS -->
+    <div id="results-section" class="mt-12 hidden">
+        <h2 class="text-xl sm:text-2xl font-bold text-center mb-6 text-[#1E3A8A] border-b-2 border-[#D4AF37] pb-2">Resumen del Cálculo</h2>
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+            <p class="text-sm sm:text-lg mb-2"><span class="font-semibold text-[#4B5E6A]">Valor Total de la herencia:</span> <span id="total-acervo" class="font-bold text-[#D4AF37]"></span></p>
+            <p class="text-sm sm:text-lg mb-2"><span class="font-semibold text-[#4B5E6A]">Honorario Total:</span> <span id="total-honorario" class="font-bold text-[#D4AF37]"></span></p>
+            <p class="text-sm sm:text-lg mb-2"><span class="font-semibold text-[#4B5E6A]">Honorario en UMAs:</span> <span id="honorario-umas" class="font-bold text-[#D4AF37]"></span></p>
+            <p class="text-sm sm:text-lg mb-2"><span class="font-semibold text-[#4B5E6A]">Cuota Mensual:</span> <span id="cuota-umas" class="font-bold text-[#D4AF37]"></span></p>
+            <p class="text-sm sm:text-lg mb-2"><span class="font-semibold text-[#4B5E6A]">Valor Actual de la Cuota en Pesos:</span> <span id="cuota-pesos" class="font-bold text-[#D4AF37]"></span></p>
+        </div>
+    </div>
+
+    <hr class="my-12 border-gray-300">
+
+    <!-- SECCIÓN DE ACLARACIONES -->
+    <div id="clarifications-section" class="mt-12">
+        <h2 class="text-xl sm:text-2xl font-bold text-center mb-6 text-[#1E3A8A] border-b-2 border-[#D4AF37] pb-2">Aclaraciones</h2>
+        <ul class="text-sm sm:text-base text-[#4B5E6A]">
+            <li class="clarification-item">El porcentaje de honorarios aplicable es del 5% para herencias de hasta USD$250.000 y del 3% para herencias superiores a dicho monto. Se toma la cotización del dólar oficial para la venta del día previo a la firma del CONVENIO DE HONORARIOS.</li>
+            <li class="clarification-item">Los valores calculados son a título informativo y estimativo, ya que el valor de los bienes a los efectos del cómputo de los honorarios puede pactarse inferior al valor real de mercado.</li>
+            <li class="clarification-item">El valor de la UMA se actualiza periódicamente, por lo que el valor final de cada cuota se deberá abonar al valor de la UMA vigente en el momento de su pago. Es un mecanismo más simple y económico que utilizar tasas bancarias.</li>
+        </ul>
+    </div>
+
+    <hr class="my-12 border-gray-300">
+
+    <!-- SECCIÓN DE PREGUNTAS FRECUENTES -->
+    <div id="faq-section">
+        <h2 class="text-xl sm:text-2xl font-bold text-center mb-6 text-[#1E3A8A] border-b-2 border-[#D4AF37] pb-2">Preguntas Frecuentes</h2>
+        <div class="space-y-4">
+            <details class="faq-item">
+                <summary class="text-sm sm:text-lg font-medium text-[#4B5E6A]">¿Qué es el CONVENIO DE HONORARIOS y por qué es conveniente?</summary>
+                <p class="text-sm text-[#4B5E6A]">Existen dos formas de establecerse los honorarios. La primera es la REGULACIÓN JUDICIAL, donde el juez regula entre un 6% y el 16% conforme a la ley 27.423 del valor de la herencia que consta en el expediente. La segunda es el CONVENIO DE HONORARIOS, es un acuerdo entre el cliente y el abogado. Las ventajas de esta última forma son las facilidades de pago en cuotas para el cliente, un valor mucho más accesible y, para el abogado, le permite percibir sus honorarios durante todo el proceso. Previo al día de la firma se envía por correo electrónico el mismo para que pueda ser leído con tranquilidad y anticipación por los clientes. </p>
+            </details>
+            <details class="faq-item">
+                <summary class="text-sm sm:text-lg font-medium text-[#4B5E6A]">¿Por qué el porcentaje de honorarios varía?</summary>
+                <p class="text-sm text-[#4B5E6A]">El porcentaje se ajusta para ser más accesible en sucesiones de mayor valor, reduciendo la carga económica en herencias superiores a USD$250.000.</p>
+            </details>
+            <details class="faq-item">
+                <summary class="text-sm sm:text-lg font-medium text-[#4B5E6A]">¿Qué es una UMA y por qué se usa?</summary>
+                <p class="text-sm text-[#4B5E6A]">La UMA (Unidad de Medida Arancelaria) es una unidad de valor establecida por ley para regular los honorarios de los abogados. Su uso permite que los honorarios se mantengan actualizados con la inflación sin la necesidad de reajustes constantes o aplicar tasas bancarias. Se publican en la página web del CPACF y, asimismo, informamos a los clientes por mail cuando se actualiza.</p>
+            </details>
+            <details class="faq-item">
+                <summary class="text-sm sm:text-lg font-medium text-[#4B5E6A]">¿Qué otros costos debo considerar?</summary>
+                <p class="text-sm text-[#4B5E6A]">Se debe abonar: $22.700 de bono al CPACF (se paga al presentar la demanda, por única vez); la tasa de justicia que representa el 1,5% del valor fiscal (que es muy inferior al real) de los bienes inmuebles a transmitir (se paga al momento en que se venden o se inscriben); y un edicto en el Boletín Oficial cuyo valor es de $8.479. </p>
+            </details>
+            <details class="faq-item">
+                <summary class="text-sm sm:text-lg font-medium text-[#4B5E6A]">¿Cómo se pagan los honorarios?</summary>
+                <p class="text-sm text-[#4B5E6A]">Se abonan del 1 al 10 por transferencia. Los herederos deben juntar entre todos la plata de la cuota y uno de ellos debe realizar el depósito, a los efectos de llevar un registro más ordenado.</p>
+            </details>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // =======================================================
+        // VARIABLES QUE PUEDES EDITAR FÁCILMENTE (EDITAR AQUÍ)
+        // =======================================================
+        
+        // 1. Valor del Dólar Estadounidense (USD) en Pesos Argentinos (ARS)
+        const DOLAR_VALUE = 1360; // Valor actual del dólar (ejemplo)
+
+        // 2. Valor de la Unidad de Medida Arancelaria (UMA) en Pesos Argentinos (ARS)
+        const UMA_VALUE = 75789; // Valor actual de la UMA (ejemplo)
+
+        // 3. Umbral para la reducción del porcentaje (en USD)
+        const FEE_THRESHOLD_USD = 250000;
+
+        // 4. Porcentajes de honorarios
+        const FEE_PERCENTAGE_HIGH = 0.05; // 5%
+        const FEE_PERCENTAGE_LOW = 0.03;  // 3%
+
+        // =======================================================
+        // FIN DE VARIABLES EDITABLES
+        // =======================================================
+
+        const assetsContainer = document.getElementById('assets-container');
+        const addAssetBtn = document.getElementById('add-asset-btn');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const resultsSection = document.getElementById('results-section');
+        const totalAcervoSpan = document.getElementById('total-acervo');
+        const totalHonorarioSpan = document.getElementById('total-honorario');
+        const honorarioUmasSpan = document.getElementById('honorario-umas');
+        const cuotaUmasSpan = document.getElementById('cuota-umas');
+        const cuotaPesosSpan = document.getElementById('cuota-pesos');
+
+        let assetCounter = 1;
+
+        /**
+         * Formats a raw number string into a currency string with thousands separators and a '$'.
+         * @param {string} value The input value from the text field.
+         * @returns {string} The formatted currency string.
+         */
+        const formatAsCurrency = (value) => {
+            const num = parseInt(value.replace(/[^\d]/g, ''), 10);
+            if (isNaN(num)) return '';
+            return `$${num.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+        };
+
+        // Function to create a new asset input card
+        const createAssetCard = () => {
+            assetCounter++;
+            const newAssetCard = document.createElement('div');
+            newAssetCard.className = 'asset-card';
+            newAssetCard.innerHTML = `
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg sm:text-xl font-semibold text-[#4B5E6A]">Bien ${assetCounter}</h3>
+                    <button class="remove-asset-btn text-red-500 hover:text-red-700 font-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                    <div>
+                        <label class="block text-sm sm:text-base text-[#4B5E6A] font-medium mb-1">Tipo de Bien</label>
+                        <select class="asset-type w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+                            <option value="inmueble">Inmueble</option>
+                            <option value="mueble">Mueble</option>
+                        </select>
+                    </div>
+                    <div class="asset-name-container hidden lg:col-span-2">
+                        <label class="block text-sm sm:text-base text-[#4B5E6A] font-medium mb-1">Nombre del Bien (Opcional)</label>
+                        <select class="asset-name w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+                            <option value="">Seleccionar...</option>
+                            <option value="auto">Autos</option>
+                            <option value="embarcacion">Embarcaciones</option>
+                            <option value="joya">Joyas</option>
+                            <option value="cuadro">Cuadros</option>
+                            <option value="accion">Acciones de empresas</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm sm:text-base text-[#4B5E6A] font-medium mb-1">Valor</label>
+                        <input type="text" class="asset-value w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]" placeholder="Ej: 150.000">
+                    </div>
+                    <div>
+                        <label class="block text-sm sm:text-base text-[#4B5E6A] font-medium mb-1">Moneda</label>
+                        <select class="asset-currency w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+                            <option value="usd">USD</option>
+                            <option value="ars">ARS</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+            assetsContainer.appendChild(newAssetCard);
+            updateRemoveButtons();
+
+            // Add event listener for asset type change
+            newAssetCard.querySelector('.asset-type').addEventListener('change', (e) => {
+                const nameContainer = e.target.closest('.asset-card').querySelector('.asset-name-container');
+                if (e.target.value === 'mueble') {
+                    nameContainer.classList.remove('hidden');
+                } else {
+                    nameContainer.classList.add('hidden');
+                }
+            });
+
+            // Add event listener for new input value
+            newAssetCard.querySelector('.asset-value').addEventListener('input', (e) => {
+                const rawValue = e.target.value;
+                e.target.value = formatAsCurrency(rawValue);
+            });
+        };
+
+        const updateRemoveButtons = () => {
+            const removeBtns = document.querySelectorAll('.remove-asset-btn');
+            if (removeBtns.length > 1) {
+                removeBtns.forEach(btn => btn.classList.remove('hidden'));
+            } else {
+                removeBtns.forEach(btn => btn.classList.add('hidden'));
+            }
+        };
+
+        // Event listener for real-time currency formatting on input
+        assetsContainer.addEventListener('input', (e) => {
+            if (e.target.classList.contains('asset-value')) {
+                const rawValue = e.target.value;
+                e.target.value = formatAsCurrency(rawValue);
+            }
+        });
+
+        // Initial setup for the first asset card
+        document.querySelector('.asset-type').addEventListener('change', (e) => {
+            const nameContainer = e.target.closest('.asset-card').querySelector('.asset-name-container');
+            if (e.target.value === 'mueble') {
+                nameContainer.classList.remove('hidden');
+            } else {
+                nameContainer.classList.add('hidden');
+            }
+        });
+        updateRemoveButtons();
+
+        addAssetBtn.addEventListener('click', createAssetCard);
+
+        assetsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-asset-btn')) {
+                e.target.closest('.asset-card').remove();
+                updateRemoveButtons();
+            }
+        });
+
+        calculateBtn.addEventListener('click', () => {
+            let totalAcervoARS = 0;
+            const assetCards = document.querySelectorAll('.asset-card');
+
+            assetCards.forEach(card => {
+                const valueInput = card.querySelector('.asset-value');
+                const currencySelect = card.querySelector('.asset-currency');
+
+                // Sanitize the value by removing all non-digit characters for calculation
+                const sanitizedValue = valueInput.value.replace(/[^\d]/g, '');
+                const value = parseFloat(sanitizedValue);
+
+                if (!isNaN(value)) {
+                    if (currencySelect.value === 'usd') {
+                        totalAcervoARS += value * DOLAR_VALUE;
+                    } else {
+                        totalAcervoARS += value;
+                    }
+                }
+            });
+
+            const totalAcervoUSD = totalAcervoARS / DOLAR_VALUE;
+
+            let honorarioPercentage;
+            if (totalAcervoUSD > FEE_THRESHOLD_USD) {
+                honorarioPercentage = FEE_PERCENTAGE_LOW;
+            } else {
+                honorarioPercentage = FEE_PERCENTAGE_HIGH;
+            }
+
+            if (document.getElementById('one-heir').checked) {
+                honorarioPercentage /= 2;
+            }
+
+            const totalHonorarioARS = totalAcervoARS * honorarioPercentage;
+            const totalHonorarioUMAs = totalHonorarioARS / UMA_VALUE;
+
+            const selectedInstallments = document.querySelector('input[name="installments"]:checked').value;
+            const cuotaUmas = totalHonorarioUMAs / parseInt(selectedInstallments, 10);
+            const cuotaPesos = cuotaUmas * UMA_VALUE;
+
+            // Display results
+            totalAcervoSpan.textContent = `$${totalAcervoARS.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            totalHonorarioSpan.textContent = `$${totalHonorarioARS.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${(honorarioPercentage * 100).toFixed(2)}%)`;
+            honorarioUmasSpan.textContent = `${totalHonorarioUMAs.toFixed(2)} UMAs`;
+            cuotaUmasSpan.textContent = `${cuotaUmas.toFixed(2)} UMAs (en ${selectedInstallments} cuotas)`;
+            cuotaPesosSpan.textContent = `$${cuotaPesos.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+</script>
+
+</body>
+</html>
