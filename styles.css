@@ -446,7 +446,7 @@ h1:hover::after, h2:hover::after {
 }
 
 .faq-answer.active {
-    max-height: 500px;
+    max-height: none;
     opacity: 1;
     padding: 0.75rem 0;
 }
