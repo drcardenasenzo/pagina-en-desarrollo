@@ -44,9 +44,12 @@
             background-color: #fcfcfc;
             border-top: 1px solid #dcdfe3;
             border-radius: 0 0 0.75rem 0.75rem;
+            text-align: justify; /* Justificar texto de la respuesta */
         }
         .clarification-item {
             margin-bottom: 0.5rem;
+            display: flex;
+            align-items: flex-start;
         }
         .clarification-item::before {
             content: '•';
@@ -54,9 +57,16 @@
             margin-right: 0.5rem;
             color: #D4AF37;
         }
+        .clarification-item-text {
+            text-align: justify; /* Justificar texto de aclaraciones */
+        }
         #calculate-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+        .result-label, .result-value {
+            text-align: center; /* Centrar nombres y resultados */
+            display: block;
         }
     </style>
 </head>
@@ -96,9 +106,9 @@
                         <select class="asset-name w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
                             <option value="">Seleccionar...</option>
                             <option value="auto">Auto</option>
-                            <option value="embarcacion">Embarcacion</option>
+                            <option value="embarcacion">Embarcación</option>
                             <option value="joya">Joyas</option>
-                            <option value="cuadro">Cuadro</option>
+                            <option value="cuadro">Dinero</option>
                             <option value="accion">Acciones de una empresa</option>
                             <option value="otro">Otro</option>
                         </select>
@@ -134,6 +144,10 @@
                     <label for="one-heir" class="ml-2 text-sm sm:text-base text-[#4B5E6A]">Representar a uno de varios herederos</label>
                 </div>
             </div>
+            <!-- Mensaje para un heredero -->
+            <div id="one-heir-message" class="mt-4 p-4 bg-yellow-100 text-yellow-700 border-l-4 border-yellow-500 rounded hidden">
+                <p>Para este caso es necesario agendar una entrevista para conocer los honorarios, ello porque es necesario determinar la cantidad de herederos y la herencia que le corresponderá al heredero a patrocinar (que será la base de cálculo para los honorarios). La calculadora no está programada para arrojar resultados en este supuesto.</p>
+            </div>
         </div>
 
         <div class="mt-8">
@@ -158,12 +172,27 @@
     <!-- SECCIÓN DE RESULTADOS -->
     <div id="results-section" class="mt-12 hidden">
         <h2 class="text-xl sm:text-2xl font-bold text-center mb-6 text-[#1E3A8A] border-b-2 border-[#D4AF37] pb-2">Resumen del Cálculo</h2>
-        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
-            <p class="text-sm sm:text-lg mb-2"><span class="font-semibold text-[#4B5E6A]">Valor Total de la herencia:</span> <span id="total-acervo" class="font-bold text-[#D4AF37]"></span></p>
-            <p class="text-sm sm:text-lg mb-2"><span class="font-semibold text-[#4B5E6A]">Honorario Total:</span> <span id="total-honorario" class="font-bold text-[#D4AF37]"></span></p>
-            <p class="text-sm sm:text-lg mb-2"><span class="font-semibold text-[#4B5E6A]">Honorario en UMAs:</span> <span id="honorario-umas" class="font-bold text-[#D4AF37]"></span></p>
-            <p class="text-sm sm:text-lg mb-2"><span class="font-semibold text-[#4B5E6A]">Cuota Mensual:</span> <span id="cuota-umas" class="font-bold text-[#D4AF37]"></span></p>
-            <p class="text-sm sm:text-lg mb-2"><span class="font-semibold text-[#4B5E6A]">Valor Actual de la Cuota en Pesos:</span> <span id="cuota-pesos" class="font-bold text-[#D4AF37]"></span></p>
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <p class="result-label font-semibold text-[#4B5E6A]">Valor Total de la herencia</p>
+                <p class="result-value font-bold text-[#D4AF37]" id="total-acervo"></p>
+            </div>
+            <div>
+                <p class="result-label font-semibold text-[#4B5E6A]">Honorario Total</p>
+                <p class="result-value font-bold text-[#D4AF37]" id="total-honorario"></p>
+            </div>
+            <div>
+                <p class="result-label font-semibold text-[#4B5E6A]">Honorario en UMAs</p>
+                <p class="result-value font-bold text-[#D4AF37]" id="honorario-umas"></p>
+            </div>
+            <div>
+                <p class="result-label font-semibold text-[#4B5E6A]">Cuota Mensual</p>
+                <p class="result-value font-bold text-[#D4AF37]" id="cuota-umas"></p>
+            </div>
+            <div class="sm:col-span-2">
+                <p class="result-label font-semibold text-[#4B5E6A]">Valor Actual de la Cuota en Pesos</p>
+                <p class="result-value font-bold text-[#D4AF67]" id="cuota-pesos"></p>
+            </div>
         </div>
     </div>
 
@@ -173,9 +202,9 @@
     <div id="clarifications-section" class="mt-12">
         <h2 class="text-xl sm:text-2xl font-bold text-center mb-6 text-[#1E3A8A] border-b-2 border-[#D4AF37] pb-2">Aclaraciones</h2>
         <ul class="text-sm sm:text-base text-[#4B5E6A]">
-            <li class="clarification-item">El porcentaje de honorarios aplicable es del 5% para herencias de hasta USD$250.000 y del 3% para herencias superiores a dicho monto. Se toma la cotización del dólar oficial para la venta del día previo a la firma del CONVENIO DE HONORARIOS.</li>
-            <li class="clarification-item">Los valores calculados son a título informativo y estimativo, ya que el valor de los bienes a los efectos del cómputo de los honorarios puede pactarse inferior al valor real de mercado.</li>
-            <li class="clarification-item">El valor de la UMA se actualiza periódicamente, por lo que el valor final de cada cuota se deberá abonar al valor de la UMA vigente en el momento de su pago. Es un mecanismo más simple y económico que utilizar tasas bancarias.</li>
+            <li class="clarification-item"><p class="clarification-item-text">Los valores calculados son a título informativo y estimativo, ya que el valor de los bienes a los efectos del cómputo de los honorarios puede pactarse algo inferior al valor real de mercado. Asimismo, para herencias grandes, se pueden pactar más cuotas o un plan de cuotas más un monto a pagar al vender algún bien dentro de la sucesión.</p></li>
+            <li class="clarification-item"><p class="clarification-item-text">El valor de la UMA se actualiza periódicamente, por lo que el valor final de cada cuota se deberá abonar al valor de la UMA vigente en el momento de su pago. Es un mecanismo más simple y económico que utilizar tasas bancarias.</p></li>
+            <li class="clarification-item"><p class="clarification-item-text">La calculadora utiliza la escala porcentual que establece la Ley 27423 de Honorarios Profesionales que regula los mínimos y máximos que pueden cobrar los abogados. Tomamos el mínimo que nos permite dicha norma y ofrecemos un plan de pagos. </p></li>
         </ul>
     </div>
 
@@ -187,15 +216,11 @@
         <div class="space-y-4">
             <details class="faq-item">
                 <summary class="text-sm sm:text-lg font-medium text-[#4B5E6A]">¿Qué es el CONVENIO DE HONORARIOS y por qué es conveniente?</summary>
-                <p class="text-sm text-[#4B5E6A]">Existen dos formas de establecerse los honorarios. La primera es la REGULACIÓN JUDICIAL, donde el juez regula entre un 6% y el 16% conforme a la ley 27.423 del valor de la herencia que consta en el expediente. La segunda es el CONVENIO DE HONORARIOS, es un acuerdo entre el cliente y el abogado. Las ventajas de esta última forma son las facilidades de pago en cuotas para el cliente, un valor mucho más accesible y, para el abogado, le permite percibir sus honorarios durante todo el proceso. Previo al día de la firma se envía por correo electrónico el mismo para que pueda ser leído con tranquilidad y anticipación por los clientes. </p>
-            </details>
-            <details class="faq-item">
-                <summary class="text-sm sm:text-lg font-medium text-[#4B5E6A]">¿Por qué el porcentaje de honorarios varía?</summary>
-                <p class="text-sm text-[#4B5E6A]">El porcentaje se ajusta para ser más accesible en sucesiones de mayor valor, reduciendo la carga económica en herencias superiores a USD$250.000.</p>
+                <p class="text-sm text-[#4B5E6A]">Existen dos formas de establecerse los honorarios. La primera es la REGULACIÓN JUDICIAL, donde el juez regula entre los mínimos y máximos que establece la ley 27.423 sobre valor de la herencia que consta en el expediente. La segunda es el CONVENIO DE HONORARIOS, es un acuerdo entre el cliente y el abogado. Las ventajas de esta última forma son las facilidades de pago en cuotas para el cliente, un valor mucho más accesible (cobramos el mínimo permitido) y, para el abogado, le permite percibir sus honorarios durante todo el proceso. Previo al día de la firma se envía por correo electrónico el mismo para que pueda ser leído con tranquilidad y anticipación por los clientes. </p>
             </details>
             <details class="faq-item">
                 <summary class="text-sm sm:text-lg font-medium text-[#4B5E6A]">¿Qué es una UMA y por qué se usa?</summary>
-                <p class="text-sm text-[#4B5E6A]">La UMA (Unidad de Medida Arancelaria) es una unidad de valor establecida por ley para regular los honorarios de los abogados. Su uso permite que los honorarios se mantengan actualizados con la inflación sin la necesidad de reajustes constantes o aplicar tasas bancarias. Se publican en la página web del CPACF y, asimismo, informamos a los clientes por mail cuando se actualiza.</p>
+                <p class="text-sm text-[#4B5E6A]">La UMA (Unidad de Medida Arancelaria) es una unidad de valor establecida por ley para regular los honorarios de los abogados. Su uso permite que los honorarios se mantengan actualizados con la inflación sin la necesidad de reajustes constantes o aplicar tasas bancarias. Se publican en la página web del CPACF (https://new.cpacf.org.ar/noticia/5201/valores-uma-pjn-ley-27423) y, asimismo, informamos a los clientes por mail cuando se actualiza.</p>
             </details>
             <details class="faq-item">
                 <summary class="text-sm sm:text-lg font-medium text-[#4B5E6A]">¿Qué otros costos debo considerar?</summary>
@@ -222,12 +247,16 @@
         // 2. Valor de la Unidad de Medida Arancelaria (UMA) en Pesos Argentinos (ARS)
         const UMA_VALUE = 75789; // Valor actual de la UMA (ejemplo)
 
-        // 3. Umbral para la reducción del porcentaje (en USD)
-        const FEE_THRESHOLD_USD = 250000;
-
-        // 4. Porcentajes de honorarios
-        const FEE_PERCENTAGE_HIGH = 0.05; // 5%
-        const FEE_PERCENTAGE_LOW = 0.03;  // 3%
+        // 3. Escala de porcentajes y topes en UMA
+        const UMA_SCALES = [
+            { hasta: 15, min_p: 0.11, max_p: 0.165 }, // del 22% al 33% -> 11% a 16.5%
+            { hasta: 45, min_p: 0.10, max_p: 0.13 },  // del 20% al 26% -> 10% a 13%
+            { hasta: 90, min_p: 0.09, max_p: 0.12 },  // del 18% al 24% -> 9% a 12%
+            { hasta: 150, min_p: 0.085, max_p: 0.11 },// del 17% al 22% -> 8.5% a 11%
+            { hasta: 450, min_p: 0.075, max_p: 0.10 },// del 15% al 20% -> 7.5% a 10%
+            { hasta: 750, min_p: 0.065, max_p: 0.085},// del 13% al 17% -> 6.5% a 8.5%
+            { hasta: Infinity, min_p: 0.06, max_p: 0.075} // del 12% al 15% -> 6% a 7.5%
+        ];
 
         // =======================================================
         // FIN DE VARIABLES EDITABLES
@@ -242,6 +271,9 @@
         const honorarioUmasSpan = document.getElementById('honorario-umas');
         const cuotaUmasSpan = document.getElementById('cuota-umas');
         const cuotaPesosSpan = document.getElementById('cuota-pesos');
+        const oneHeirMessage = document.getElementById('one-heir-message');
+        const heirRepresentationRadios = document.querySelectorAll('input[name="heir-representation"]');
+        const faqItems = document.querySelectorAll('.faq-item');
 
         let assetCounter = 1;
 
@@ -354,13 +386,46 @@
         addAssetBtn.addEventListener('click', createAssetCard);
 
         assetsContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-asset-btn')) {
+            if (e.target.closest('.remove-asset-btn')) {
                 e.target.closest('.asset-card').remove();
                 updateRemoveButtons();
             }
         });
+        
+        // Event listener to close other FAQ items when one is opened
+        faqItems.forEach(item => {
+            item.addEventListener('toggle', () => {
+                if (item.open) {
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.open) {
+                            otherItem.open = false;
+                        }
+                    });
+                }
+            });
+        });
+
+        // Event listeners for heir representation radio buttons
+        heirRepresentationRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if (e.target.value === 'one') {
+                    oneHeirMessage.classList.remove('hidden');
+                    calculateBtn.disabled = true;
+                    calculateBtn.classList.add('bg-gray-400', 'hover:bg-gray-400');
+                    calculateBtn.classList.remove('bg-[#1E3A8A]', 'hover:bg-[#152E6A]');
+                } else {
+                    oneHeirMessage.classList.add('hidden');
+                    calculateBtn.disabled = false;
+                    calculateBtn.classList.remove('bg-gray-400', 'hover:bg-gray-400');
+                    calculateBtn.classList.add('bg-[#1E3A8A]', 'hover:bg-[#152E6A]');
+                }
+            });
+        });
 
         calculateBtn.addEventListener('click', () => {
+            if (calculateBtn.disabled) {
+                return;
+            }
             let totalAcervoARS = 0;
             const assetCards = document.querySelectorAll('.asset-card');
 
@@ -381,29 +446,51 @@
                 }
             });
 
-            const totalAcervoUSD = totalAcervoARS / DOLAR_VALUE;
+            const totalAcervoUMAs = totalAcervoARS / UMA_VALUE;
+            let totalHonorarioUMAs = 0;
 
-            let honorarioPercentage;
-            if (totalAcervoUSD > FEE_THRESHOLD_USD) {
-                honorarioPercentage = FEE_PERCENTAGE_LOW;
+            // Find the appropriate scale based on totalAcervoUMAs
+            let prevScale = { hasta: 0, max_p: 0 };
+            let currentScale = null;
+
+            for (const scale of UMA_SCALES) {
+                if (totalAcervoUMAs <= scale.hasta) {
+                    currentScale = scale;
+                    break;
+                }
+                prevScale = scale;
+            }
+
+            if (currentScale) {
+                // Calculate based on the previous scale's max percentage
+                const prevScaleUMAs = Math.min(totalAcervoUMAs, prevScale.hasta);
+                totalHonorarioUMAs += prevScaleUMAs * prevScale.max_p;
+
+                // Calculate the remaining UMAs with the current scale's min percentage
+                const remainingUMAs = totalAcervoUMAs - prevScale.hasta;
+                totalHonorarioUMAs += remainingUMAs * currentScale.min_p;
             } else {
-                honorarioPercentage = FEE_PERCENTAGE_HIGH;
+                 // If UMAs exceed the highest category, apply the highest category's logic
+                const lastScale = UMA_SCALES[UMA_SCALES.length - 1];
+                const prevScaleForLast = UMA_SCALES[UMA_SCALES.length - 2];
+                totalHonorarioUMAs += prevScaleForLast.hasta * prevScaleForLast.max_p;
+                const remainingUMAs = totalAcervoUMAs - prevScaleForLast.hasta;
+                totalHonorarioUMAs += remainingUMAs * lastScale.min_p;
             }
 
+            // Adjust for single heir representation
             if (document.getElementById('one-heir').checked) {
-                honorarioPercentage /= 2;
+                totalHonorarioUMAs /= 2;
             }
-
-            const totalHonorarioARS = totalAcervoARS * honorarioPercentage;
-            const totalHonorarioUMAs = totalHonorarioARS / UMA_VALUE;
-
+            
+            const totalHonorarioARS = totalHonorarioUMAs * UMA_VALUE;
             const selectedInstallments = document.querySelector('input[name="installments"]:checked').value;
             const cuotaUmas = totalHonorarioUMAs / parseInt(selectedInstallments, 10);
             const cuotaPesos = cuotaUmas * UMA_VALUE;
 
             // Display results
             totalAcervoSpan.textContent = `$${totalAcervoARS.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            totalHonorarioSpan.textContent = `$${totalHonorarioARS.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${(honorarioPercentage * 100).toFixed(2)}%)`;
+            totalHonorarioSpan.textContent = `$${totalHonorarioARS.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
             honorarioUmasSpan.textContent = `${totalHonorarioUMAs.toFixed(2)} UMAs`;
             cuotaUmasSpan.textContent = `${cuotaUmas.toFixed(2)} UMAs (en ${selectedInstallments} cuotas)`;
             cuotaPesosSpan.textContent = `$${cuotaPesos.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
