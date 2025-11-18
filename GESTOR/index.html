@@ -387,12 +387,12 @@
                 <div>
                     <label class="block text-sm font-medium mb-1">Valor UMA (ARS)</label>
                     <!-- MODIFICADO: Añadido oninput para formateo de moneda -->
-                    <input type="text" id="uma-value-input" class="w-full p-3 border border-gray-300 rounded-lg" required min="0" oninput="formatCurrencyInput(event)" placeholder="$ 0">
+                    <input type="text" id="uma-value-input" class="w-full p-3 border border-gray-300 rounded-lg" required oninput="formatCurrencyInput(event)" placeholder="$ 0">
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1">Valor JUS (ARS)</label>
                     <!-- MODIFICADO: Añadido oninput para formateo de moneda -->
-                    <input type="text" id="jus-value-input" class="w-full p-3 border border-gray-300 rounded-lg" required min="0" oninput="formatCurrencyInput(event)" placeholder="$ 0">
+                    <input type="text" id="jus-value-input" class="w-full p-3 border border-gray-300 rounded-lg" required oninput="formatCurrencyInput(event)" placeholder="$ 0">
                 </div>
             </div>
             <div class="flex justify-end space-x-3 mt-6">
@@ -540,6 +540,7 @@
         let currentClientDetailId = null;
         let currentOtherIncomeDetailId = null; 
 
+        // MODIFICADO: Lista de conceptos de egreso por defecto (se guardará en Firebase)
         let expenseConcepts = [
             { concept: "Servicios (Luz, Agua, Gas, Internet)", amount: 0 },
             { concept: "Alquiler Oficina", amount: 150000 },
@@ -549,11 +550,16 @@
             { concept: "Impuestos y Tasas", amount: 0 }
         ];
         
-        // MODIFICACIÓN: Rutas de la base de datos (simplificadas usando el appId)
-        // Usamos 'artifacts' para mantener la compatibilidad con las reglas de seguridad de "modo de prueba"
-        const SETTINGS_DOC_PATH = `/artifacts/${appId}/public/data/settings/base`;
-        const CLIENTS_COLLECTION_PATH = `/artifacts/${appId}/public/data/clients`;
-        // NOTA: Aún necesitamos agregar rutas para Egresos y Otros Ingresos
+        // CORRECCIÓN: Rutas de la base de datos (simplificadas)
+        // Se eliminaron las rutas complejas '/artifacts/...'
+        const SETTINGS_DOC_PATH = "settings/base"; // Doc: settings/base
+        const CLIENTS_COLLECTION_PATH = "clients"; // Colección: clients
+        
+        // NUEVAS RUTAS: Para Egresos y Otros Ingresos
+        const EXPENSES_COLLECTION_PATH = "expenses"; // Colección: expenses
+        const OTHER_INCOME_COLLECTION_PATH = "otherIncome"; // Colección: otherIncome
+        const EXPENSE_CONCEPTS_DOC_PATH = "settings/expenseConcepts"; // Doc: settings/expenseConcepts
+
 
         // =================================================================================
         // UTILITY FUNCTIONS (TOASTS, NAVIGATION, ETC.)
@@ -757,7 +763,7 @@
                         isAuthReady = true;
                         // Iniciar listeners de datos una vez autenticado
                         setupDataListeners();
-                        navigate('dashboard');
+                        // (Eliminada la navegación de aquí, movida a DOMContentLoaded)
                         showToast("Conexión a la base de datos establecida.", "success");
                     } else {
                         isAuthReady = false; // Si falla el login anónimo
@@ -782,7 +788,6 @@
                 } else {
                     // Inicializar valores si no existen
                     umaJusValues = { UMA: 50000, JUS: 5000 };
-                    // Asegurarse de que los directorios intermedios se creen si es necesario
                     setDoc(doc(db, SETTINGS_DOC_PATH), umaJusValues, { merge: true });
                 }
                 // Renderizar vistas que dependen de UMA/JUS
@@ -811,8 +816,42 @@
                 showToast("Error al cargar lista de clientes.", "error");
             });
             
-            // NOTA: "Otros Ingresos" y "Egresos" se guardan en memoria (sin listeners)
-            // ESTO ES LO QUE TENEMOS QUE CAMBIAR DESPUÉS
+            // 3. NUEVO: Listener de Egresos
+            onSnapshot(collection(db, EXPENSES_COLLECTION_PATH), (snapshot) => {
+                expenses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                expenses.sort((a, b) => new Date(b.date) - new Date(a.date)); // Ordenar por fecha
+                renderDashboard();
+            }, (error) => {
+                console.error("Error al escuchar egresos:", error);
+                showToast("Error al cargar lista de egresos.", "error");
+            });
+            
+            // 4. NUEVO: Listener de Otros Ingresos
+            onSnapshot(collection(db, OTHER_INCOME_COLLECTION_PATH), (snapshot) => {
+                otherIncomePlans = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderDashboard();
+                if (document.getElementById('payments').classList.contains('hidden') === false) {
+                    renderPaymentsList();
+                }
+                if (currentOtherIncomeDetailId) renderOtherIncomeDetail(currentOtherIncomeDetailId);
+            }, (error) => {
+                console.error("Error al escuchar otros ingresos:", error);
+                showToast("Error al cargar otros ingresos.", "error");
+            });
+            
+            // 5. NUEVO: Listener de Conceptos de Egresos
+            onSnapshot(doc(db, EXPENSE_CONCEPTS_DOC_PATH), (docSnap) => {
+                if (docSnap.exists()) {
+                    expenseConcepts = docSnap.data().concepts; // Carga los conceptos desde FB
+                } else {
+                    // Si no existe, guarda los conceptos por defecto en FB
+                    setDoc(doc(db, EXPENSE_CONCEPTS_DOC_PATH), { concepts: expenseConcepts });
+                }
+                populateExpenseConceptsDropdown(); // Actualiza el dropdown
+            }, (error) => {
+                console.error("Error al escuchar conceptos de egreso:", error);
+                showToast("Error al cargar conceptos de egreso.", "error");
+            });
         };
 
         // =================================================================================
@@ -823,12 +862,11 @@
         window.saveUmaJusValues = async () => {
             const umaInput = document.getElementById('uma-value-input');
             const jusInput = document.getElementById('jus-value-input');
-            // MODIFICADO: Usar parseCurrencyInput
             const uma = parseCurrencyInput(umaInput.value);
             const jus = parseCurrencyInput(jusInput.value);
 
-            if (isNaN(uma) || isNaN(jus) || uma <= 0 || jus <= 0) {
-                showToast("Valores UMA/JUS inválidos.", 'error');
+            if (isNaN(uma) || isNaN(jus) || uma < 0 || jus < 0) {
+                showToast("Valores UMA/JUS inválidos. No pueden ser negativos.", 'error');
                 return;
             }
 
@@ -845,19 +883,17 @@
 
         /** Abre el modal para editar UMA/JUS con los valores actuales. */
         window.openUmaJusModal = () => {
-            // MODIFICADO: Formatear valores al abrir
             document.getElementById('uma-value-input').value = umaJusValues.UMA ? `$ ${umaJusValues.UMA.toLocaleString('es-AR')}` : '';
             document.getElementById('jus-value-input').value = umaJusValues.JUS ? `$ ${umaJusValues.JUS.toLocaleString('es-AR')}` : '';
             openModal('uma-jus-modal');
         };
 
-        /** Registra un nuevo egreso (en memoria, por ahora). */
-        document.getElementById('add-expense-form').addEventListener('submit', (e) => {
+        /** MODIFICADO: Registra un nuevo egreso en Firebase. */
+        document.getElementById('add-expense-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const conceptSelect = document.getElementById('expense-concept-select').value;
             const customConcept = document.getElementById('expense-custom-concept').value.trim();
-            // MODIFICADO: Usar parseCurrencyInput
             const amount = parseCurrencyInput(document.getElementById('expense-amount').value);
 
             let finalConcept = conceptSelect;
@@ -874,23 +910,25 @@
                 return;
             }
             
-            // TODO: Guardar esto en Firebase
-            expenses.push({
-                id: `exp-${Date.now()}`,
-                date: new Date().toISOString(),
-                concept: finalConcept,
-                amount: amount
-            });
-            
-            expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            closeModal('add-expense-modal');
-            showToast("Egreso registrado con éxito.", 'success');
-            renderDashboard(); 
+            // MODIFICADO: Guardar en Firebase
+            try {
+                await addDoc(collection(db, EXPENSES_COLLECTION_PATH), {
+                    date: new Date().toISOString(),
+                    concept: finalConcept,
+                    amount: amount
+                });
+                
+                closeModal('add-expense-modal');
+                showToast("Egreso registrado con éxito.", 'success');
+                // renderDashboard() se llamará automáticamente por el listener
+            } catch (e) {
+                console.error("Error saving expense: ", e);
+                showToast("Error al registrar egreso. Intente nuevamente.", 'error');
+            }
         });
         
-        /** MODIFICADO: Registra un nuevo "Plan de Otro Ingreso" (en memoria). */
-        document.getElementById('add-other-income-form').addEventListener('submit', (e) => {
+        /** MODIFICADO: Registra un nuevo "Plan de Otro Ingreso" en Firebase. */
+        document.getElementById('add-other-income-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const concept = document.getElementById('income-custom-concept').value.trim();
@@ -898,7 +936,6 @@
             const unitType = document.getElementById('income-unit-type-select').value;
             const totalQuotas = parseInt(document.getElementById('income-total-quotas-input').value, 10);
             
-            // NUEVO: Leer mes de inicio y cuotas pagadas
             const startMonth = document.getElementById('income-start-month').value;
             const initialPaidCount = parseInt(document.getElementById('income-initial-paid-quotas').value, 10) || 0;
             
@@ -912,7 +949,6 @@
                 return;
             }
             
-            // Generar cuotas (con pagadas iniciales)
             const newQuotas = Array.from({ length: totalQuotas }, (_, i) => ({
                 index: i + 1,
                 isPaid: i < initialPaidCount,
@@ -920,26 +956,28 @@
             }));
 
             const incomePlanData = {
-                id: `inc-plan-${Date.now()}`,
+                // id: se autogenera por Firebase
                 concept: concept,
                 paymentPlan: {
                     unit: unitType,
                     totalUnits: totalUnits,
                     totalQuotas: totalQuotas,
-                    startMonth: startMonth // Guardar mes de inicio
+                    startMonth: startMonth
                 },
                 quotas: newQuotas
             };
             
-            // TODO: Guardar esto en Firebase
-            otherIncomePlans.push(incomePlanData);
-            
-            closeFullPanel('add-other-income-panel'); // MODIFICADO
-            showToast("Plan de ingreso registrado con éxito.", 'success');
-            
-            // Actualizar vistas que usan la proyección
-            renderDashboard();
-            renderPaymentsList();
+            // MODIFICADO: Guardar en Firebase
+            try {
+                await addDoc(collection(db, OTHER_INCOME_COLLECTION_PATH), incomePlanData);
+                
+                closeFullPanel('add-other-income-panel');
+                showToast("Plan de ingreso registrado con éxito.", 'success');
+                // renderDashboard() y renderPaymentsList() se llamarán por el listener
+            } catch (e) {
+                console.error("Error saving other income: ", e);
+                showToast("Error al registrar ingreso. Intente nuevamente.", 'error');
+            }
         });
 
 
@@ -960,7 +998,6 @@
             const unitType = document.getElementById('plan-unit-type-select').value;
             const totalQuotas = parseInt(document.getElementById('plan-total-quotas-input').value, 10);
             
-            // NUEVO: Leer mes de inicio y cuotas pagadas
             const startMonth = document.getElementById('plan-start-month').value;
             const initialPaidCount = parseInt(document.getElementById('plan-initial-paid-quotas').value, 10) || 0;
 
@@ -978,7 +1015,7 @@
             const expedientes = expedientesStr.split(',').map(e => e.trim()).filter(e => e);
 
             const clientData = {
-                userId, // Guardamos el ID del usuario anónimo
+                userId,
                 fullName,
                 dni,
                 email,
@@ -989,17 +1026,15 @@
                     unit: unitType,
                     totalUnits,
                     totalQuotas,
-                    startMonth: startMonth // Guardar mes de inicio
+                    startMonth: startMonth
                 },
                 lastUpdated: new Date().toISOString()
             };
 
             try {
                 if (isEdit) {
-                    // TODO: Manejar la edición de cuotas si el plan cambia (por ahora solo actualiza datos)
                     const clientRef = doc(db, CLIENTS_COLLECTION_PATH, clientId);
-                    // Nota: La edición no debería regenerar las cuotas. La edición de cuotas se maneja aparte.
-                    // Solo actualizamos los datos del cliente y el plan.
+                    // No se regeneran cuotas al editar, solo se actualizan datos
                     await updateDoc(clientRef, clientData);
                     showToast("Cliente actualizado con éxito.", 'success');
                 } else {
@@ -1030,12 +1065,13 @@
             document.getElementById('add-edit-client-title').textContent = 'Agregar Nuevo Cliente';
             document.getElementById('client-form-submit-btn').textContent = 'Guardar Cliente';
             
-            // Poner mes actual por defecto
             document.getElementById('plan-start-month').value = new Date().toISOString().slice(0, 7);
             document.getElementById('plan-initial-paid-quotas').value = 0;
-            // Habilitar campos que podrían estar deshabilitados en modo edición
+            
             document.getElementById('plan-initial-paid-quotas').disabled = false;
+            document.getElementById('plan-initial-paid-quotas').readOnly = false;
             document.getElementById('plan-start-month').disabled = false;
+            document.getElementById('plan-start-month').readOnly = false;
 
 
             if (clientId) {
@@ -1054,13 +1090,13 @@
                     document.getElementById('plan-unit-type-select').value = client.paymentPlan.unit || 'UMA';
                     document.getElementById('plan-total-quotas-input').value = client.paymentPlan.totalQuotas || 0;
                     
-                    // Cargar datos de plan existentes y deshabilitar edición de cuotas pagadas
                     document.getElementById('plan-start-month').value = client.paymentPlan.startMonth || '';
                     const paidCount = (client.quotas || []).filter(q => q.isPaid).length;
                     document.getElementById('plan-initial-paid-quotas').value = paidCount;
                     
-                    // Deshabilitar estos campos en modo edición para evitar regenerar cuotas
+                    // Deshabilitar estos campos en modo edición
                     document.getElementById('plan-initial-paid-quotas').disabled = true;
+                    document.getElementById('plan-initial-paid-quotas').readOnly = true;
                     // document.getElementById('plan-start-month').disabled = true; // Permitir editar mes de inicio
                 }
             }
@@ -1116,12 +1152,10 @@
             let newQuotas = [...client.quotas];
 
             if (newTotalQuotas > oldTotalQuotas) {
-                // Agregar nuevas cuotas como no pagadas
                 for (let i = oldTotalQuotas; i < newTotalQuotas; i++) {
                     newQuotas.push({ index: i + 1, isPaid: false, paidDate: null });
                 }
             } else if (newTotalQuotas < oldTotalQuotas) {
-                // Recortar, asegurando que no se eliminen las pagadas
                 if (newTotalQuotas < paidCount) {
                     showToast(`No se puede reducir a ${newTotalQuotas} cuotas porque ya hay ${paidCount} pagadas.`, 'error');
                     return;
@@ -1129,11 +1163,10 @@
                 newQuotas = newQuotas.slice(0, newTotalQuotas);
             }
             
-            // Actualizar solo los datos del plan y las cuotas
             const clientRef = doc(db, CLIENTS_COLLECTION_PATH, clientId);
             await updateDoc(clientRef, {
                 paymentPlan: {
-                    ...client.paymentPlan, // Mantener startMonth y otros datos
+                    ...client.paymentPlan,
                     unit: newUnitType,
                     totalUnits: newTotalUnits,
                     totalQuotas: newTotalQuotas,
@@ -1143,8 +1176,6 @@
 
             closeModal('edit-payment-plan-modal');
             showToast("Plan de pagos actualizado. Las cuotas se han recalculado.", 'success');
-            // Re-renderizar el detalle para ver los cambios
-            renderClientDetail(clientId);
         });
 
         /** Toglea el estado de una cuota (Pagada/No pagada). */
@@ -1155,7 +1186,6 @@
             const quotaIndexInArray = quotaIndex - 1;
             const currentStatus = client.quotas[quotaIndexInArray].isPaid;
 
-            // Prevenir marcar cuotas futuras como pagadas si anteriores están pendientes
             if (!currentStatus) {
                 for (let i = 0; i < quotaIndexInArray; i++) {
                     if (!client.quotas[i].isPaid) {
@@ -1165,13 +1195,9 @@
                 }
             }
             
-            // Lógica de des-pago (al marcar como PENDIENTE):
             if (currentStatus) {
-                // No se puede desmarcar una cuota si una cuota posterior ya está marcada como 'pagada'.
-                // Se debe desmarcar en orden descendente (ej: desmarcar 7 antes de desmarcar 6).
                 for (let i = quotaIndexInArray + 1; i < client.quotas.length; i++) {
                     if (client.quotas[i].isPaid) {
-                         // Error más claro:
                          showToast(`Error: Debe desmarcar la cuota ${i + 1} primero antes de desmarcar la cuota ${quotaIndex}.`, 'error');
                          return;
                     }
@@ -1194,10 +1220,7 @@
                 const clientRef = doc(db, CLIENTS_COLLECTION_PATH, clientId);
                 await updateDoc(clientRef, { quotas: updatedQuotas });
                 showToast(`Cuota ${quotaIndex} marcada como ${currentStatus ? 'PENDIENTE' : 'PAGADA'}.`, 'info');
-                // Re-renderizar vistas afectadas
-                renderClientDetail(clientId);
-                renderDashboard();
-                renderPaymentsList();
+                // Los listeners se encargarán de re-renderizar
             } catch (e) {
                 console.error("Error toggling quota:", e);
                 showToast("Error al actualizar cuota. Intente nuevamente.", 'error');
@@ -1205,19 +1228,17 @@
         };
         
         // =================================================================================
-        // NUEVO: GESTIÓN DE PAGO DE "OTROS INGRESOS"
+        // GESTIÓN DE PAGO DE "OTROS INGRESOS"
         // =================================================================================
         
-        /** NUEVO: Toglea el estado de una cuota (Pagada/No pagada) para "Otros Ingresos". */
-        window.toggleOtherIncomeQuotaPaid = (planId, quotaIndex) => {
-            // TODO: Esto debe modificarse para usar Firebase
+        /** MODIFICADO: Toglea el estado de una cuota de "Otros Ingresos" en Firebase. */
+        window.toggleOtherIncomeQuotaPaid = async (planId, quotaIndex) => {
             const plan = otherIncomePlans.find(p => p.id === planId);
             if (!plan) return;
 
             const quotaIndexInArray = quotaIndex - 1;
             const currentStatus = plan.quotas[quotaIndexInArray].isPaid;
 
-            // Lógica de pago secuencial (igual que clientes)
             if (!currentStatus) {
                 for (let i = 0; i < quotaIndexInArray; i++) {
                     if (!plan.quotas[i].isPaid) {
@@ -1227,7 +1248,6 @@
                 }
             }
             
-            // Lógica de des-pago secuencial (igual que clientes)
             if (currentStatus) {
                 for (let i = quotaIndexInArray + 1; i < plan.quotas.length; i++) {
                     if (plan.quotas[i].isPaid) {
@@ -1237,8 +1257,7 @@
                 }
             }
 
-            // Actualizar el array en memoria (ya que no es Firebase)
-            plan.quotas = plan.quotas.map((quota, index) => {
+            const updatedQuotas = plan.quotas.map((quota, index) => {
                 if (index === quotaIndexInArray) {
                     return {
                         ...quota,
@@ -1248,13 +1267,17 @@
                 }
                 return quota;
             });
-
-            showToast(`Cuota ${quotaIndex} marcada como ${currentStatus ? 'PENDIENTE' : 'PAGADA'}.`, 'info');
             
-            // Re-renderizar vistas afectadas
-            renderOtherIncomeDetail(planId);
-            renderDashboard();
-            renderPaymentsList();
+            // MODIFICADO: Actualizar en Firebase
+            try {
+                const planRef = doc(db, OTHER_INCOME_COLLECTION_PATH, planId);
+                await updateDoc(planRef, { quotas: updatedQuotas });
+                showToast(`Cuota ${quotaIndex} marcada como ${currentStatus ? 'PENDIENTE' : 'PAGADA'}.`, 'info');
+                // Los listeners se encargarán de re-renderizar
+            } catch (e) {
+                console.error("Error toggling other income quota:", e);
+                showToast("Error al actualizar cuota. Intente nuevamente.", 'error');
+            }
         };
 
 
@@ -1266,10 +1289,9 @@
         const populateExpenseConceptsDropdown = () => {
             const select = document.getElementById('expense-concept-select');
             select.innerHTML = ''; // Limpiar opciones
-            // TODO: Cargar conceptos desde Firebase
-            expenseConcepts.forEach(item => { // Modificado para usar item
+            expenseConcepts.forEach(item => {
                 const option = document.createElement('option');
-                option.value = item.concept; // Usa item.concept
+                option.value = item.concept;
                 option.textContent = item.concept;
                 select.appendChild(option);
             });
@@ -1279,7 +1301,6 @@
 
         /** Abre el modal para editar conceptos de egreso. */
         window.openEditExpenseConceptsModal = () => {
-            // TODO: Cargar conceptos desde Firebase
             renderExpenseConceptsList();
             openModal('edit-expense-concepts-modal');
         };
@@ -1287,7 +1308,6 @@
         /** Renderiza la lista de conceptos de egreso en su modal. */
         const renderExpenseConceptsList = () => {
             const container = document.getElementById('expense-concepts-list-container');
-            // MODIFICADO: Muestra input de monto y aplica formateo
             container.innerHTML = expenseConcepts.map((item, index) => `
                 <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg gap-2">
                     <span class="text-sm text-gray-700 flex-1">${item.concept}</span>
@@ -1303,42 +1323,64 @@
             `).join('');
         };
 
-        /** Elimina un concepto de egreso. */
-        window.deleteExpenseConcept = (index) => {
-            // TODO: Actualizar en Firebase
-            expenseConcepts.splice(index, 1);
-            renderExpenseConceptsList();
-            populateExpenseConceptsDropdown(); // Actualizar dropdown en modal de fondo
+        /** MODIFICADO: Elimina un concepto de egreso de Firebase. */
+        window.deleteExpenseConcept = async (index) => {
+            expenseConcepts.splice(index, 1); // Elimina localmente
+            try {
+                // Sube el array actualizado a Firebase
+                await setDoc(doc(db, EXPENSE_CONCEPTS_DOC_PATH), { concepts: expenseConcepts });
+                renderExpenseConceptsList();
+                populateExpenseConceptsDropdown();
+            } catch (e) {
+                console.error("Error deleting expense concept: ", e);
+                showToast("Error al eliminar concepto.", "error");
+                // Si falla, revierte (recargando desde FB)
+                setupDataListeners(); 
+            }
         };
 
-        /** Agrega un nuevo concepto de egreso. */
-        document.getElementById('add-expense-concept-form').addEventListener('submit', (e) => {
+        /** MODIFICADO: Agrega un nuevo concepto de egreso a Firebase. */
+        document.getElementById('add-expense-concept-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const input = document.getElementById('new-expense-concept-input');
             const newConcept = input.value.trim();
-            // MODIFICADO: Agrega como objeto
+            
             if (newConcept && !expenseConcepts.some(item => item.concept === newConcept)) {
-                // TODO: Actualizar en Firebase
-                expenseConcepts.push({ concept: newConcept, amount: 0 }); // Añade con monto 0 por defecto
-                renderExpenseConceptsList();
-                populateExpenseConceptsDropdown();
-                input.value = '';
+                const newConceptObj = { concept: newConcept, amount: 0 };
+                const updatedConcepts = [...expenseConcepts, newConceptObj]; // Añade localmente
+                
+                try {
+                    // Sube el array actualizado a Firebase
+                    await setDoc(doc(db, EXPENSE_CONCEPTS_DOC_PATH), { concepts: updatedConcepts });
+                    input.value = '';
+                    // El listener se encargará de actualizar expenseConcepts y renderizar
+                } catch (e) {
+                    console.error("Error adding expense concept: ", e);
+                    showToast("Error al agregar concepto.", "error");
+                }
             }
         });
         
-        /** NUEVO: Guarda los montos fijos de los conceptos de egreso. */
-        window.saveExpenseConceptAmounts = () => {
-            // TODO: Actualizar en Firebase
+        /** MODIFICADO: Guarda los montos fijos de los conceptos de egreso en Firebase. */
+        window.saveExpenseConceptAmounts = async () => {
+            // Actualiza el array local primero
             expenseConcepts.forEach((item, index) => {
                 const amountInput = document.getElementById(`expense-concept-amount-${index}`);
                 if (amountInput) {
-                    // MODIFICADO: Usar parseCurrencyInput
                     expenseConcepts[index].amount = parseCurrencyInput(amountInput.value) || 0;
                 }
             });
-            showToast("Montos fijos de egresos actualizados.", "success");
-            closeModal('edit-expense-concepts-modal');
-            populateExpenseConceptsDropdown(); // Refrescar el dropdown
+            
+            // Sube el array actualizado a Firebase
+            try {
+                await setDoc(doc(db, EXPENSE_CONCEPTS_DOC_PATH), { concepts: expenseConcepts });
+                showToast("Montos fijos de egresos actualizados.", "success");
+                closeModal('edit-expense-concepts-modal');
+                populateExpenseConceptsDropdown();
+            } catch (e) {
+                console.error("Error saving expense concept amounts: ", e);
+                showToast("Error al guardar montos.", "error");
+            }
         };
 
         // =================================================================================
@@ -1346,19 +1388,21 @@
         // =================================================================================
 
         /**
-         * NUEVO: Calcula el valor de la cuota en ARS y el progreso para CUALQUIER plan.
-         * @param {Object} paymentPlan - El objeto paymentPlan
-         * @param {Array} quotas - El array de cuotas
-         * @returns {{quotaValueArs: number, paidCount: number, progressPercent: number}}
+         * Calcula el valor de la cuota en ARS y el progreso para CUALQUIER plan.
          */
         const calculatePlanInfo = (paymentPlan, quotas) => {
+            if (!paymentPlan) {
+                return { quotaValueArs: 0, paidCount: 0, progressPercent: 0, quotaValueUnits: 0 };
+            }
+            
             const { totalUnits, totalQuotas, unit } = paymentPlan;
             
             let unitValue;
             if (unit === 'ARS') {
-                unitValue = 1; // 1 peso = 1 peso
+                unitValue = 1;
             } else {
-                unitValue = umaJusValues[unit] || 1; // UMA/JUS
+                // Asegura que umaJusValues y la unidad existan, sino usa 1
+                unitValue = (umaJusValues && umaJusValues[unit]) ? umaJusValues[unit] : 1;
             }
             
             const quotaValueUnits = totalQuotas > 0 ? totalUnits / totalQuotas : 0;
@@ -1371,10 +1415,9 @@
         };
         
         /**
-         * MODIFICADO: Llama al helper calculatePlanInfo para un cliente.
+         * Llama al helper calculatePlanInfo para un cliente.
          */
         const calculatePaymentInfo = (client) => {
-            // Asegurarse de que paymentPlan y quotas existan
             if (!client.paymentPlan || !client.quotas) {
                 return { quotaValueArs: 0, paidCount: 0, progressPercent: 0, quotaValueUnits: 0 };
             }
@@ -1383,11 +1426,9 @@
 
 
         /**
-         * MODIFICADO: Calcula la proyección a 3 meses (clientes + otros ingresos).
-         * @returns {Array<{month: string, amount: number}>}
+         * Calcula la proyección a 3 meses (clientes + otros ingresos).
          */
         const calculateThreeMonthProjection = () => {
-            // MODIFICADO: 3 meses
             const projection = Array.from({ length: 3 }, (_, i) => ({
                 month: new Date(new Date().setMonth(new Date().getMonth() + i + 1)).toLocaleString('es-AR', { month: 'long' }),
                 amount: 0,
@@ -1398,7 +1439,6 @@
                 const { quotaValueArs } = calculatePaymentInfo(client);
                 let assignedCount = 0;
                 (client.quotas || []).forEach(quota => {
-                    // MODIFICADO: 3 meses
                     if (!quota.isPaid && assignedCount < 3) {
                         projection[assignedCount].amount += quotaValueArs;
                         assignedCount++;
@@ -1411,7 +1451,6 @@
                 const { quotaValueArs } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
                 let assignedCount = 0;
                 (plan.quotas || []).forEach(quota => {
-                    // MODIFICADO: 3 meses
                     if (!quota.isPaid && assignedCount < 3) {
                         projection[assignedCount].amount += quotaValueArs;
                         assignedCount++;
@@ -1422,13 +1461,13 @@
             return projection;
         };
 
-        /** MODIFICADO: Filtra los egresos para el mes y año en curso. */
+        /** Filtra los egresos para el mes y año en curso. */
         const getCurrentMonthExpenses = () => {
             const now = new Date();
             const currentMonth = now.getMonth();
             const currentYear = now.getFullYear();
             
-            // TODO: Leer 'expenses' desde Firebase
+            // Lee del array 'expenses' que es llenado por el listener de Firebase
             return expenses.filter(exp => {
                 const expDate = new Date(exp.date);
                 return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
@@ -1436,7 +1475,7 @@
         };
         
         /**
-         * NUEVO: Calcula los ingresos totales que se pagaron este mes.
+         * Calcula los ingresos totales que se pagaron este mes.
          */
         const calculateCurrentMonthIncome = () => {
             const now = new Date();
@@ -1474,7 +1513,7 @@
         };
         
         /**
-         * NUEVO: Calcula el valor total de TODAS las cuotas pendientes.
+         * Calcula el valor total de TODAS las cuotas pendientes.
          */
         const calculateTotalPendingValue = () => {
             let totalPending = 0;
@@ -1510,6 +1549,13 @@
         /** RENDERIZA: Panel de Inicio (Dashboard). */
         const renderDashboard = () => {
             const container = document.getElementById('dashboard');
+            
+            // Manejo de caso donde 'clients' aún no ha cargado
+            if (!isAuthReady) {
+                container.innerHTML = `<div class="card p-8 text-center text-gray-500">Conectando a la base de datos...</div>`;
+                return;
+            }
+            
             const totalClients = clients.length;
             const clientsInfo = clients.map(calculatePaymentInfo);
 
@@ -1519,13 +1565,11 @@
             const fullyPaidPercent = totalClients > 0 ? ((fullyPaidClients / totalClients) * 100).toFixed(0) : 0;
             const pendingPercent = totalClients > 0 ? ((pendingClients / totalClients) * 100).toFixed(0) : 0;
             
-            // MODIFICADO: Llamada a 3 meses
             const projectionData = calculateThreeMonthProjection();
             
             const currentMonthExpenses = getCurrentMonthExpenses();
             const totalExpensesThisMonth = currentMonthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
             
-            // NUEVO: Llamadas a cálculos de ingresos y pendientes
             const totalIncomeThisMonth = calculateCurrentMonthIncome();
             const totalPendingValue = calculateTotalPendingValue();
 
@@ -1650,6 +1694,12 @@
         /** RENDERIZA: Lista de Clientes. */
         const renderClientsList = (searchTerm = '') => {
             const container = document.getElementById('clients');
+            
+            if (!isAuthReady) {
+                container.innerHTML = `<div class="card p-8 text-center text-gray-500">Cargando...</div>`;
+                return;
+            }
+            
             const filteredClients = clients.filter(c =>
                 !searchTerm ||
                 c.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -1711,6 +1761,11 @@
         const renderPaymentsList = (searchTerm = '') => {
             const container = document.getElementById('payments');
             
+            if (!isAuthReady) {
+                container.innerHTML = `<div class="card p-8 text-center text-gray-500">Cargando...</div>`;
+                return;
+            }
+            
             // --- Filtrado de Clientes ---
             const filteredClients = clients.filter(c =>
                 !searchTerm ||
@@ -1742,7 +1797,6 @@
             }).join('');
             
             // --- Filtrado de Otros Ingresos ---
-            // TODO: Leer 'otherIncomePlans' desde Firebase
             const filteredOtherIncomes = otherIncomePlans.filter(p =>
                 !searchTerm ||
                 p.concept.toLowerCase().includes(searchTerm.toLowerCase())
@@ -1847,8 +1901,8 @@
             }
 
             const { quotaValueArs, paidCount, progressPercent, quotaValueUnits } = calculatePaymentInfo(client);
-            const { totalUnits, totalQuotas, unit } = client.paymentPlan;
-            // const quotaValueUnit = totalQuotas > 0 ? totalUnits / totalQuotas : 0; // Ya viene de calculatePlanInfo
+            // Manejo de caso donde paymentPlan es undefined
+            const { totalUnits = 0, totalQuotas = 0, unit = 'N/A' } = client.paymentPlan || {};
 
             document.getElementById('client-detail-name').textContent = client.fullName;
             document.getElementById('client-detail-expedientes').innerHTML = (client.expedientes || []).map(exp => `
@@ -1930,7 +1984,6 @@
 
         /** NUEVO: Renderiza el detalle de un plan de "Otro Ingreso". */
         const renderOtherIncomeDetail = (planId) => {
-            // TODO: Leer 'otherIncomePlans' desde Firebase
             const plan = otherIncomePlans.find(p => p.id === planId);
             if (!plan) {
                 showToast("Plan de ingreso no encontrado.", 'error');
@@ -1992,6 +2045,9 @@
         // =================================================================================
 
         document.addEventListener('DOMContentLoaded', () => {
+            // CORRECCIÓN: Navega al 'inicio' primero para mostrar la estructura
+            // mientras carga Firebase.
+            navigate('dashboard');
             // Inicializar Firebase y oyentes
             setupFirebase();
         });
