@@ -89,7 +89,6 @@
             background-color: var(--background-color);
             z-index: 50;
             overflow-y: auto;
-            /* MODIFICADO: Eliminada la animación de transformación y transición */
             display: none; /* Oculto por defecto */
             padding: 1rem;
         }
@@ -152,11 +151,6 @@
             color: #6b7280; /* gris oscuro */
             cursor: not-allowed;
         }
-
-        /* Estilo para los checkboxes de permisos */
-        .permission-checkbox {
-            @apply w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500;
-        }
     </style>
 </head>
 
@@ -165,10 +159,7 @@
     <!-- Mensaje de Carga y Errores (Toasts/Notificaciones) -->
     <div id="toast-container" class="fixed top-4 right-4 z-[100] space-y-2"></div>
 
-    <!-- ======================================================= -->
-    <!-- APLICACIÓN PRINCIPAL (Ahora visible por defecto) -->
-    <!-- ======================================================= -->
-    
+
     <!-- Contenedor Principal de la Aplicación -->
     <div id="app-container" class="mx-auto max-w-7xl">
         <!-- MODIFICADO: Barra de Navegación Responsiva -->
@@ -178,14 +169,12 @@
                 <span class="text-[var(--primary-color)] mr-2">Gestor</span> 
                 <span class="text-[var(--secondary-color)]">Cárdenas y Asociados</span>
             </h1>
-            <!-- Contenedor de Navegación y Logout -->
-            <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-                <nav class="flex flex-row gap-2 w-full sm:w-auto justify-center">
-                    <button onclick="navigate('dashboard')" class="text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 flex-1 sm:flex-none text-center" id="nav-dashboard">Inicio</button>
-                    <button onclick="navigate('clients')" class="text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 flex-1 sm:flex-none text-center" id="nav-clients">Clientes</button>
-                    <button onclick="navigate('payments')" class="text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 flex-1 sm:flex-none text-center" id="nav-payments">Pagos</button>
-                </nav>
-            </div>
+            <!-- Contenedor de Navegación -->
+            <nav class="flex flex-row gap-2 w-full sm:w-auto justify-center">
+                <button onclick="navigate('dashboard')" class="text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 flex-1 sm:flex-none text-center" id="nav-dashboard">Inicio</button>
+                <button onclick="navigate('clients')" class="text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 flex-1 sm:flex-none text-center" id="nav-clients">Clientes</button>
+                <button onclick="navigate('payments')" class="text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 flex-1 sm:flex-none text-center" id="nav-payments">Pagos</button>
+            </nav>
         </header>
 
         <!-- Contenedor de Vistas Principales -->
@@ -193,7 +182,6 @@
             <div id="dashboard" class="view-content hidden"></div>
             <div id="clients" class="view-content hidden"></div>
             <div id="payments" class="view-content hidden"></div>
-            <!-- Vista de Usuarios Eliminada -->
         </main>
     </div>
 
@@ -231,7 +219,7 @@
                     <p class="text-lg mb-1">Unidades: <span id="plan-units" class="font-bold text-gray-800">0</span> <span id="plan-unit-type" class="font-semibold text-[var(--secondary-color)]">UMA/JUS</span></p>
                     <p class="text-lg mb-1">Cuotas Totales: <span id="plan-total-quotas" class="font-bold text-gray-800">0</span></p>
                     <p class="text-lg mb-1">Porcentaje Socio: <span id="plan-partner-cut" class="font-bold text-gray-800">0</span>%</p>
-                    <p class="text-lg font-bold mt-2 border-t pt-2 border-gray-200">Valor Cuota (ARS): <span id="plan-quota-value-ars" class="text-red-600">\$ 0.00</span></p>
+                    <p class="text-lg font-bold mt-2 border-t pt-2 border-gray-200">Valor Cuota (ARS): <span id="plan-quota-value-ars" class="text-red-600">$ 0.00</span></p>
                 </div>
             </div>
 
@@ -251,6 +239,7 @@
                 <button onclick="saveClientNotes()" class="action-btn px-4 py-2 mt-3 w-full sm:w-auto">Guardar Notas</button>
             </div>
         </div>
+    </div>
 
     <!-- Panel de Agregar/Editar Cliente -->
     <div id="add-edit-client-panel" class="full-panel z-50">
@@ -388,7 +377,7 @@
                 <p class="text-lg mb-1">Unidades: <span id="other-income-plan-units" class="font-bold text-gray-800">0</span> <span id="other-income-plan-unit-type" class="font-semibold text-[var(--secondary-color)]"></span></p>
                 <p class="text-lg mb-1">Cuotas Totales: <span id="other-income-plan-total-quotas" class="font-bold text-gray-800">0</span></p>
                 <p class="text-lg mb-1">Porcentaje Socio: <span id="other-income-partner-cut" class="font-bold text-gray-800">0</span>%</p>
-                <p class="text-lg font-bold mt-2 border-t pt-2 border-gray-200">Valor Cuota (ARS): <span id="other-income-plan-quota-value-ars" class="text-red-600">\$ 0.00</span></p>
+                <p class="text-lg font-bold mt-2 border-t pt-2 border-gray-200">Valor Cuota (ARS): <span id="other-income-plan-quota-value-ars" class="text-red-600">$ 0.00</span></p>
             </div>
 
             <!-- Lista de Cuotas -->
@@ -400,8 +389,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- Panel de Administración de Usuarios ELIMINADO -->
 
 
     <!-- ======================================================= -->
@@ -525,8 +512,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- Modal de Crear/Editar Usuario ELIMINADO -->
 
     <!-- Modal de Confirmación Genérico -->
     <div id="confirm-modal" class="modal-overlay z-[80]"> 
@@ -546,6 +531,7 @@
         // FIREBASE SETUP AND GLOBAL VARIABLES
         // =================================================================================
         
+        // CORREGIDO: URLs de importación (asegurando https://)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import {
@@ -563,8 +549,6 @@
           measurementId: "G-N4NGD4XDTK"
         };
 
-        const appId = firebaseConfig.projectId || 'gestor-cya-default';
-
         // App State
         let app = null;
         let db = null;
@@ -577,6 +561,8 @@
         let umaJusValues = { UMA: 0, JUS: 0 };
         let currentClientDetailId = null;
         let currentOtherIncomeDetailId = null; 
+        
+        let isInitialLoad = true; // CORRECCIÓN: Variable para controlar la carga inicial
 
         let expenseConcepts = [
             { concept: "Servicios (Luz, Agua, Gas, Internet)", amount: 0 },
@@ -587,13 +573,13 @@
             { concept: "Impuestos y Tasas", amount: 0 }
         ];
         
-        // Rutas de la base de datos (SIMPLIFICADAS)
-        const SETTINGS_DOC_PATH = "settings/base"; 
-        const CLIENTS_COLLECTION_PATH = "clients"; 
-        const EXPENSES_COLLECTION_PATH = "expenses"; 
-        const OTHER_INCOME_COLLECTION_PATH = "otherIncome"; 
+        // Rutas de la base de datos (Simplificadas)
+        const SETTINGS_DOC_PATH = "settings/base";
+        const CLIENTS_COLLECTION_PATH = "clients";
+        const EXPENSES_COLLECTION_PATH = "expenses";
+        const OTHER_INCOME_COLLECTION_PATH = "otherIncome";
         const EXPENSE_CONCEPTS_DOC_PATH = "settings/expenseConcepts";
-        
+
 
         // =================================================================================
         // UTILITY FUNCTIONS (TOASTS, NAVIGATION, ETC.)
@@ -628,7 +614,6 @@
 
         /** Formatea un número a moneda ARS. */
         const formatCurrency = (amount) => {
-            // Permiso de "ver números" eliminado
             if (typeof amount !== 'number' || isNaN(amount)) return '$ 0.00';
             return new Intl.NumberFormat('es-AR', {
                 style: 'currency',
@@ -775,11 +760,6 @@
         };
 
         // =================================================================================
-        // LÓGICA DE LOGIN ELIMINADA
-        // =================================================================================
-
-
-        // =================================================================================
         // FIREBASE INITIALIZATION AND DATA LISTENERS
         // =================================================================================
 
@@ -795,10 +775,7 @@
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
                         isAuthReady = true;
-                        // Iniciar listeners
                         setupDataListeners();
-                        // Navegar a la página de inicio
-                        navigate('dashboard'); 
                     } else {
                         isAuthReady = false; 
                         showToast("Error de autenticación anónima.", "error");
@@ -810,11 +787,9 @@
                 showToast(`Error de conexión: ${error.message}`, "error");
             }
         };
-        
-        /** Función de 'seed' de usuarios ELIMINADA. */
 
 
-        /** Configura los listeners de tiempo real (se llama DESPUÉS del login). */
+        /** Configura los listeners de tiempo real. */
         const setupDataListeners = () => {
             if (!isAuthReady) return;
 
@@ -823,25 +798,42 @@
                 if (docSnap.exists()) {
                     umaJusValues = docSnap.data();
                 } else {
+                    // Si no existe (primera carga), lo crea
                     umaJusValues = { UMA: 50000, JUS: 5000 };
                     setDoc(doc(db, SETTINGS_DOC_PATH), umaJusValues, { merge: true });
                 }
                 
-                // Refrescar vistas
-                if (document.getElementById('dashboard').classList.contains('hidden') === false) renderDashboard();
+                // CORRECCIÓN: Renderizar "Inicio" solo en la carga inicial
+                if (isInitialLoad) {
+                    navigate('dashboard');
+                    isInitialLoad = false;
+                }
+                
+                // Actualizar vistas si ya están abiertas
+                renderDashboard();
                 if (currentClientDetailId) renderClientDetail(currentClientDetailId);
                 if (currentOtherIncomeDetailId) renderOtherIncomeDetail(currentOtherIncomeDetailId);
+                
             }, (error) => {
                 console.error("Error al escuchar settings:", error);
                 showToast("Error al cargar valores UMA/JUS.", "error");
+                // CORRECCIÓN: Si falla la carga, igual mostrar el "Inicio" con valores 0
+                if (isInitialLoad) {
+                    navigate('dashboard');
+                    isInitialLoad = false;
+                }
             });
 
             // 2. Listener de Clientes
             onSnapshot(collection(db, CLIENTS_COLLECTION_PATH), (snapshot) => {
                 clients = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                if (document.getElementById('dashboard').classList.contains('hidden') === false) renderDashboard();
-                if (document.getElementById('clients').classList.contains('hidden') === false) renderClientsList();
-                if (document.getElementById('payments').classList.contains('hidden') === false) renderPaymentsList();
+                renderDashboard();
+                if (document.getElementById('clients').classList.contains('hidden') === false) {
+                    renderClientsList();
+                }
+                if (document.getElementById('payments').classList.contains('hidden') === false) {
+                    renderPaymentsList();
+                }
                 if (currentClientDetailId) renderClientDetail(currentClientDetailId);
             }, (error) => {
                 console.error("Error al escuchar clientes:", error);
@@ -852,7 +844,7 @@
             onSnapshot(collection(db, EXPENSES_COLLECTION_PATH), (snapshot) => {
                 expenses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 expenses.sort((a, b) => new Date(b.date) - new Date(a.date)); 
-                if (document.getElementById('dashboard').classList.contains('hidden') === false) renderDashboard();
+                renderDashboard();
             }, (error) => {
                 console.error("Error al escuchar egresos:", error);
                 showToast("Error al cargar lista de egresos.", "error");
@@ -861,8 +853,10 @@
             // 4. Listener de Otros Ingresos
             onSnapshot(collection(db, OTHER_INCOME_COLLECTION_PATH), (snapshot) => {
                 otherIncomePlans = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                if (document.getElementById('dashboard').classList.contains('hidden') === false) renderDashboard();
-                if (document.getElementById('payments').classList.contains('hidden') === false) renderPaymentsList();
+                renderDashboard();
+                if (document.getElementById('payments').classList.contains('hidden') === false) {
+                    renderPaymentsList();
+                }
                 if (currentOtherIncomeDetailId) renderOtherIncomeDetail(currentOtherIncomeDetailId);
             }, (error) => {
                 console.error("Error al escuchar otros ingresos:", error);
@@ -881,8 +875,6 @@
                 console.error("Error al escuchar conceptos de egreso:", error);
                 showToast("Error al cargar conceptos de egreso.", "error");
             });
-            
-            // 6. Listener de Usuarios ELIMINADO
         };
 
         // =================================================================================
@@ -1480,12 +1472,7 @@
         };
 
         // =================================================================================
-        // FUNCIONES DE GESTIÓN DE USUARIOS ELIMINADAS
-        // =================================================================================
-        
-
-        // =================================================================================
-        // CALCULATION LOGIC (SIN PERMISOS)
+        // CALCULATION LOGIC
         // =================================================================================
 
         /**
@@ -1671,17 +1658,15 @@
 
 
         // =================================================================================
-        // VIEW RENDERING (SIN PERMISOS)
+        // VIEW RENDERING
         // =================================================================================
 
         /** RENDERIZA: Panel de Inicio (Dashboard). */
         const renderDashboard = () => {
             const container = document.getElementById('dashboard');
             
-            if (!isAuthReady || !umaJusValues) {
-                container.innerHTML = `<div class="card p-8 text-center text-gray-500">Cargando...</div>`;
-                return;
-            }
+            // CORRECCIÓN: Renderizar siempre, aunque los datos no estén listos
+            if (!container) return;
             
             const totalClients = clients.length;
             const clientsInfo = clients.map(calculatePaymentInfo);
@@ -1836,10 +1821,7 @@
         const renderClientsList = (searchTerm = '') => {
             const container = document.getElementById('clients');
             
-            if (!isAuthReady) {
-                container.innerHTML = `<div class="card p-8 text-center text-gray-500">Cargando...</div>`;
-                return;
-            }
+            if (!container) return;
             
             const filteredClients = clients.filter(c =>
                 !searchTerm ||
@@ -1904,10 +1886,7 @@
         const renderPaymentsList = (searchTerm = '') => {
             const container = document.getElementById('payments');
             
-            if (!isAuthReady) {
-                container.innerHTML = `<div class="card p-8 text-center text-gray-500">Cargando...</div>`;
-                return;
-            }
+            if (!container) return;
             
             // --- Filtrado de Clientes ---
             const filteredClients = clients.filter(c =>
@@ -2026,9 +2005,6 @@
         window.searchPayments = (searchTerm) => {
             renderPaymentsList(searchTerm);
         };
-        
-        /** Vista de Administración de Usuarios ELIMINADA */
-
 
         /** RENDERIZA: Panel de Detalle del Cliente/Pagos. */
         window.openClientDetail = (clientId, originView) => {
@@ -2191,8 +2167,7 @@
         // =================================================================================
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Iniciar la conexión anónima de Firebase
-            // La navegación se dispara dentro de onAuthStateChanged
+            // CORRECCIÓN: Iniciar Firebase, y los listeners se encargarán de navegar
             setupFirebase();
         });
 
