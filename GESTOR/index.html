@@ -7,8 +7,6 @@
     <title>Gestor Cárdenas y Asociados | Gestión de Clientes y Pagos</title>
     <!-- Incluir Tailwind CSS desde CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Librerías PDF eliminadas según solicitud -->
 
     <style>
         /* Fuentes y Estilos Base de Cárdenas y Asociados */
@@ -52,6 +50,19 @@
             box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
             transform: translateY(-1px);
         }
+        
+        /* Botón de Peligro (Eliminar) */
+        .danger-btn {
+            background-color: #DC2626; /* Rojo */
+            color: #FFFFFF;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease-in-out;
+        }
+        .danger-btn:hover {
+            background-color: #B91C1C; /* Rojo oscuro */
+        }
+
 
         /* Estilo para botones secundarios (Dorado) */
         .secondary-btn {
@@ -141,38 +152,48 @@
             color: #6b7280; /* gris oscuro */
             cursor: not-allowed;
         }
+
+        /* Estilo para los checkboxes de permisos */
+        .permission-checkbox {
+            @apply w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500;
+        }
     </style>
 </head>
 
 <body class="p-2 sm:p-4 md:p-6 min-h-screen">
 
     <!-- Mensaje de Carga y Errores (Toasts/Notificaciones) -->
-    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+    <div id="toast-container" class="fixed top-4 right-4 z-[100] space-y-2"></div>
 
+    <!-- ======================================================= -->
+    <!-- APLICACIÓN PRINCIPAL (Ahora visible por defecto) -->
+    <!-- ======================================================= -->
+    
     <!-- Contenedor Principal de la Aplicación -->
     <div id="app-container" class="mx-auto max-w-7xl">
-        <!-- Barra de Navegación Lateral (Estilizada para ser un Header/Sidebar en móvil) -->
-        <header class="bg-white p-4 shadow-lg rounded-xl mb-4 flex justify-between items-center z-40 relative">
-            <h1 class="text-2xl font-bold text-gray-700 flex items-center">
-                <!-- Placeholder para el Logo -->
+        <!-- MODIFICADO: Barra de Navegación Responsiva -->
+        <header class="bg-white p-4 shadow-lg rounded-xl mb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4 sm:gap-0 z-40 relative">
+            <h1 class="text-2xl font-bold text-gray-700 flex items-center w-full sm:w-auto">
                 <img src="logo.jpg" onerror="this.onerror=null;this.src='https://placehold.co/40x40/1E3A8A/D4AF37?text=LOGO'" alt="Logo de Cárdenas y Asociados" class="h-10 w-10 object-contain mr-2 rounded-lg">
-                <!-- MODIFICADO: Añadido margen derecho a "Gestor" -->
                 <span class="text-[var(--primary-color)] mr-2">Gestor</span> 
                 <span class="text-[var(--secondary-color)]">Cárdenas y Asociados</span>
             </h1>
-            <nav>
-                <button onclick="navigate('dashboard')" class="text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 mr-2 bg-gray-100 text-[var(--primary-color)]" id="nav-dashboard">Inicio</button>
-                <button onclick="navigate('clients')" class="text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 mr-2 text-[var(--text-color)]" id="nav-clients">Clientes</button>
-                <button onclick="navigate('payments')" class="text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 text-[var(--text-color)]" id="nav-payments">Pagos</button>
-            </nav>
+            <!-- Contenedor de Navegación y Logout -->
+            <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+                <nav class="flex flex-row gap-2 w-full sm:w-auto justify-center">
+                    <button onclick="navigate('dashboard')" class="text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 flex-1 sm:flex-none text-center" id="nav-dashboard">Inicio</button>
+                    <button onclick="navigate('clients')" class="text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 flex-1 sm:flex-none text-center" id="nav-clients">Clientes</button>
+                    <button onclick="navigate('payments')" class="text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 flex-1 sm:flex-none text-center" id="nav-payments">Pagos</button>
+                </nav>
+            </div>
         </header>
 
         <!-- Contenedor de Vistas Principales -->
         <main id="view-container" class="p-0 sm:p-4">
-            <!-- La vista 'dashboard' se mostrará por defecto -->
-            <div id="dashboard" class="view-content"></div>
+            <div id="dashboard" class="view-content hidden"></div>
             <div id="clients" class="view-content hidden"></div>
             <div id="payments" class="view-content hidden"></div>
+            <!-- Vista de Usuarios Eliminada -->
         </main>
     </div>
 
@@ -184,8 +205,8 @@
     <div id="client-detail-panel" class="full-panel z-50">
         <div class="max-w-4xl mx-auto p-4 sm:p-6">
             <!-- MODIFICADO: Botón "Volver" estético -->
-            <button onclick="closeFullPanel('client-detail-panel')" class="text-xl font-bold p-2 mb-4 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors">
-                &larr; Volver
+            <button onclick="closeFullPanel('client-detail-panel')" class="px-4 py-2 mb-4 rounded-lg bg-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-300 transition-colors">
+                Volver
             </button>
             <h2 id="client-detail-name" class="text-3xl font-extrabold text-[var(--primary-color)] mb-2"></h2>
             <p class="text-lg text-gray-600 mb-6">Expediente(s): <span id="client-detail-expedientes" class="font-medium text-[var(--text-color)]"></span></p>
@@ -193,7 +214,7 @@
             <!-- Resumen de Pagos e Indicador -->
             <div class="card p-6 mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Indicador de Progreso -->
-                <div class="col-span-1 md:col-span-1 flex flex-col items-center justify-center p-3 border-r md:border-r-2 border-gray-200">
+                <div class="col-span-1 md:col-span-1 flex flex-col items-center justify-center p-3 border-b md:border-b-0 md:border-r md:border-r-2 border-gray-200">
                     <div class="w-24 h-24 rounded-full border-4 border-gray-200 flex items-center justify-center" id="progress-ring-container">
                         <div id="progress-indicator" class="text-2xl font-bold text-[var(--primary-color)]">0%</div>
                     </div>
@@ -209,6 +230,7 @@
                     </h3>
                     <p class="text-lg mb-1">Unidades: <span id="plan-units" class="font-bold text-gray-800">0</span> <span id="plan-unit-type" class="font-semibold text-[var(--secondary-color)]">UMA/JUS</span></p>
                     <p class="text-lg mb-1">Cuotas Totales: <span id="plan-total-quotas" class="font-bold text-gray-800">0</span></p>
+                    <p class="text-lg mb-1">Porcentaje Socio: <span id="plan-partner-cut" class="font-bold text-gray-800">0</span>%</p>
                     <p class="text-lg font-bold mt-2 border-t pt-2 border-gray-200">Valor Cuota (ARS): <span id="plan-quota-value-ars" class="text-red-600">\$ 0.00</span></p>
                 </div>
             </div>
@@ -217,7 +239,6 @@
             <div class="card p-6 mb-8">
                 <h3 class="text-xl font-semibold mb-4 text-[var(--primary-color)] border-b pb-2">Lista de Cuotas</h3>
                 <div id="quotas-list" class="space-y-3">
-                    <!-- Las cuotas se renderizarán aquí -->
                     <p class="text-center text-gray-500" id="no-quotas-message">Cargando cuotas...</p>
                 </div>
             </div>
@@ -230,14 +251,12 @@
                 <button onclick="saveClientNotes()" class="action-btn px-4 py-2 mt-3 w-full sm:w-auto">Guardar Notas</button>
             </div>
         </div>
-    </div>
 
     <!-- Panel de Agregar/Editar Cliente -->
     <div id="add-edit-client-panel" class="full-panel z-50">
         <div class="max-w-3xl mx-auto p-4 sm:p-6">
-            <!-- MODIFICADO: Botón "Atrás" estético -->
-            <button onclick="closeFullPanel('add-edit-client-panel')" class="text-xl font-bold p-2 mb-4 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors">
-                &larr; Atrás
+            <button onclick="closeFullPanel('add-edit-client-panel')" class="px-4 py-2 mb-4 rounded-lg bg-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-300 transition-colors">
+                Atrás
             </button>
             <h2 id="add-edit-client-title" class="text-3xl font-extrabold text-[var(--primary-color)] mb-6">Agregar Nuevo Cliente</h2>
             <form id="client-form" class="space-y-4 card p-6">
@@ -246,22 +265,22 @@
                 <input type="hidden" id="client-id-field">
                 <input type="text" id="client-full-name" placeholder="Nombre Completo" required class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input type="text" id="client-dni" placeholder="DNI" required class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                    <input type="text" id="client-dni" placeholder="DNI" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                     <input type="email" id="client-email" placeholder="Correo Electrónico" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                     <input type="tel" id="client-phone" placeholder="Celular" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                 </div>
 
                 <!-- Detalles del Caso -->
                 <h3 class="text-xl font-semibold text-[var(--secondary-color)] border-b pb-2 pt-4 mb-4">Detalles del Caso</h3>
-                <textarea id="client-case-facts" placeholder="Hechos del caso (Resumen)" rows="3" required class="w-full p-3 border border-gray-300 rounded-lg transition-shadow"></textarea>
-                <input type="text" id="client-expedientes" placeholder="Expediente(s) (separados por coma, ej: Exp-123, Exp-456)" required class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                <textarea id="client-case-facts" placeholder="Hechos del caso (Resumen)" rows="3" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow"></textarea>
+                <input type="text" id="client-expedientes" placeholder="Expediente(s) (separados por coma, ej: Exp-123, Exp-456)" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
 
                 <!-- Plan de Pagos Inicial -->
                 <h3 class="text-xl font-semibold text-[var(--secondary-color)] border-b pb-2 pt-4 mb-4">Plan de Pagos Inicial</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium mb-1">Valor Total del Convenio (en unidades)</label>
-                        <input type="number" id="plan-total-units" placeholder="Ej: 150" required min="1" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                        <input type="number" id="plan-total-units" placeholder="Ej: 150" min="1" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Unidad de Medida</label>
@@ -271,16 +290,21 @@
                         </select>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Cantidad de Cuotas</label>
-                    <input type="number" id="plan-total-quotas-input" placeholder="Ej: 36" required min="1" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Cantidad de Cuotas</label>
+                        <input type="number" id="plan-total-quotas-input" placeholder="Ej: 36" min="1" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Porcentaje Socio (%)</label>
+                        <input type="number" id="plan-partner-cut" placeholder="Ej: 20" value="0" min="0" max="100" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                    </div>
                 </div>
                 
-                <!-- NUEVO: Mes de inicio y cuotas pagadas -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     <div>
                         <label class="block text-sm font-medium mb-1">Mes de Inicio del Plan</label>
-                        <input type="month" id="plan-start-month" required class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                        <input type="month" id="plan-start-month" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Cuotas Pagadas Inicialmente</label>
@@ -288,17 +312,16 @@
                     </div>
                 </div>
 
-
                 <button type="submit" class="action-btn px-6 py-3 mt-6 w-full" id="client-form-submit-btn">Guardar Cliente</button>
             </form>
         </div>
     </div>
 
-    <!-- NUEVO: Panel de Registro de Otros Ingresos (Convertido de Modal) -->
+    <!-- Panel de Registro de Otros Ingresos -->
     <div id="add-other-income-panel" class="full-panel z-50">
         <div class="max-w-3xl mx-auto p-4 sm:p-6">
-            <button onclick="closeFullPanel('add-other-income-panel')" class="text-xl font-bold p-2 mb-4 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors">
-                &larr; Atrás
+            <button onclick="closeFullPanel('add-other-income-panel')" class="px-4 py-2 mb-4 rounded-lg bg-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-300 transition-colors">
+                Atrás
             </button>
             <h2 class="text-3xl font-extrabold text-[var(--primary-color)] mb-6">Registrar Otro Ingreso</h2>
             <form id="add-other-income-form" class="space-y-4 card p-6">
@@ -307,7 +330,6 @@
                     <input type="text" id="income-custom-concept" placeholder="Especifique el concepto (Ej: Alquiler Local 2)" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow" required>
                 </div>
                 
-                <!-- Plan de Pagos -->
                 <h3 class="text-xl font-semibold text-[var(--secondary-color)] border-b pb-2 pt-4 mb-4">Detalles del Ingreso</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="sm:col-span-2">
@@ -323,12 +345,17 @@
                         </select>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Cantidad de Cuotas</label>
-                    <input type="number" id="income-total-quotas-input" placeholder="Ej: 12" required min="1" value="1" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Cantidad de Cuotas</label>
+                        <input type="number" id="income-total-quotas-input" placeholder="Ej: 12" required min="1" value="1" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Porcentaje Socio (%)</label>
+                        <input type="number" id="income-partner-cut" placeholder="Ej: 20" value="0" min="0" max="100" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                    </div>
                 </div>
                 
-                <!-- NUEVO: Mes de inicio y cuotas pagadas -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     <div>
                         <label class="block text-sm font-medium mb-1">Mes de Inicio del Plan</label>
@@ -345,11 +372,11 @@
         </div>
     </div>
     
-    <!-- NUEVO: Panel de Detalle de Otros Ingresos -->
+    <!-- Panel de Detalle de Otros Ingresos -->
     <div id="other-income-detail-panel" class="full-panel z-50">
         <div class="max-w-4xl mx-auto p-4 sm:p-6">
-            <button onclick="closeFullPanel('other-income-detail-panel')" class="text-xl font-bold p-2 mb-4 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors">
-                &larr; Volver
+            <button onclick="closeFullPanel('other-income-detail-panel')" class="px-4 py-2 mb-4 rounded-lg bg-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-300 transition-colors">
+                Volver
             </button>
             <h2 id="other-income-detail-name" class="text-3xl font-extrabold text-[var(--primary-color)] mb-6"></h2>
 
@@ -360,6 +387,7 @@
                 </h3>
                 <p class="text-lg mb-1">Unidades: <span id="other-income-plan-units" class="font-bold text-gray-800">0</span> <span id="other-income-plan-unit-type" class="font-semibold text-[var(--secondary-color)]"></span></p>
                 <p class="text-lg mb-1">Cuotas Totales: <span id="other-income-plan-total-quotas" class="font-bold text-gray-800">0</span></p>
+                <p class="text-lg mb-1">Porcentaje Socio: <span id="other-income-partner-cut" class="font-bold text-gray-800">0</span>%</p>
                 <p class="text-lg font-bold mt-2 border-t pt-2 border-gray-200">Valor Cuota (ARS): <span id="other-income-plan-quota-value-ars" class="text-red-600">\$ 0.00</span></p>
             </div>
 
@@ -372,6 +400,8 @@
             </div>
         </div>
     </div>
+    
+    <!-- Panel de Administración de Usuarios ELIMINADO -->
 
 
     <!-- ======================================================= -->
@@ -386,12 +416,10 @@
             <div class="space-y-3">
                 <div>
                     <label class="block text-sm font-medium mb-1">Valor UMA (ARS)</label>
-                    <!-- MODIFICADO: Añadido oninput para formateo de moneda -->
                     <input type="text" id="uma-value-input" class="w-full p-3 border border-gray-300 rounded-lg" required oninput="formatCurrencyInput(event)" placeholder="$ 0">
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1">Valor JUS (ARS)</label>
-                    <!-- MODIFICADO: Añadido oninput para formateo de moneda -->
                     <input type="text" id="jus-value-input" class="w-full p-3 border border-gray-300 rounded-lg" required oninput="formatCurrencyInput(event)" placeholder="$ 0">
                 </div>
             </div>
@@ -421,9 +449,15 @@
                         </select>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Cantidad de Cuotas</label>
-                    <input type="number" id="edit-plan-total-quotas-input" class="w-full p-3 border border-gray-300 rounded-lg" required min="1">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Cantidad de Cuotas</label>
+                        <input type="number" id="edit-plan-total-quotas-input" class="w-full p-3 border border-gray-300 rounded-lg" required min="1">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Porcentaje Socio (%)</label>
+                        <input type="number" id="edit-plan-partner-cut" value="0" min="0" max="100" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                    </div>
                 </div>
                 <div class="flex justify-end space-x-3 mt-6">
                     <button type="button" onclick="closeModal('edit-payment-plan-modal')" class="px-4 py-2 text-[var(--text-color)] hover:bg-gray-100 rounded-lg transition-colors">Cancelar</button>
@@ -433,11 +467,11 @@
         </div>
     </div>
 
-    <!-- Modal de Registro de Egresos -->
+    <!-- Modal de Registro/Edición de Egresos -->
     <div id="add-expense-modal" class="modal-overlay">
         <div class="modal-content max-w-md">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-[var(--primary-color)]">Registrar Egreso</h3>
+                <h3 id="expense-modal-title" class="text-xl font-bold text-[var(--primary-color)]">Registrar Egreso</h3>
                 <button onclick="openEditExpenseConceptsModal()" class="text-sm text-[var(--primary-color)] hover:text-[var(--secondary-color)] transition-colors">
                     Editar Conceptos
                 </button>
@@ -445,6 +479,8 @@
             
             <p class="text-sm text-gray-500 mb-4">Registre una salida de dinero (gasto). Quedará asentado con la fecha y hora actual.</p>
             <form id="add-expense-form" class="space-y-4">
+                <input type="hidden" id="expense-id-field">
+                
                 <div>
                     <label class="block text-sm font-medium mb-1">Concepto</label>
                     <select id="expense-concept-select" onchange="handleExpenseConceptChange(this)" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
@@ -457,39 +493,32 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1">Monto (ARS)</label>
-                    <!-- MODIFICADO: Añadido oninput para formateo de moneda -->
                     <input type="text" id="expense-amount" placeholder="$ 0" required min="1" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow" oninput="formatCurrencyInput(event)">
                 </div>
                 <div class="flex justify-end space-x-3 mt-6">
                     <button type="button" onclick="closeModal('add-expense-modal')" class="px-4 py-2 text-[var(--text-color)] hover:bg-gray-100 rounded-lg transition-colors">Cancelar</button>
-                    <button type="submit" class="action-btn px-4 py-2">Registrar Egreso</button>
+                    <button type="submit" id="expense-form-submit-btn" class="action-btn px-4 py-2">Registrar Egreso</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- ELIMINADO: Modal de Registro de Otros Ingresos (reemplazado por Panel) -->
-
-    <!-- MODIFICADO: Modal de Edición de Conceptos de Egreso (con montos) -->
-    <div id="edit-expense-concepts-modal" class="modal-overlay z-[70]"> <!-- z-index mayor para superponerse -->
+    <!-- Modal de Edición de Conceptos de Egreso -->
+    <div id="edit-expense-concepts-modal" class="modal-overlay z-[70]"> 
         <div class="modal-content max-w-md">
             <h3 class="text-xl font-bold text-[var(--primary-color)] mb-4">Editar Conceptos de Egreso</h3>
             
-            <!-- Texto explicativo -->
             <p class="text-sm text-gray-500 mb-2">Configure los montos fijos. Un monto de 0 o vacío significa que será variable y se pedirá al registrar.</p>
             
-            <!-- Lista de conceptos -->
             <div class="space-y-3 max-h-60 overflow-y-auto" id="expense-concepts-list-container">
                 <!-- La lista de conceptos se renderizará aquí -->
             </div>
             
-            <!-- Formulario para agregar nuevo -->
             <form id="add-expense-concept-form" class="mt-4 flex space-x-2">
                 <input type="text" id="new-expense-concept-input" placeholder="Nuevo concepto" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                 <button type="submit" class="action-btn px-4 py-2">Agregar</button>
             </form>
             
-            <!-- Botones de Guardar/Cerrar -->
             <div class="flex justify-end space-x-3 mt-6">
                 <button type="button" onclick="closeModal('edit-expense-concepts-modal')" class="px-4 py-2 text-[var(--text-color)] hover:bg-gray-100 rounded-lg transition-colors">Cancelar</button>
                 <button type="button" onclick="saveExpenseConceptAmounts()" class="action-btn px-4 py-2">Guardar Cambios</button>
@@ -497,7 +526,19 @@
         </div>
     </div>
     
-    <!-- ELIMINADO: Modal de Edición de Conceptos de Ingreso -->
+    <!-- Modal de Crear/Editar Usuario ELIMINADO -->
+
+    <!-- Modal de Confirmación Genérico -->
+    <div id="confirm-modal" class="modal-overlay z-[80]"> 
+        <div class="modal-content max-w-sm">
+            <h3 id="confirm-modal-title" class="text-xl font-bold text-red-600 mb-4">Confirmar Acción</h3>
+            <p id="confirm-modal-body" class="text-gray-600 mb-6">¿Estás seguro de que deseas continuar?</p>
+            <div class="flex justify-end space-x-3">
+                <button id="confirm-modal-cancel" class="px-4 py-2 text-[var(--text-color)] hover:bg-gray-100 rounded-lg transition-colors">Cancelar</button>
+                <button id="confirm-modal-confirm" class="danger-btn px-4 py-2">Confirmar</button>
+            </div>
+        </div>
+    </div>
 
 
     <script type="module">
@@ -505,14 +546,13 @@
         // FIREBASE SETUP AND GLOBAL VARIABLES
         // =================================================================================
         
-        // MODIFICACIÓN: Importaciones de Firebase (sin cambios, ya estaban bien)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import {
             getFirestore, setLogLevel, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, addDoc, getDocs
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // MODIFICACIÓN: Configuración de Firebase pegada directamente
+        // Configuración de Firebase pegada directamente
         const firebaseConfig = {
           apiKey: "AIzaSyBvXXACPC7r_Ix-taS_P_ZJBxhyZAzrg-A",
           authDomain: "gestor-cya.firebaseapp.com",
@@ -523,24 +563,21 @@
           measurementId: "G-N4NGD4XDTK"
         };
 
-        // MODIFICACIÓN: Usamos el projectId para 'appId'
         const appId = firebaseConfig.projectId || 'gestor-cya-default';
-        // ELIMINADAS: Variables 'invisibles' (__firebase_config, __initial_auth_token)
 
         // App State
         let app = null;
         let db = null;
         let auth = null;
-        let userId = null;
-        let isAuthReady = false;
+        let isAuthReady = false; 
+        
         let clients = [];
-        let expenses = []; // Para Egresos
-        let otherIncomePlans = []; // Para Otros Ingresos
+        let expenses = []; 
+        let otherIncomePlans = []; 
         let umaJusValues = { UMA: 0, JUS: 0 };
         let currentClientDetailId = null;
         let currentOtherIncomeDetailId = null; 
 
-        // MODIFICADO: Lista de conceptos de egreso por defecto (se guardará en Firebase)
         let expenseConcepts = [
             { concept: "Servicios (Luz, Agua, Gas, Internet)", amount: 0 },
             { concept: "Alquiler Oficina", amount: 150000 },
@@ -550,16 +587,13 @@
             { concept: "Impuestos y Tasas", amount: 0 }
         ];
         
-        // CORRECCIÓN: Rutas de la base de datos (simplificadas)
-        // Se eliminaron las rutas complejas '/artifacts/...'
-        const SETTINGS_DOC_PATH = "settings/base"; // Doc: settings/base
-        const CLIENTS_COLLECTION_PATH = "clients"; // Colección: clients
+        // Rutas de la base de datos (SIMPLIFICADAS)
+        const SETTINGS_DOC_PATH = "settings/base"; 
+        const CLIENTS_COLLECTION_PATH = "clients"; 
+        const EXPENSES_COLLECTION_PATH = "expenses"; 
+        const OTHER_INCOME_COLLECTION_PATH = "otherIncome"; 
+        const EXPENSE_CONCEPTS_DOC_PATH = "settings/expenseConcepts";
         
-        // NUEVAS RUTAS: Para Egresos y Otros Ingresos
-        const EXPENSES_COLLECTION_PATH = "expenses"; // Colección: expenses
-        const OTHER_INCOME_COLLECTION_PATH = "otherIncome"; // Colección: otherIncome
-        const EXPENSE_CONCEPTS_DOC_PATH = "settings/expenseConcepts"; // Doc: settings/expenseConcepts
-
 
         // =================================================================================
         // UTILITY FUNCTIONS (TOASTS, NAVIGATION, ETC.)
@@ -594,6 +628,7 @@
 
         /** Formatea un número a moneda ARS. */
         const formatCurrency = (amount) => {
+            // Permiso de "ver números" eliminado
             if (typeof amount !== 'number' || isNaN(amount)) return '$ 0.00';
             return new Intl.NumberFormat('es-AR', {
                 style: 'currency',
@@ -603,28 +638,25 @@
             }).format(amount);
         };
         
-        /** NUEVO: Formatea un input a moneda ARS mientras se escribe. */
+        /** Formatea un input a moneda ARS mientras se escribe. */
         window.formatCurrencyInput = (event) => {
             const input = event.target;
             let value = input.value;
             
-            // 1. Limpiar (quitar no dígitos)
             let rawValue = value.replace(/[^0-9]/g, '');
             
             if (rawValue === '') {
-                input.value = ''; // Vacío si no hay números
+                input.value = ''; 
                 return;
             }
             
-            // 2. Formatear
             let numValue = parseInt(rawValue, 10);
-            let formattedValue = numValue.toLocaleString('es-AR'); // 'es-AR' usa '.' para miles
+            let formattedValue = numValue.toLocaleString('es-AR');
             
-            // 3. Poner el $
             input.value = `$ ${formattedValue}`;
         };
         
-        /** NUEVO: Parsea el valor del input de moneda a número (para guardar). */
+        /** Parsea el valor del input de moneda a número (para guardar). */
         const parseCurrencyInput = (value) => {
             if (!value) return 0;
             const rawValue = value.replace(/[^0-9]/g, ''); // Quita $ y .
@@ -638,42 +670,42 @@
             views.forEach(view => view.classList.add('hidden'));
             document.getElementById(viewId).classList.remove('hidden');
 
-            // Actualizar botones de navegación
             const navButtons = document.querySelectorAll('nav button');
             navButtons.forEach(btn => {
                 btn.classList.remove('bg-gray-100', 'text-[var(--primary-color)]');
                 btn.classList.add('text-[var(--text-color)]');
             });
 
-            document.getElementById(`nav-${viewId}`).classList.add('bg-gray-100', 'text-[var(--primary-color)]');
+            const activeBtn = document.getElementById(`nav-${viewId}`);
+            if(activeBtn) {
+                activeBtn.classList.add('bg-gray-100', 'text-[var(--primary-color)]');
+            }
 
-            // Renderizar contenido de la vista
             if (viewId === 'dashboard') renderDashboard();
             if (viewId === 'clients') renderClientsList();
             if (viewId === 'payments') renderPaymentsList();
         };
 
         /** Abre un panel full-screen. */
-        window.openFullPanel = (panelId) => { // EXPUESTO GLOBALMENTE
-            // Cierra otros paneles por si acaso
+        window.openFullPanel = (panelId) => { 
             document.querySelectorAll('.full-panel.active').forEach(p => p.classList.remove('active'));
             document.getElementById(panelId).classList.add('active');
         };
 
         /** Cierra un panel full-screen. */
-        window.closeFullPanel = (panelId) => { // EXPUESTO GLOBALMENTE
+        window.closeFullPanel = (panelId) => { 
             document.getElementById(panelId).classList.remove('active');
             currentClientDetailId = null;
-            currentOtherIncomeDetailId = null; // Limpiar también el ID de otro ingreso
+            currentOtherIncomeDetailId = null; 
         };
 
         /** Abre un modal de edición rápida. */
-        window.openModal = (modalId) => { // EXPUESTO GLOBALMENTE
+        window.openModal = (modalId) => { 
             document.getElementById(modalId).classList.add('active');
         };
 
         /** Cierra un modal de edición rápida. */
-        window.closeModal = (modalId) => { // EXPUESTO GLOBALMENTE
+        window.closeModal = (modalId) => { 
             document.getElementById(modalId).classList.remove('active');
         };
 
@@ -692,7 +724,7 @@
             document.body.removeChild(tempInput);
         };
 
-        /** MODIFICADO: Muestra/Oculta campo de egreso y gestiona montos fijos. */
+        /** Muestra/Oculta campo de egreso y gestiona montos fijos. */
         window.handleExpenseConceptChange = (select) => {
             const customWrapper = document.getElementById('custom-concept-wrapper');
             const amountInput = document.getElementById('expense-amount');
@@ -707,12 +739,11 @@
                 customWrapper.classList.add('hidden');
                 const conceptData = expenseConcepts.find(item => item.concept === selectedConcept);
                 if (conceptData) {
-                    if (conceptData.amount > 0) { // Si tiene monto fijo
-                        // MODIFICADO: Formatear el valor
+                    if (conceptData.amount > 0) { 
                         amountInput.value = `$ ${conceptData.amount.toLocaleString('es-AR')}`;
                         amountInput.disabled = true;
                         amountInput.readOnly = true;
-                    } else { // Si es 0 (variable)
+                    } else { 
                         amountInput.value = '';
                         amountInput.disabled = false;
                         amountInput.readOnly = false;
@@ -724,22 +755,29 @@
         /** Abre el modal para agregar un egreso. */
         window.openAddExpenseModal = () => {
             document.getElementById('add-expense-form').reset();
+            document.getElementById('expense-modal-title').textContent = 'Registrar Egreso';
+            document.getElementById('expense-form-submit-btn').textContent = 'Registrar Egreso';
+            document.getElementById('expense-id-field').value = '';
             document.getElementById('custom-concept-wrapper').classList.add('hidden');
-            document.getElementById('expense-amount').disabled = false; // Asegurarse que esté habilitado al resetear
+            document.getElementById('expense-amount').disabled = false; 
             document.getElementById('expense-amount').readOnly = false;
-            populateExpenseConceptsDropdown(); // Cargar opciones dinámicamente
+            populateExpenseConceptsDropdown(); 
             openModal('add-expense-modal');
         };
         
-        /** MODIFICADO: Abre el panel para agregar otro ingreso. */
+        /** Abre el panel para agregar otro ingreso. */
         window.openAddOtherIncomeModal = () => {
             document.getElementById('add-other-income-form').reset();
-            // Poner 1 cuota por defecto
             document.getElementById('income-total-quotas-input').value = 1;
-            // Poner mes actual por defecto
+            document.getElementById('income-partner-cut').value = 0;
             document.getElementById('income-start-month').value = new Date().toISOString().slice(0, 7);
-            openFullPanel('add-other-income-panel'); // MODIFICADO
+            openFullPanel('add-other-income-panel'); 
         };
+
+        // =================================================================================
+        // LÓGICA DE LOGIN ELIMINADA
+        // =================================================================================
+
 
         // =================================================================================
         // FIREBASE INITIALIZATION AND DATA LISTENERS
@@ -747,26 +785,22 @@
 
         const setupFirebase = async () => {
             try {
-                // MODIFICACIÓN: Inicializa la app con la config local
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-                setLogLevel('error'); // Usar 'Debug' si se necesita más detalle
+                setLogLevel('error'); 
 
-                // MODIFICACIÓN: Autenticación simplificada.
-                // Siempre iniciamos sesión anónimamente.
                 await signInAnonymously(auth);
 
-                onAuthStateChanged(auth, (user) => {
+                onAuthStateChanged(auth, async (user) => {
                     if (user) {
-                        userId = user.uid; // El ID del usuario anónimo
                         isAuthReady = true;
-                        // Iniciar listeners de datos una vez autenticado
+                        // Iniciar listeners
                         setupDataListeners();
-                        // (Eliminada la navegación de aquí, movida a DOMContentLoaded)
-                        showToast("Conexión a la base de datos establecida.", "success");
+                        // Navegar a la página de inicio
+                        navigate('dashboard'); 
                     } else {
-                        isAuthReady = false; // Si falla el login anónimo
+                        isAuthReady = false; 
                         showToast("Error de autenticación anónima.", "error");
                     }
                 });
@@ -776,8 +810,11 @@
                 showToast(`Error de conexión: ${error.message}`, "error");
             }
         };
+        
+        /** Función de 'seed' de usuarios ELIMINADA. */
 
-        /** Configura los listeners de tiempo real para Clientes y Configuración. */
+
+        /** Configura los listeners de tiempo real (se llama DESPUÉS del login). */
         const setupDataListeners = () => {
             if (!isAuthReady) return;
 
@@ -786,12 +823,12 @@
                 if (docSnap.exists()) {
                     umaJusValues = docSnap.data();
                 } else {
-                    // Inicializar valores si no existen
                     umaJusValues = { UMA: 50000, JUS: 5000 };
                     setDoc(doc(db, SETTINGS_DOC_PATH), umaJusValues, { merge: true });
                 }
-                // Renderizar vistas que dependen de UMA/JUS
-                renderDashboard();
+                
+                // Refrescar vistas
+                if (document.getElementById('dashboard').classList.contains('hidden') === false) renderDashboard();
                 if (currentClientDetailId) renderClientDetail(currentClientDetailId);
                 if (currentOtherIncomeDetailId) renderOtherIncomeDetail(currentOtherIncomeDetailId);
             }, (error) => {
@@ -802,60 +839,54 @@
             // 2. Listener de Clientes
             onSnapshot(collection(db, CLIENTS_COLLECTION_PATH), (snapshot) => {
                 clients = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                // Re-renderizar vistas que dependan de la lista de clientes
-                renderDashboard();
-                if (document.getElementById('clients').classList.contains('hidden') === false) {
-                    renderClientsList();
-                }
-                if (document.getElementById('payments').classList.contains('hidden') === false) {
-                    renderPaymentsList();
-                }
+                if (document.getElementById('dashboard').classList.contains('hidden') === false) renderDashboard();
+                if (document.getElementById('clients').classList.contains('hidden') === false) renderClientsList();
+                if (document.getElementById('payments').classList.contains('hidden') === false) renderPaymentsList();
                 if (currentClientDetailId) renderClientDetail(currentClientDetailId);
             }, (error) => {
                 console.error("Error al escuchar clientes:", error);
                 showToast("Error al cargar lista de clientes.", "error");
             });
             
-            // 3. NUEVO: Listener de Egresos
+            // 3. Listener de Egresos
             onSnapshot(collection(db, EXPENSES_COLLECTION_PATH), (snapshot) => {
                 expenses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                expenses.sort((a, b) => new Date(b.date) - new Date(a.date)); // Ordenar por fecha
-                renderDashboard();
+                expenses.sort((a, b) => new Date(b.date) - new Date(a.date)); 
+                if (document.getElementById('dashboard').classList.contains('hidden') === false) renderDashboard();
             }, (error) => {
                 console.error("Error al escuchar egresos:", error);
                 showToast("Error al cargar lista de egresos.", "error");
             });
             
-            // 4. NUEVO: Listener de Otros Ingresos
+            // 4. Listener de Otros Ingresos
             onSnapshot(collection(db, OTHER_INCOME_COLLECTION_PATH), (snapshot) => {
                 otherIncomePlans = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderDashboard();
-                if (document.getElementById('payments').classList.contains('hidden') === false) {
-                    renderPaymentsList();
-                }
+                if (document.getElementById('dashboard').classList.contains('hidden') === false) renderDashboard();
+                if (document.getElementById('payments').classList.contains('hidden') === false) renderPaymentsList();
                 if (currentOtherIncomeDetailId) renderOtherIncomeDetail(currentOtherIncomeDetailId);
             }, (error) => {
                 console.error("Error al escuchar otros ingresos:", error);
                 showToast("Error al cargar otros ingresos.", "error");
             });
             
-            // 5. NUEVO: Listener de Conceptos de Egresos
+            // 5. Listener de Conceptos de Egresos
             onSnapshot(doc(db, EXPENSE_CONCEPTS_DOC_PATH), (docSnap) => {
                 if (docSnap.exists()) {
-                    expenseConcepts = docSnap.data().concepts; // Carga los conceptos desde FB
+                    expenseConcepts = docSnap.data().concepts; 
                 } else {
-                    // Si no existe, guarda los conceptos por defecto en FB
                     setDoc(doc(db, EXPENSE_CONCEPTS_DOC_PATH), { concepts: expenseConcepts });
                 }
-                populateExpenseConceptsDropdown(); // Actualiza el dropdown
+                populateExpenseConceptsDropdown(); 
             }, (error) => {
                 console.error("Error al escuchar conceptos de egreso:", error);
                 showToast("Error al cargar conceptos de egreso.", "error");
             });
+            
+            // 6. Listener de Usuarios ELIMINADO
         };
 
         // =================================================================================
-        // DATA MANAGEMENT (CRUD)
+        // DATA MANAGEMENT (CRUD - Clientes, Egresos, etc.)
         // =================================================================================
 
         /** Guarda o actualiza los valores UMA/JUS. */
@@ -888,9 +919,12 @@
             openModal('uma-jus-modal');
         };
 
-        /** MODIFICADO: Registra un nuevo egreso en Firebase. */
+        /** Registra O EDITA un egreso en Firebase. */
         document.getElementById('add-expense-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            const expenseId = document.getElementById('expense-id-field').value;
+            const isEdit = !!expenseId;
 
             const conceptSelect = document.getElementById('expense-concept-select').value;
             const customConcept = document.getElementById('expense-custom-concept').value.trim();
@@ -910,24 +944,30 @@
                 return;
             }
             
-            // MODIFICADO: Guardar en Firebase
+            const expenseData = {
+                date: new Date().toISOString(), 
+                concept: finalConcept,
+                amount: amount
+            };
+
             try {
-                await addDoc(collection(db, EXPENSES_COLLECTION_PATH), {
-                    date: new Date().toISOString(),
-                    concept: finalConcept,
-                    amount: amount
-                });
+                if (isEdit) {
+                    const expenseRef = doc(db, EXPENSES_COLLECTION_PATH, expenseId);
+                    await updateDoc(expenseRef, expenseData);
+                    showToast("Egreso actualizado con éxito.", 'success');
+                } else {
+                    await addDoc(collection(db, EXPENSES_COLLECTION_PATH), expenseData);
+                    showToast("Egreso registrado con éxito.", 'success');
+                }
                 
                 closeModal('add-expense-modal');
-                showToast("Egreso registrado con éxito.", 'success');
-                // renderDashboard() se llamará automáticamente por el listener
             } catch (e) {
                 console.error("Error saving expense: ", e);
                 showToast("Error al registrar egreso. Intente nuevamente.", 'error');
             }
         });
         
-        /** MODIFICADO: Registra un nuevo "Plan de Otro Ingreso" en Firebase. */
+        /** Registra un nuevo "Plan de Otro Ingreso" en Firebase. */
         document.getElementById('add-other-income-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -935,7 +975,7 @@
             const totalUnits = parseFloat(document.getElementById('income-total-units').value);
             const unitType = document.getElementById('income-unit-type-select').value;
             const totalQuotas = parseInt(document.getElementById('income-total-quotas-input').value, 10);
-            
+            const partnerCutPercent = parseFloat(document.getElementById('income-partner-cut').value) || 0;
             const startMonth = document.getElementById('income-start-month').value;
             const initialPaidCount = parseInt(document.getElementById('income-initial-paid-quotas').value, 10) || 0;
             
@@ -956,24 +996,21 @@
             }));
 
             const incomePlanData = {
-                // id: se autogenera por Firebase
                 concept: concept,
                 paymentPlan: {
                     unit: unitType,
                     totalUnits: totalUnits,
                     totalQuotas: totalQuotas,
-                    startMonth: startMonth
+                    startMonth: startMonth,
+                    partnerCutPercent: partnerCutPercent
                 },
                 quotas: newQuotas
             };
             
-            // MODIFICADO: Guardar en Firebase
             try {
                 await addDoc(collection(db, OTHER_INCOME_COLLECTION_PATH), incomePlanData);
-                
                 closeFullPanel('add-other-income-panel');
                 showToast("Plan de ingreso registrado con éxito.", 'success');
-                // renderDashboard() y renderPaymentsList() se llamarán por el listener
             } catch (e) {
                 console.error("Error saving other income: ", e);
                 showToast("Error al registrar ingreso. Intente nuevamente.", 'error');
@@ -989,33 +1026,32 @@
             const clientId = document.getElementById('client-id-field').value;
 
             const fullName = document.getElementById('client-full-name').value.trim();
+            
+            if (!fullName) {
+                showToast("El Nombre Completo es obligatorio.", 'error');
+                return;
+            }
+            
             const dni = document.getElementById('client-dni').value.trim();
             const email = document.getElementById('client-email').value.trim();
             const phone = document.getElementById('client-phone').value.trim();
             const caseFacts = document.getElementById('client-case-facts').value.trim();
             const expedientesStr = document.getElementById('client-expedientes').value.trim();
-            const totalUnits = parseFloat(document.getElementById('plan-total-units').value);
+            const totalUnits = parseFloat(document.getElementById('plan-total-units').value) || 0;
             const unitType = document.getElementById('plan-unit-type-select').value;
-            const totalQuotas = parseInt(document.getElementById('plan-total-quotas-input').value, 10);
-            
+            const totalQuotas = parseInt(document.getElementById('plan-total-quotas-input').value, 10) || 0;
+            const partnerCutPercent = parseFloat(document.getElementById('plan-partner-cut').value) || 0;
             const startMonth = document.getElementById('plan-start-month').value;
             const initialPaidCount = parseInt(document.getElementById('plan-initial-paid-quotas').value, 10) || 0;
-
-
-            if (!fullName || !dni || !expedientesStr || totalUnits <= 0 || totalQuotas <= 0 || !startMonth) {
-                showToast("Por favor, complete todos los campos requeridos (incluyendo mes de inicio).", 'error');
-                return;
-            }
             
             if (initialPaidCount > totalQuotas) {
                 showToast("Las cuotas pagadas no pueden ser mayores a las cuotas totales.", "error");
                 return;
             }
-
+            
             const expedientes = expedientesStr.split(',').map(e => e.trim()).filter(e => e);
 
             const clientData = {
-                userId,
                 fullName,
                 dni,
                 email,
@@ -1026,26 +1062,31 @@
                     unit: unitType,
                     totalUnits,
                     totalQuotas,
-                    startMonth: startMonth
+                    startMonth: startMonth,
+                    partnerCutPercent: partnerCutPercent
                 },
                 lastUpdated: new Date().toISOString()
             };
+            
+            if (totalUnits <= 0 || totalQuotas <= 0 || !startMonth) {
+                clientData.paymentPlan = { unit: unitType, totalUnits: 0, totalQuotas: 0, startMonth: '', partnerCutPercent: 0 };
+                clientData.quotas = [];
+            }
 
             try {
                 if (isEdit) {
                     const clientRef = doc(db, CLIENTS_COLLECTION_PATH, clientId);
-                    // No se regeneran cuotas al editar, solo se actualizan datos
                     await updateDoc(clientRef, clientData);
                     showToast("Cliente actualizado con éxito.", 'success');
                 } else {
-                    // Generar cuotas iniciales (con pagadas) solo al CREAR
-                    const newQuotas = Array.from({ length: totalQuotas }, (_, i) => ({
-                        index: i + 1,
-                        isPaid: i < initialPaidCount,
-                        paidDate: (i < initialPaidCount) ? new Date().toISOString() : null,
-                    }));
-                    clientData.quotas = newQuotas;
-
+                    if (totalQuotas > 0) {
+                        const newQuotas = Array.from({ length: totalQuotas }, (_, i) => ({
+                            index: i + 1,
+                            isPaid: i < initialPaidCount,
+                            paidDate: (i < initialPaidCount) ? new Date().toISOString() : null,
+                        }));
+                        clientData.quotas = newQuotas;
+                    }
                     await addDoc(collection(db, CLIENTS_COLLECTION_PATH), clientData);
                     showToast("Cliente agregado con éxito.", 'success');
                 }
@@ -1067,6 +1108,7 @@
             
             document.getElementById('plan-start-month').value = new Date().toISOString().slice(0, 7);
             document.getElementById('plan-initial-paid-quotas').value = 0;
+            document.getElementById('plan-partner-cut').value = 0;
             
             document.getElementById('plan-initial-paid-quotas').disabled = false;
             document.getElementById('plan-initial-paid-quotas').readOnly = false;
@@ -1086,18 +1128,20 @@
                     document.getElementById('client-phone').value = client.phone || '';
                     document.getElementById('client-case-facts').value = client.caseFacts || '';
                     document.getElementById('client-expedientes').value = (client.expedientes || []).join(', ');
-                    document.getElementById('plan-total-units').value = client.paymentPlan.totalUnits || 0;
-                    document.getElementById('plan-unit-type-select').value = client.paymentPlan.unit || 'UMA';
-                    document.getElementById('plan-total-quotas-input').value = client.paymentPlan.totalQuotas || 0;
                     
-                    document.getElementById('plan-start-month').value = client.paymentPlan.startMonth || '';
+                    if(client.paymentPlan) {
+                        document.getElementById('plan-total-units').value = client.paymentPlan.totalUnits || 0;
+                        document.getElementById('plan-unit-type-select').value = client.paymentPlan.unit || 'UMA';
+                        document.getElementById('plan-total-quotas-input').value = client.paymentPlan.totalQuotas || 0;
+                        document.getElementById('plan-partner-cut').value = client.paymentPlan.partnerCutPercent || 0;
+                        document.getElementById('plan-start-month').value = client.paymentPlan.startMonth || '';
+                    }
+
                     const paidCount = (client.quotas || []).filter(q => q.isPaid).length;
                     document.getElementById('plan-initial-paid-quotas').value = paidCount;
                     
-                    // Deshabilitar estos campos en modo edición
                     document.getElementById('plan-initial-paid-quotas').disabled = true;
                     document.getElementById('plan-initial-paid-quotas').readOnly = true;
-                    // document.getElementById('plan-start-month').disabled = true; // Permitir editar mes de inicio
                 }
             }
             openFullPanel('add-edit-client-panel');
@@ -1121,11 +1165,12 @@
         /** Abre el modal para editar el plan de pagos. */
         window.openEditPaymentPlanModal = () => {
             const client = clients.find(c => c.id === currentClientDetailId);
-            if (!client) return;
+            if (!client || !client.paymentPlan) return;
 
             document.getElementById('edit-plan-total-units').value = client.paymentPlan.totalUnits;
             document.getElementById('edit-plan-unit-type-select').value = client.paymentPlan.unit;
             document.getElementById('edit-plan-total-quotas-input').value = client.paymentPlan.totalQuotas;
+            document.getElementById('edit-plan-partner-cut').value = client.paymentPlan.partnerCutPercent || 0;
             openModal('edit-payment-plan-modal');
         };
 
@@ -1140,6 +1185,7 @@
             const newTotalUnits = parseFloat(document.getElementById('edit-plan-total-units').value);
             const newUnitType = document.getElementById('edit-plan-unit-type-select').value;
             const newTotalQuotas = parseInt(document.getElementById('edit-plan-total-quotas-input').value, 10);
+            const newPartnerCut = parseFloat(document.getElementById('edit-plan-partner-cut').value) || 0;
 
             if (newTotalUnits <= 0 || newTotalQuotas <= 0) {
                 showToast("Valores inválidos para el plan de pagos.", 'error');
@@ -1147,9 +1193,9 @@
             }
 
             const oldTotalQuotas = client.paymentPlan.totalQuotas;
-            const paidCount = client.quotas.filter(q => q.isPaid).length;
+            const paidCount = (client.quotas || []).filter(q => q.isPaid).length;
 
-            let newQuotas = [...client.quotas];
+            let newQuotas = [...(client.quotas || [])];
 
             if (newTotalQuotas > oldTotalQuotas) {
                 for (let i = oldTotalQuotas; i < newTotalQuotas; i++) {
@@ -1170,6 +1216,7 @@
                     unit: newUnitType,
                     totalUnits: newTotalUnits,
                     totalQuotas: newTotalQuotas,
+                    partnerCutPercent: newPartnerCut 
                 },
                 quotas: newQuotas
             });
@@ -1204,7 +1251,6 @@
                 }
             }
 
-
             const updatedQuotas = client.quotas.map((quota, index) => {
                 if (index === quotaIndexInArray) {
                     return {
@@ -1220,7 +1266,6 @@
                 const clientRef = doc(db, CLIENTS_COLLECTION_PATH, clientId);
                 await updateDoc(clientRef, { quotas: updatedQuotas });
                 showToast(`Cuota ${quotaIndex} marcada como ${currentStatus ? 'PENDIENTE' : 'PAGADA'}.`, 'info');
-                // Los listeners se encargarán de re-renderizar
             } catch (e) {
                 console.error("Error toggling quota:", e);
                 showToast("Error al actualizar cuota. Intente nuevamente.", 'error');
@@ -1231,7 +1276,7 @@
         // GESTIÓN DE PAGO DE "OTROS INGRESOS"
         // =================================================================================
         
-        /** MODIFICADO: Toglea el estado de una cuota de "Otros Ingresos" en Firebase. */
+        /** Toglea el estado de una cuota de "Otros Ingresos" en Firebase. */
         window.toggleOtherIncomeQuotaPaid = async (planId, quotaIndex) => {
             const plan = otherIncomePlans.find(p => p.id === planId);
             if (!plan) return;
@@ -1268,12 +1313,10 @@
                 return quota;
             });
             
-            // MODIFICADO: Actualizar en Firebase
             try {
                 const planRef = doc(db, OTHER_INCOME_COLLECTION_PATH, planId);
                 await updateDoc(planRef, { quotas: updatedQuotas });
                 showToast(`Cuota ${quotaIndex} marcada como ${currentStatus ? 'PENDIENTE' : 'PAGADA'}.`, 'info');
-                // Los listeners se encargarán de re-renderizar
             } catch (e) {
                 console.error("Error toggling other income quota:", e);
                 showToast("Error al actualizar cuota. Intente nuevamente.", 'error');
@@ -1288,7 +1331,7 @@
         /** Rellena el dropdown de conceptos de egreso. */
         const populateExpenseConceptsDropdown = () => {
             const select = document.getElementById('expense-concept-select');
-            select.innerHTML = ''; // Limpiar opciones
+            select.innerHTML = ''; 
             expenseConcepts.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item.concept;
@@ -1323,23 +1366,21 @@
             `).join('');
         };
 
-        /** MODIFICADO: Elimina un concepto de egreso de Firebase. */
+        /** Elimina un concepto de egreso de Firebase. */
         window.deleteExpenseConcept = async (index) => {
-            expenseConcepts.splice(index, 1); // Elimina localmente
+            expenseConcepts.splice(index, 1); 
             try {
-                // Sube el array actualizado a Firebase
                 await setDoc(doc(db, EXPENSE_CONCEPTS_DOC_PATH), { concepts: expenseConcepts });
                 renderExpenseConceptsList();
                 populateExpenseConceptsDropdown();
             } catch (e) {
                 console.error("Error deleting expense concept: ", e);
                 showToast("Error al eliminar concepto.", "error");
-                // Si falla, revierte (recargando desde FB)
                 setupDataListeners(); 
             }
         };
 
-        /** MODIFICADO: Agrega un nuevo concepto de egreso a Firebase. */
+        /** Agrega un nuevo concepto de egreso a Firebase. */
         document.getElementById('add-expense-concept-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const input = document.getElementById('new-expense-concept-input');
@@ -1347,13 +1388,11 @@
             
             if (newConcept && !expenseConcepts.some(item => item.concept === newConcept)) {
                 const newConceptObj = { concept: newConcept, amount: 0 };
-                const updatedConcepts = [...expenseConcepts, newConceptObj]; // Añade localmente
+                const updatedConcepts = [...expenseConcepts, newConceptObj]; 
                 
                 try {
-                    // Sube el array actualizado a Firebase
                     await setDoc(doc(db, EXPENSE_CONCEPTS_DOC_PATH), { concepts: updatedConcepts });
                     input.value = '';
-                    // El listener se encargará de actualizar expenseConcepts y renderizar
                 } catch (e) {
                     console.error("Error adding expense concept: ", e);
                     showToast("Error al agregar concepto.", "error");
@@ -1361,9 +1400,8 @@
             }
         });
         
-        /** MODIFICADO: Guarda los montos fijos de los conceptos de egreso en Firebase. */
+        /** Guarda los montos fijos de los conceptos de egreso en Firebase. */
         window.saveExpenseConceptAmounts = async () => {
-            // Actualiza el array local primero
             expenseConcepts.forEach((item, index) => {
                 const amountInput = document.getElementById(`expense-concept-amount-${index}`);
                 if (amountInput) {
@@ -1371,7 +1409,6 @@
                 }
             });
             
-            // Sube el array actualizado a Firebase
             try {
                 await setDoc(doc(db, EXPENSE_CONCEPTS_DOC_PATH), { concepts: expenseConcepts });
                 showToast("Montos fijos de egresos actualizados.", "success");
@@ -1384,7 +1421,71 @@
         };
 
         // =================================================================================
-        // CALCULATION LOGIC
+        // FUNCIONES DE EDICIÓN/ELIMINACIÓN DE EGRESOS
+        // =================================================================================
+
+        /** Abre el modal de confirmación para eliminar un egreso. */
+        window.openDeleteExpenseModal = (expenseId) => {
+            const expense = expenses.find(e => e.id === expenseId);
+            if (!expense) return;
+            
+            document.getElementById('confirm-modal-title').textContent = "Eliminar Egreso";
+            document.getElementById('confirm-modal-body').textContent = `¿Estás seguro de que deseas eliminar el egreso "${expense.concept}" por ${formatCurrency(expense.amount)}? Esta acción no se puede deshacer.`;
+            
+            document.getElementById('confirm-modal-confirm').onclick = () => deleteExpense(expenseId);
+            document.getElementById('confirm-modal-cancel').onclick = () => closeModal('confirm-modal');
+            
+            openModal('confirm-modal');
+        };
+
+        /** Elimina el egreso de Firebase. */
+        const deleteExpense = async (expenseId) => {
+            try {
+                await deleteDoc(doc(db, EXPENSES_COLLECTION_PATH, expenseId));
+                closeModal('confirm-modal');
+                showToast("Egreso eliminado con éxito.", 'success');
+            } catch (e) {
+                console.error("Error deleting expense: ", e);
+                showToast("Error al eliminar el egreso.", 'error');
+            }
+        };
+
+        /** Abre el modal de egreso pre-cargado para editar. */
+        window.openEditExpenseModal = (expenseId) => {
+            const expense = expenses.find(e => e.id === expenseId);
+            if (!expense) return;
+
+            document.getElementById('expense-modal-title').textContent = 'Editar Egreso';
+            document.getElementById('expense-form-submit-btn').textContent = 'Guardar Cambios';
+            document.getElementById('expense-id-field').value = expenseId;
+            document.getElementById('expense-amount').value = `$ ${expense.amount.toLocaleString('es-AR')}`;
+            
+            const customWrapper = document.getElementById('custom-concept-wrapper');
+            const conceptSelect = document.getElementById('expense-concept-select');
+            
+            if (expenseConcepts.some(item => item.concept === expense.concept)) {
+                conceptSelect.value = expense.concept;
+                customWrapper.classList.add('hidden');
+                document.getElementById('expense-custom-concept').value = '';
+                handleExpenseConceptChange(conceptSelect);
+            } else {
+                conceptSelect.value = 'Otro';
+                customWrapper.classList.remove('hidden');
+                document.getElementById('expense-custom-concept').value = expense.concept;
+                document.getElementById('expense-amount').disabled = false;
+                document.getElementById('expense-amount').readOnly = false;
+            }
+            
+            openModal('add-expense-modal');
+        };
+
+        // =================================================================================
+        // FUNCIONES DE GESTIÓN DE USUARIOS ELIMINADAS
+        // =================================================================================
+        
+
+        // =================================================================================
+        // CALCULATION LOGIC (SIN PERMISOS)
         // =================================================================================
 
         /**
@@ -1392,16 +1493,15 @@
          */
         const calculatePlanInfo = (paymentPlan, quotas) => {
             if (!paymentPlan) {
-                return { quotaValueArs: 0, paidCount: 0, progressPercent: 0, quotaValueUnits: 0 };
+                return { quotaValueArs: 0, paidCount: 0, progressPercent: 0, quotaValueUnits: 0, partnerCutPercent: 0 };
             }
             
-            const { totalUnits, totalQuotas, unit } = paymentPlan;
+            const { totalUnits, totalQuotas, unit, partnerCutPercent = 0 } = paymentPlan;
             
             let unitValue;
             if (unit === 'ARS') {
                 unitValue = 1;
             } else {
-                // Asegura que umaJusValues y la unidad existan, sino usa 1
                 unitValue = (umaJusValues && umaJusValues[unit]) ? umaJusValues[unit] : 1;
             }
             
@@ -1411,48 +1511,44 @@
             const paidCount = (quotas || []).filter(q => q.isPaid).length;
             const progressPercent = totalQuotas > 0 ? Math.round((paidCount / totalQuotas) * 100) : 0;
 
-            return { quotaValueArs, paidCount, progressPercent, quotaValueUnits };
+            return { quotaValueArs, paidCount, progressPercent, quotaValueUnits, partnerCutPercent };
         };
         
-        /**
-         * Llama al helper calculatePlanInfo para un cliente.
-         */
+        /** Llama al helper calculatePlanInfo para un cliente. */
         const calculatePaymentInfo = (client) => {
             if (!client.paymentPlan || !client.quotas) {
-                return { quotaValueArs: 0, paidCount: 0, progressPercent: 0, quotaValueUnits: 0 };
+                return { quotaValueArs: 0, paidCount: 0, progressPercent: 0, quotaValueUnits: 0, partnerCutPercent: 0 };
             }
             return calculatePlanInfo(client.paymentPlan, client.quotas);
         };
 
 
-        /**
-         * Calcula la proyección a 3 meses (clientes + otros ingresos).
-         */
+        /** Calcula la proyección a 3 meses (clientes + otros ingresos) - NETO DE SOCIOS */
         const calculateThreeMonthProjection = () => {
             const projection = Array.from({ length: 3 }, (_, i) => ({
                 month: new Date(new Date().setMonth(new Date().getMonth() + i + 1)).toLocaleString('es-AR', { month: 'long' }),
                 amount: 0,
             }));
 
-            // 1. Proyección de Clientes
             clients.forEach(client => {
-                const { quotaValueArs } = calculatePaymentInfo(client);
+                const { quotaValueArs, partnerCutPercent } = calculatePaymentInfo(client);
+                const netQuotaValue = quotaValueArs * (1 - (partnerCutPercent / 100)); 
                 let assignedCount = 0;
                 (client.quotas || []).forEach(quota => {
                     if (!quota.isPaid && assignedCount < 3) {
-                        projection[assignedCount].amount += quotaValueArs;
+                        projection[assignedCount].amount += netQuotaValue;
                         assignedCount++;
                     }
                 });
             });
             
-            // 2. Proyección de Otros Ingresos
             otherIncomePlans.forEach(plan => {
-                const { quotaValueArs } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
+                const { quotaValueArs, partnerCutPercent } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
+                const netQuotaValue = quotaValueArs * (1 - (partnerCutPercent / 100)); 
                 let assignedCount = 0;
                 (plan.quotas || []).forEach(quota => {
                     if (!quota.isPaid && assignedCount < 3) {
-                        projection[assignedCount].amount += quotaValueArs;
+                        projection[assignedCount].amount += netQuotaValue;
                         assignedCount++;
                     }
                 });
@@ -1467,43 +1563,40 @@
             const currentMonth = now.getMonth();
             const currentYear = now.getFullYear();
             
-            // Lee del array 'expenses' que es llenado por el listener de Firebase
             return expenses.filter(exp => {
                 const expDate = new Date(exp.date);
                 return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
             });
         };
         
-        /**
-         * Calcula los ingresos totales que se pagaron este mes.
-         */
+        /** Calcula los ingresos totales (NETO DE SOCIOS) que se pagaron este mes. */
         const calculateCurrentMonthIncome = () => {
             const now = new Date();
             const currentMonth = now.getMonth();
             const currentYear = now.getFullYear();
             let totalIncome = 0;
             
-            // 1. Ingresos de Clientes
             clients.forEach(client => {
-                const { quotaValueArs } = calculatePaymentInfo(client);
+                const { quotaValueArs, partnerCutPercent } = calculatePaymentInfo(client);
+                const netQuotaValue = quotaValueArs * (1 - (partnerCutPercent / 100));
                 (client.quotas || []).forEach(quota => {
                     if (quota.isPaid && quota.paidDate) {
                         const paidDate = new Date(quota.paidDate);
                         if (paidDate.getMonth() === currentMonth && paidDate.getFullYear() === currentYear) {
-                            totalIncome += quotaValueArs;
+                            totalIncome += netQuotaValue; 
                         }
                     }
                 });
             });
             
-            // 2. Otros Ingresos
             otherIncomePlans.forEach(plan => {
-                const { quotaValueArs } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
+                const { quotaValueArs, partnerCutPercent } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
+                const netQuotaValue = quotaValueArs * (1 - (partnerCutPercent / 100));
                 (plan.quotas || []).forEach(quota => {
                     if (quota.isPaid && quota.paidDate) {
                         const paidDate = new Date(quota.paidDate);
                         if (paidDate.getMonth() === currentMonth && paidDate.getFullYear() === currentYear) {
-                            totalIncome += quotaValueArs;
+                            totalIncome += netQuotaValue; 
                         }
                     }
                 });
@@ -1512,29 +1605,64 @@
             return totalIncome;
         };
         
-        /**
-         * Calcula el valor total de TODAS las cuotas pendientes.
-         */
+        /** Calcula la parte de socios pagada este mes. */
+        const calculateCurrentMonthPartnerCut = () => {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            let totalCut = 0;
+
+            clients.forEach(client => {
+                const { quotaValueArs, partnerCutPercent } = calculatePaymentInfo(client);
+                const partnerCutAmount = quotaValueArs * (partnerCutPercent / 100);
+                (client.quotas || []).forEach(quota => {
+                    if (quota.isPaid && quota.paidDate) {
+                        const paidDate = new Date(quota.paidDate);
+                        if (paidDate.getMonth() === currentMonth && paidDate.getFullYear() === currentYear) {
+                            totalCut += partnerCutAmount; 
+                        }
+                    }
+                });
+            });
+
+            otherIncomePlans.forEach(plan => {
+                const { quotaValueArs, partnerCutPercent } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
+                const partnerCutAmount = quotaValueArs * (partnerCutPercent / 100);
+                (plan.quotas || []).forEach(quota => {
+                    if (quota.isPaid && quota.paidDate) {
+                        const paidDate = new Date(quota.paidDate);
+                        if (paidDate.getMonth() === currentMonth && paidDate.getFullYear() === currentYear) {
+                            totalCut += partnerCutAmount; 
+                        }
+                    }
+                });
+            });
+            
+            return totalCut;
+        };
+
+        
+        /** Calcula el valor total de TODAS las cuotas pendientes (NETO DE SOCIOS). */
         const calculateTotalPendingValue = () => {
             let totalPending = 0;
             
-            // 1. Pendiente de Clientes
             clients.forEach(client => {
-                const { quotaValueArs, paidCount } = calculatePaymentInfo(client);
+                const { quotaValueArs, paidCount, partnerCutPercent } = calculatePaymentInfo(client);
+                const netQuotaValue = quotaValueArs * (1 - (partnerCutPercent / 100));
                 const totalQuotas = client.paymentPlan ? client.paymentPlan.totalQuotas : 0;
                 const pendingQuotas = totalQuotas - paidCount;
                 if (pendingQuotas > 0) {
-                    totalPending += pendingQuotas * quotaValueArs;
+                    totalPending += pendingQuotas * netQuotaValue; 
                 }
             });
             
-            // 2. Pendiente de Otros Ingresos
             otherIncomePlans.forEach(plan => {
-                const { quotaValueArs, paidCount } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
+                const { quotaValueArs, paidCount, partnerCutPercent } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
+                const netQuotaValue = quotaValueArs * (1 - (partnerCutPercent / 100));
                 const totalQuotas = plan.paymentPlan.totalQuotas;
                 const pendingQuotas = totalQuotas - paidCount;
                 if (pendingQuotas > 0) {
-                    totalPending += pendingQuotas * quotaValueArs;
+                    totalPending += pendingQuotas * netQuotaValue; 
                 }
             });
             
@@ -1543,16 +1671,15 @@
 
 
         // =================================================================================
-        // VIEW RENDERING
+        // VIEW RENDERING (SIN PERMISOS)
         // =================================================================================
 
         /** RENDERIZA: Panel de Inicio (Dashboard). */
         const renderDashboard = () => {
             const container = document.getElementById('dashboard');
             
-            // Manejo de caso donde 'clients' aún no ha cargado
-            if (!isAuthReady) {
-                container.innerHTML = `<div class="card p-8 text-center text-gray-500">Conectando a la base de datos...</div>`;
+            if (!isAuthReady || !umaJusValues) {
+                container.innerHTML = `<div class="card p-8 text-center text-gray-500">Cargando...</div>`;
                 return;
             }
             
@@ -1567,30 +1694,40 @@
             
             const projectionData = calculateThreeMonthProjection();
             
-            const currentMonthExpenses = getCurrentMonthExpenses();
-            const totalExpensesThisMonth = currentMonthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const currentMonthRealExpenses = getCurrentMonthExpenses();
+            const totalRealExpensesThisMonth = currentMonthRealExpenses.reduce((sum, exp) => sum + exp.amount, 0);
             
             const totalIncomeThisMonth = calculateCurrentMonthIncome();
+            const totalPartnerCutThisMonth = calculateCurrentMonthPartnerCut();
+            const totalExpensesThisMonth = totalRealExpensesThisMonth + totalPartnerCutThisMonth;
             const totalPendingValue = calculateTotalPendingValue();
 
             
-            const expensesHistoryHtml = currentMonthExpenses.length > 0 ? currentMonthExpenses.map(exp => `
+            const expensesHistoryHtml = currentMonthRealExpenses.length > 0 ? currentMonthRealExpenses.map(exp => `
                 <tr class="border-b hover:bg-gray-50">
                     <td class="py-3 px-4 text-sm text-gray-700">${new Date(exp.date).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })} hs</td>
                     <td class="py-3 px-4 text-sm text-gray-700">${exp.concept}</td>
                     <td class="py-3 px-4 text-sm font-bold text-red-600">${formatCurrency(exp.amount)}</td>
+                    <td class="py-3 px-4 text-sm text-right">
+                        <button onclick="openEditExpenseModal('${exp.id}')" class="p-1 text-blue-600 hover:text-blue-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                        </button>
+                        <button onclick="openDeleteExpenseModal('${exp.id}')" class="p-1 text-red-600 hover:text-red-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </td>
                 </tr>
             `).join('') : `
                 <tr>
-                    <td colspan="3" class="py-6 px-4 text-center text-gray-500">No hay egresos registrados este mes.</td>
+                    <td colspan="4" class="py-6 px-4 text-center text-gray-500">No hay egresos registrados este mes.</td>
                 </tr>
             `;
 
             container.innerHTML = `
                 <div class="space-y-6">
                     <!-- Valores UMA/JUS -->
-                    <div class="card p-6 flex justify-between items-center flex-wrap">
-                        <h2 class="text-2xl font-bold text-[var(--primary-color)] mb-4 w-full md:w-auto">Valores Base</h2>
+                    <div class="card p-6 flex flex-col md:flex-row justify-between items-center flex-wrap gap-4">
+                        <h2 class="text-2xl font-bold text-[var(--primary-color)] w-full md:w-auto">Valores Base</h2>
                         <div class="grid grid-cols-2 gap-4 w-full md:w-auto md:flex md:space-x-8">
                             <div class="text-center">
                                 <p class="text-xs font-semibold text-gray-500">UMA</p>
@@ -1601,7 +1738,7 @@
                                 <p class="text-xl font-bold text-[var(--secondary-color)]">${formatCurrency(umaJusValues.JUS)}</p>
                             </div>
                         </div>
-                        <button onclick="openUmaJusModal()" class="secondary-btn px-4 py-2 mt-4 md:mt-0 w-full md:w-auto text-sm">
+                        <button onclick="openUmaJusModal()" class="secondary-btn px-4 py-2 w-full md:w-auto text-sm">
                             Editar Valores
                         </button>
                     </div>
@@ -1622,26 +1759,29 @@
                         </div>
                     </div>
                     
-                    <!-- NUEVO: Resumen Financiero Mensual y Pendiente -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <!-- Resumen Financiero (4 columnas) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div class="card p-5 text-center transition-transform transform hover:scale-[1.02] border-green-400 border-l-4">
-                            <p class="text-sm font-semibold text-gray-500">Ingresos Totales <span class="text-xs font-normal text-gray-400">(Mes en curso)</span></p>
+                            <p class="text-sm font-semibold text-gray-500">Ingresos Netos <span class="text-xs font-normal text-gray-400">(Mes en curso)</span></p>
                             <p class="text-4xl font-extrabold text-green-600">${formatCurrency(totalIncomeThisMonth)}</p>
                         </div>
                          <div class="card p-5 text-center transition-transform transform hover:scale-[1.02] border-red-400 border-l-4">
                             <p class="text-sm font-semibold text-gray-500">Egresos Totales <span class="text-xs font-normal text-gray-400">(Mes en curso)</span></p>
                             <p class="text-4xl font-extrabold text-red-600">${formatCurrency(totalExpensesThisMonth)}</p>
                         </div>
+                        <div class="card p-5 text-center transition-transform transform hover:scale-[1.02] border-red-400 border-l-4">
+                            <p class="text-sm font-semibold text-gray-500">Monto Socios <span class="text-xs font-normal text-gray-400">(Mes en curso)</span></p>
+                            <p class="text-4xl font-extrabold text-red-600">${formatCurrency(totalPartnerCutThisMonth)}</p>
+                        </div>
                         <div class="card p-5 text-center transition-transform transform hover:scale-[1.02] border-yellow-400 border-l-4">
-                            <p class="text-sm font-semibold text-gray-500">Pagos Pendientes <span class="text-xs font-normal text-gray-400">(Valor Total)</span></p>
+                            <p class="text-sm font-semibold text-gray-500">Pendiente Neto <span class="text-xs font-normal text-gray-400">(Valor Total)</span></p>
                             <p class="text-4xl font-extrabold text-yellow-600">${formatCurrency(totalPendingValue)}</p>
                         </div>
                     </div>
 
-
-                    <!-- Proyección de Ingresos (MODIFICADO: 3 meses) -->
+                    <!-- Proyección de Ingresos (Neto) -->
                     <div class="card p-6">
-                        <h3 class="text-xl font-semibold text-[var(--primary-color)] mb-4 border-b pb-2">Proyección de Ingresos (3 meses)</h3>
+                        <h3 class="text-xl font-semibold text-[var(--primary-color)] mb-4 border-b pb-2">Proyección de Ingresos Netos (3 meses)</h3>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
@@ -1678,6 +1818,7 @@
                                         <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha y Hora</th>
                                         <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Concepto</th>
                                         <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th>
+                                        <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -1702,25 +1843,27 @@
             
             const filteredClients = clients.filter(c =>
                 !searchTerm ||
-                c.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                c.dni.includes(searchTerm) ||
+                (c.fullName && c.fullName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (c.dni && c.dni.includes(searchTerm)) ||
                 (c.expedientes || []).some(e => e.toLowerCase().includes(searchTerm.toLowerCase()))
             );
 
             const clientRows = filteredClients.map(client => {
                 const { paidCount, progressPercent } = calculatePaymentInfo(client);
                 const totalQuotas = client.paymentPlan ? client.paymentPlan.totalQuotas : 0;
-                const statusColor = progressPercent === 100 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+                const statusColor = (totalQuotas > 0 && progressPercent === 100) ? 'bg-green-100 text-green-700' : 
+                                    (totalQuotas > 0) ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700';
+                const quotaText = totalQuotas > 0 ? `${paidCount} / ${totalQuotas} Cuotas` : "Sin Plan";
 
                 return `
                     <li onclick="openClientDetail('${client.id}', 'clients')" class="card p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-all duration-300 transform hover:scale-[1.01] mb-2">
                         <div class="flex-1 min-w-0">
                             <p class="text-lg font-semibold text-[var(--primary-color)]">${client.fullName}</p>
-                            <p class="text-sm text-gray-500 truncate">Exp: ${(client.expedientes || []).join(', ')}</p>
+                            <p class="text-sm text-gray-500 truncate">Exp: ${(client.expedientes || []).join(', ') || 'N/A'}</p>
                         </div>
                         <div class="text-right ml-4">
                             <span class="text-sm font-bold block ${statusColor} px-3 py-1 rounded-full shadow-inner">
-                                ${paidCount} / ${totalQuotas} Cuotas
+                                ${quotaText}
                             </span>
                         </div>
                         <!-- Ícono de flecha -->
@@ -1757,7 +1900,7 @@
             renderClientsList(searchTerm);
         };
         
-        /** RENDERIZA: Lista de Pagos (MODIFICADA para incluir Otros Ingresos). */
+        /** RENDERIZA: Lista de Pagos. */
         const renderPaymentsList = (searchTerm = '') => {
             const container = document.getElementById('payments');
             
@@ -1769,24 +1912,26 @@
             // --- Filtrado de Clientes ---
             const filteredClients = clients.filter(c =>
                 !searchTerm ||
-                c.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                c.dni.includes(searchTerm) ||
+                (c.fullName && c.fullName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (c.dni && c.dni.includes(searchTerm)) ||
                 (c.expedientes || []).some(e => e.toLowerCase().includes(searchTerm.toLowerCase()))
             );
             const clientRows = filteredClients.map(client => {
                 const { paidCount, progressPercent } = calculatePaymentInfo(client);
                 const totalQuotas = client.paymentPlan ? client.paymentPlan.totalQuotas : 0;
-                const statusColor = progressPercent === 100 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+                const statusColor = (totalQuotas > 0 && progressPercent === 100) ? 'bg-green-100 text-green-700' : 
+                                    (totalQuotas > 0) ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700';
+                const quotaText = totalQuotas > 0 ? `${paidCount} / ${totalQuotas} Cuotas` : "Sin Plan";
 
                 return `
                     <li onclick="openClientDetail('${client.id}', 'payments')" class="card p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-all duration-300 transform hover:scale-[1.01] mb-2">
                         <div class="flex-1 min-w-0">
                             <p class="text-lg font-semibold text-[var(--primary-color)]">${client.fullName}</p>
-                            <p class="text-sm text-gray-500 truncate">Exp: ${(client.expedientes || []).join(', ')}</p>
+                            <p class="text-sm text-gray-500 truncate">Exp: ${(client.expedientes || []).join(', ') || 'N/A'}</p>
                         </div>
                         <div class="text-right ml-4">
                             <span class="text-sm font-bold block ${statusColor} px-3 py-1 rounded-full shadow-inner">
-                                ${paidCount} / ${totalQuotas} Cuotas
+                                ${quotaText}
                             </span>
                         </div>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1825,11 +1970,11 @@
             }).join('');
             
             
-            // MODIFICADO: Proyección a 3 meses
+            // Proyección de Ingresos (Neto)
             const projectionData = calculateThreeMonthProjection();
             const projectionTable = `
                 <div class="card p-6 mt-6">
-                    <h3 class="text-xl font-semibold text-[var(--primary-color)] mb-4 border-b pb-2">Proyección de Ingresos (3 meses)</h3>
+                    <h3 class="text-xl font-semibold text-[var(--primary-color)] mb-4 border-b pb-2">Proyección de Ingresos Netos (3 meses)</h3>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -1869,7 +2014,6 @@
                         ${clientRows.length > 0 ? clientRows : '<p class="text-center text-gray-500 p-8 card">No se encontraron clientes.</p>'}
                     </ul>
                     
-                    <!-- NUEVO: Lista de Otros Ingresos -->
                     <h3 class="text-2xl font-semibold text-[var(--primary-color)] pt-4">Otros Ingresos</h3>
                     <ul id="other-income-list" class="space-y-3">
                          ${otherIncomeRows.length > 0 ? otherIncomeRows : '<p class="text-center text-gray-500 p-8 card">No se encontraron otros ingresos.</p>'}
@@ -1882,6 +2026,9 @@
         window.searchPayments = (searchTerm) => {
             renderPaymentsList(searchTerm);
         };
+        
+        /** Vista de Administración de Usuarios ELIMINADA */
+
 
         /** RENDERIZA: Panel de Detalle del Cliente/Pagos. */
         window.openClientDetail = (clientId, originView) => {
@@ -1900,8 +2047,7 @@
                 return;
             }
 
-            const { quotaValueArs, paidCount, progressPercent, quotaValueUnits } = calculatePaymentInfo(client);
-            // Manejo de caso donde paymentPlan es undefined
+            const { quotaValueArs, paidCount, progressPercent, quotaValueUnits, partnerCutPercent } = calculatePaymentInfo(client);
             const { totalUnits = 0, totalQuotas = 0, unit = 'N/A' } = client.paymentPlan || {};
 
             document.getElementById('client-detail-name').textContent = client.fullName;
@@ -1918,13 +2064,17 @@
             document.getElementById('plan-units').textContent = `${totalUnits.toFixed(2)}`;
             document.getElementById('plan-unit-type').textContent = unit;
             document.getElementById('plan-total-quotas').textContent = totalQuotas;
+            document.getElementById('plan-partner-cut').textContent = partnerCutPercent || 0;
             document.getElementById('plan-quota-value-ars').textContent = formatCurrency(quotaValueArs);
 
             // Renderizar Progreso
             const progressIndicator = document.getElementById('progress-indicator');
             const progressRing = document.getElementById('progress-ring-container');
-            const circleColor = progressPercent === 100 ? 'stroke-green-500' : 'stroke-red-500';
-            const circumference = 2 * Math.PI * 40; // 40 es el radio
+            
+            const circleColor = (totalQuotas > 0 && progressPercent === 100) ? 'stroke-green-500' : 
+                                (totalQuotas > 0) ? 'stroke-red-500' : 'stroke-gray-400';
+            const circumference = 2 * Math.PI * 40; 
+            const offset = totalQuotas > 0 ? circumference - (progressPercent / 100) * circumference : circumference;
 
             progressIndicator.textContent = `${progressPercent}%`;
             progressRing.innerHTML = `
@@ -1932,49 +2082,49 @@
                     <circle cx="48" cy="48" r="40" stroke="#E5E7EB" stroke-width="8" fill="none"></circle>
                     <circle cx="48" cy="48" r="40" stroke-width="8" class="${circleColor} transition-all duration-700 ease-out" fill="none"
                         stroke-dasharray="${circumference}"
-                        stroke-dashoffset="${circumference - (progressPercent / 100) * circumference}"></circle>
+                        stroke-dashoffset="${offset}"></circle>
                 </svg>
                 <div class="absolute text-2xl font-bold text-[var(--primary-color)]">${progressPercent}%</div>
             `;
 
             // Renderizar Lista de Cuotas
             const quotasListContainer = document.getElementById('quotas-list');
-            quotasListContainer.innerHTML = (client.quotas || []).map(quota => {
-                const isPaid = quota.isPaid;
-                const statusBg = isPaid ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200';
-                const statusText = isPaid ? 'Pagada' : 'Pendiente';
-                const paidDate = isPaid && quota.paidDate ? new Date(quota.paidDate).toLocaleDateString('es-AR') : 'N/A';
-                const valueDisplay = `${quotaValueUnits.toFixed(2)} ${unit} (${formatCurrency(quotaValueArs)})`;
+            if (!client.quotas || client.quotas.length === 0) {
+                quotasListContainer.innerHTML = '<p class="text-center text-gray-500 p-4">No hay cuotas definidas para este cliente.</p>';
+            } else {
+                quotasListContainer.innerHTML = client.quotas.map(quota => {
+                    const isPaid = quota.isPaid;
+                    const statusBg = isPaid ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200';
+                    const statusText = isPaid ? 'Pagada' : 'Pendiente';
+                    const paidDate = isPaid && quota.paidDate ? new Date(quota.paidDate).toLocaleDateString('es-AR') : 'N/A';
+                    const valueDisplay = `${quotaValueUnits.toFixed(2)} ${unit} (${formatCurrency(quotaValueArs)})`;
 
-                return `
-                    <div class="flex items-center justify-between p-3 rounded-lg shadow-sm transition-all duration-200 ${statusBg} border border-gray-200">
-                        <div class="flex items-center space-x-4">
-                            <span class="text-xl font-extrabold w-8 text-center text-[var(--primary-color)]">${quota.index}</span>
-                            <div>
-                                <p class="text-sm font-semibold">Cuota #${quota.index}</p>
-                                <p class="text-xs text-gray-600">${valueDisplay}</p>
+                    return `
+                        <div class="flex items-center justify-between p-3 rounded-lg shadow-sm transition-all duration-200 ${statusBg} border border-gray-200">
+                            <div class="flex items-center space-x-4">
+                                <span class="text-xl font-extrabold w-8 text-center text-[var(--primary-color)]">${quota.index}</span>
+                                <div>
+                                    <p class="text-sm font-semibold">Cuota #${quota.index}</p>
+                                    <p class="text-xs text-gray-600">${valueDisplay}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <p class="text-xs text-gray-500 hidden sm:block">Pagada el: ${paidDate}</p>
+                                <button onclick="toggleQuotaPaid('${clientId}', ${quota.index})" class="px-3 py-1 text-sm rounded-full font-medium transition-colors duration-200 ${isPaid ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-red-600 text-white hover:bg-red-700'}">
+                                    ${statusText}
+                                </button>
                             </div>
                         </div>
-                        <div class="flex items-center space-x-4">
-                            <p class="text-xs text-gray-500 hidden sm:block">Pagada el: ${paidDate}</p>
-                            <button onclick="toggleQuotaPaid('${clientId}', ${quota.index})" class="px-3 py-1 text-sm rounded-full font-medium transition-colors duration-200 ${isPaid ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-red-600 text-white hover:bg-red-700'}">
-                                ${statusText}
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-             if (!client.quotas || client.quotas.length === 0) {
-                quotasListContainer.innerHTML = '<p class="text-center text-gray-500 p-4">No hay cuotas definidas para este cliente.</p>';
+                    `;
+                }).join('');
             }
         };
         
         // =================================================================================
-        // NUEVO: RENDERIZADO DE DETALLE DE "OTROS INGRESOS"
+        // RENDERIZADO DE DETALLE DE "OTROS INGRESOS"
         // =================================================================================
         
-        /** NUEVO: Abre el panel de detalle de Otro Ingreso. */
+        /** Abre el panel de detalle de Otro Ingreso. */
         window.openOtherIncomeDetail = (planId) => {
             currentClientDetailId = null;
             currentOtherIncomeDetailId = planId;
@@ -1982,7 +2132,7 @@
             openFullPanel('other-income-detail-panel');
         };
 
-        /** NUEVO: Renderiza el detalle de un plan de "Otro Ingreso". */
+        /** Renderiza el detalle de un plan de "Otro Ingreso". */
         const renderOtherIncomeDetail = (planId) => {
             const plan = otherIncomePlans.find(p => p.id === planId);
             if (!plan) {
@@ -1991,7 +2141,7 @@
                 return;
             }
 
-            const { quotaValueArs, paidCount, progressPercent, quotaValueUnits } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
+            const { quotaValueArs, paidCount, progressPercent, quotaValueUnits, partnerCutPercent } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
             const { totalUnits, totalQuotas, unit } = plan.paymentPlan;
 
             document.getElementById('other-income-detail-name').textContent = plan.concept;
@@ -2000,6 +2150,7 @@
             document.getElementById('other-income-plan-units').textContent = `${totalUnits.toFixed(2)}`;
             document.getElementById('other-income-plan-unit-type').textContent = unit;
             document.getElementById('other-income-plan-total-quotas').textContent = totalQuotas;
+            document.getElementById('other-income-partner-cut').textContent = partnerCutPercent || 0;
             document.getElementById('other-income-plan-quota-value-ars').textContent = formatCurrency(quotaValueArs);
 
             // Renderizar Lista de Cuotas
@@ -2034,21 +2185,14 @@
                 quotasListContainer.innerHTML = '<p class="text-center text-gray-500 p-4">No hay cuotas definidas para este plan.</p>';
             }
         };
-
-
-        // =================================================================================
-        // PDF GENERATION (SECCIÓN ELIMINADA)
-        // =================================================================================
         
         // =================================================================================
         // INITIALIZATION
         // =================================================================================
 
         document.addEventListener('DOMContentLoaded', () => {
-            // CORRECCIÓN: Navega al 'inicio' primero para mostrar la estructura
-            // mientras carga Firebase.
-            navigate('dashboard');
-            // Inicializar Firebase y oyentes
+            // Iniciar la conexión anónima de Firebase
+            // La navegación se dispara dentro de onAuthStateChanged
             setupFirebase();
         });
 
