@@ -197,7 +197,8 @@
                 Volver
             </button>
             <h2 id="client-detail-name" class="text-3xl font-extrabold text-[var(--primary-color)] mb-2"></h2>
-            <p class="text-lg text-gray-600 mb-6">Expediente(s): <span id="client-detail-expedientes" class="font-medium text-[var(--text-color)]"></span></p>
+            <!-- MODIFICADO: Expedientes como texto simple -->
+            <p class="text-lg text-gray-600 mb-6">Expediente(s): <span id="client-detail-expedientes" class="font-medium text-gray-700"></span></p>
 
             <!-- Resumen de Pagos e Indicador -->
             <div class="card p-6 mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -269,7 +270,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium mb-1">Valor Total del Convenio (en unidades)</label>
-                        <input type="number" id="plan-total-units" placeholder="Ej: 150" min="1" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                        <input type="text" id="plan-total-units" placeholder="Ej: 150 o 88,8" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Unidad de Medida</label>
@@ -323,7 +324,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium mb-1">Valor Total (en unidades o ARS)</label>
-                        <input type="number" id="income-total-units" placeholder="Ej: 150 o 150000" required min="1" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                        <input type="text" id="income-total-units" placeholder="Ej: 150 o 150000 o 88,8" required class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Unidad de Medida</label>
@@ -426,7 +427,8 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium mb-1">Valor Total del Convenio (en unidades)</label>
-                        <input type="number" id="edit-plan-total-units" class="w-full p-3 border border-gray-300 rounded-lg" required min="1">
+                        <!-- MODIFICADO: type="text" para aceptar comas -->
+                        <input type="text" id="edit-plan-total-units" class="w-full p-3 border border-gray-300 rounded-lg" required>
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Unidad de Medida</label>
@@ -531,7 +533,6 @@
         // FIREBASE SETUP AND GLOBAL VARIABLES
         // =================================================================================
         
-        // CORREGIDO: URLs de importación (asegurando https://)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import {
@@ -562,7 +563,7 @@
         let currentClientDetailId = null;
         let currentOtherIncomeDetailId = null; 
         
-        let isInitialLoad = true; // CORRECCIÓN: Variable para controlar la carga inicial
+        let isInitialLoad = true; 
 
         let expenseConcepts = [
             { concept: "Servicios (Luz, Agua, Gas, Internet)", amount: 0 },
@@ -646,6 +647,13 @@
             if (!value) return 0;
             const rawValue = value.replace(/[^0-9]/g, ''); // Quita $ y .
             return parseFloat(rawValue) || 0;
+        };
+
+        /** NUEVO: Parsea un valor decimal que puede tener coma. */
+        const parseDecimalInput = (value) => {
+            if (!value) return 0;
+            const normalizedValue = value.replace(',', '.'); // Cambia coma por punto
+            return parseFloat(normalizedValue) || 0;
         };
 
 
@@ -798,18 +806,15 @@
                 if (docSnap.exists()) {
                     umaJusValues = docSnap.data();
                 } else {
-                    // Si no existe (primera carga), lo crea
                     umaJusValues = { UMA: 50000, JUS: 5000 };
                     setDoc(doc(db, SETTINGS_DOC_PATH), umaJusValues, { merge: true });
                 }
                 
-                // CORRECCIÓN: Renderizar "Inicio" solo en la carga inicial
                 if (isInitialLoad) {
                     navigate('dashboard');
                     isInitialLoad = false;
                 }
                 
-                // Actualizar vistas si ya están abiertas
                 renderDashboard();
                 if (currentClientDetailId) renderClientDetail(currentClientDetailId);
                 if (currentOtherIncomeDetailId) renderOtherIncomeDetail(currentOtherIncomeDetailId);
@@ -817,7 +822,6 @@
             }, (error) => {
                 console.error("Error al escuchar settings:", error);
                 showToast("Error al cargar valores UMA/JUS.", "error");
-                // CORRECCIÓN: Si falla la carga, igual mostrar el "Inicio" con valores 0
                 if (isInitialLoad) {
                     navigate('dashboard');
                     isInitialLoad = false;
@@ -964,7 +968,8 @@
             e.preventDefault();
 
             const concept = document.getElementById('income-custom-concept').value.trim();
-            const totalUnits = parseFloat(document.getElementById('income-total-units').value);
+            // MODIFICADO: Usar parseDecimalInput para aceptar comas
+            const totalUnits = parseDecimalInput(document.getElementById('income-total-units').value);
             const unitType = document.getElementById('income-unit-type-select').value;
             const totalQuotas = parseInt(document.getElementById('income-total-quotas-input').value, 10);
             const partnerCutPercent = parseFloat(document.getElementById('income-partner-cut').value) || 0;
@@ -981,11 +986,24 @@
                 return;
             }
             
-            const newQuotas = Array.from({ length: totalQuotas }, (_, i) => ({
-                index: i + 1,
-                isPaid: i < initialPaidCount,
-                paidDate: (i < initialPaidCount) ? new Date().toISOString() : null,
-            }));
+            // MODIFICADO: Asignar fechas de pago a meses correctos
+            const startDate = new Date(startMonth + '-02T12:00:00Z'); // Usar día 2 y UTC para evitar errores de zona horaria
+            
+            const newQuotas = Array.from({ length: totalQuotas }, (_, i) => {
+                let quotaPaidDate = null;
+                if (i < initialPaidCount) {
+                    // Calcular el mes de la cuota y asignarlo como fecha de pago
+                    const quotaDate = new Date(startDate);
+                    quotaDate.setUTCMonth(startDate.getUTCMonth() + i);
+                    quotaPaidDate = quotaDate.toISOString();
+                }
+                
+                return {
+                    index: i + 1,
+                    isPaid: i < initialPaidCount,
+                    paidDate: quotaPaidDate,
+                };
+            });
 
             const incomePlanData = {
                 concept: concept,
@@ -1029,7 +1047,8 @@
             const phone = document.getElementById('client-phone').value.trim();
             const caseFacts = document.getElementById('client-case-facts').value.trim();
             const expedientesStr = document.getElementById('client-expedientes').value.trim();
-            const totalUnits = parseFloat(document.getElementById('plan-total-units').value) || 0;
+            // MODIFICADO: Usar parseDecimalInput para aceptar comas
+            const totalUnits = parseDecimalInput(document.getElementById('plan-total-units').value) || 0;
             const unitType = document.getElementById('plan-unit-type-select').value;
             const totalQuotas = parseInt(document.getElementById('plan-total-quotas-input').value, 10) || 0;
             const partnerCutPercent = parseFloat(document.getElementById('plan-partner-cut').value) || 0;
@@ -1072,11 +1091,24 @@
                     showToast("Cliente actualizado con éxito.", 'success');
                 } else {
                     if (totalQuotas > 0) {
-                        const newQuotas = Array.from({ length: totalQuotas }, (_, i) => ({
-                            index: i + 1,
-                            isPaid: i < initialPaidCount,
-                            paidDate: (i < initialPaidCount) ? new Date().toISOString() : null,
-                        }));
+                        // MODIFICADO: Asignar fechas de pago a meses correctos
+                        const startDate = new Date(startMonth + '-02T12:00:00Z'); // Usar día 2 y UTC
+                        
+                        const newQuotas = Array.from({ length: totalQuotas }, (_, i) => {
+                            let quotaPaidDate = null;
+                            if (i < initialPaidCount) {
+                                // Calcular el mes de la cuota y asignarlo como fecha de pago
+                                const quotaDate = new Date(startDate);
+                                quotaDate.setUTCMonth(startDate.getUTCMonth() + i);
+                                quotaPaidDate = quotaDate.toISOString();
+                            }
+                            
+                            return {
+                                index: i + 1,
+                                isPaid: i < initialPaidCount,
+                                paidDate: quotaPaidDate,
+                            };
+                        });
                         clientData.quotas = newQuotas;
                     }
                     await addDoc(collection(db, CLIENTS_COLLECTION_PATH), clientData);
@@ -1101,6 +1133,7 @@
             document.getElementById('plan-start-month').value = new Date().toISOString().slice(0, 7);
             document.getElementById('plan-initial-paid-quotas').value = 0;
             document.getElementById('plan-partner-cut').value = 0;
+            document.getElementById('plan-total-units').value = '';
             
             document.getElementById('plan-initial-paid-quotas').disabled = false;
             document.getElementById('plan-initial-paid-quotas').readOnly = false;
@@ -1122,7 +1155,8 @@
                     document.getElementById('client-expedientes').value = (client.expedientes || []).join(', ');
                     
                     if(client.paymentPlan) {
-                        document.getElementById('plan-total-units').value = client.paymentPlan.totalUnits || 0;
+                        // MODIFICADO: Mostrar coma en lugar de punto si existe
+                        document.getElementById('plan-total-units').value = (client.paymentPlan.totalUnits || 0).toString().replace('.', ',');
                         document.getElementById('plan-unit-type-select').value = client.paymentPlan.unit || 'UMA';
                         document.getElementById('plan-total-quotas-input').value = client.paymentPlan.totalQuotas || 0;
                         document.getElementById('plan-partner-cut').value = client.paymentPlan.partnerCutPercent || 0;
@@ -1159,7 +1193,8 @@
             const client = clients.find(c => c.id === currentClientDetailId);
             if (!client || !client.paymentPlan) return;
 
-            document.getElementById('edit-plan-total-units').value = client.paymentPlan.totalUnits;
+            // MODIFICADO: Mostrar coma en lugar de punto
+            document.getElementById('edit-plan-total-units').value = (client.paymentPlan.totalUnits || 0).toString().replace('.', ',');
             document.getElementById('edit-plan-unit-type-select').value = client.paymentPlan.unit;
             document.getElementById('edit-plan-total-quotas-input').value = client.paymentPlan.totalQuotas;
             document.getElementById('edit-plan-partner-cut').value = client.paymentPlan.partnerCutPercent || 0;
@@ -1174,7 +1209,8 @@
             const client = clients.find(c => c.id === clientId);
             if (!client) return;
 
-            const newTotalUnits = parseFloat(document.getElementById('edit-plan-total-units').value);
+            // MODIFICADO: Usar parseDecimalInput para aceptar comas
+            const newTotalUnits = parseDecimalInput(document.getElementById('edit-plan-total-units').value);
             const newUnitType = document.getElementById('edit-plan-unit-type-select').value;
             const newTotalQuotas = parseInt(document.getElementById('edit-plan-total-quotas-input').value, 10);
             const newPartnerCut = parseFloat(document.getElementById('edit-plan-partner-cut').value) || 0;
@@ -1243,12 +1279,26 @@
                 }
             }
 
+            // MODIFICADO: Asignar fecha de pago correcta al mes de la cuota
+            let newPaidDate = null;
+            if (!currentStatus) { // Si se está MARCANDO como pagada
+                if (client.paymentPlan && client.paymentPlan.startMonth) {
+                    // Asignar la fecha al mes que corresponde la cuota
+                    const startDate = new Date(client.paymentPlan.startMonth + '-02T12:00:00Z');
+                    startDate.setUTCMonth(startDate.getUTCMonth() + quotaIndexInArray);
+                    newPaidDate = startDate.toISOString();
+                } else {
+                    // Fallback a la fecha actual si no hay mes de inicio
+                    newPaidDate = new Date().toISOString();
+                }
+            }
+            
             const updatedQuotas = client.quotas.map((quota, index) => {
                 if (index === quotaIndexInArray) {
                     return {
                         ...quota,
                         isPaid: !currentStatus,
-                        paidDate: !currentStatus ? new Date().toISOString() : null
+                        paidDate: newPaidDate
                     };
                 }
                 return quota;
@@ -1293,13 +1343,27 @@
                     }
                 }
             }
+            
+            // MODIFICADO: Asignar fecha de pago correcta al mes de la cuota
+            let newPaidDate = null;
+            if (!currentStatus) { // Si se está MARCANDO como pagada
+                if (plan.paymentPlan && plan.paymentPlan.startMonth) {
+                    // Asignar la fecha al mes que corresponde la cuota
+                    const startDate = new Date(plan.paymentPlan.startMonth + '-02T12:00:00Z');
+                    startDate.setUTCMonth(startDate.getUTCMonth() + quotaIndexInArray);
+                    newPaidDate = startDate.toISOString();
+                } else {
+                    // Fallback a la fecha actual si no hay mes de inicio
+                    newPaidDate = new Date().toISOString();
+                }
+            }
 
             const updatedQuotas = plan.quotas.map((quota, index) => {
                 if (index === quotaIndexInArray) {
                     return {
                         ...quota,
                         isPaid: !currentStatus,
-                        paidDate: !currentStatus ? new Date().toISOString() : null
+                        paidDate: newPaidDate
                     };
                 }
                 return quota;
@@ -1323,6 +1387,7 @@
         /** Rellena el dropdown de conceptos de egreso. */
         const populateExpenseConceptsDropdown = () => {
             const select = document.getElementById('expense-concept-select');
+            if (!select) return;
             select.innerHTML = ''; 
             expenseConcepts.forEach(item => {
                 const option = document.createElement('option');
@@ -1510,32 +1575,25 @@
         };
 
 
-        /** Calcula la proyección a 3 meses (clientes + otros ingresos) - NETO DE SOCIOS */
+        /** MODIFICADO: Calcula la proyección a 3 meses (clientes + otros ingresos) - NETO */
         const calculateThreeMonthProjection = () => {
             const projection = Array.from({ length: 3 }, (_, i) => ({
                 month: new Date(new Date().setMonth(new Date().getMonth() + i + 1)).toLocaleString('es-AR', { month: 'long' }),
                 amount: 0,
             }));
-
-            clients.forEach(client => {
-                const { quotaValueArs, partnerCutPercent } = calculatePaymentInfo(client);
-                const netQuotaValue = quotaValueArs * (1 - (partnerCutPercent / 100)); 
-                let assignedCount = 0;
-                (client.quotas || []).forEach(quota => {
-                    if (!quota.isPaid && assignedCount < 3) {
-                        projection[assignedCount].amount += netQuotaValue;
-                        assignedCount++;
-                    }
-                });
-            });
             
-            otherIncomePlans.forEach(plan => {
-                const { quotaValueArs, partnerCutPercent } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
-                const netQuotaValue = quotaValueArs * (1 - (partnerCutPercent / 100)); 
+            const allPlans = [
+                ...clients.map(c => ({ ...c.paymentPlan, quotas: c.quotas })),
+                ...otherIncomePlans.map(p => ({ ...p.paymentPlan, quotas: p.quotas }))
+            ];
+
+            allPlans.forEach(plan => {
+                const { quotaValueArs, partnerCutPercent } = calculatePlanInfo(plan, plan.quotas);
+                const netQuotaValue = quotaValueArs * (1 - (partnerCutPercent / 100)); // Calcular valor NETO
                 let assignedCount = 0;
                 (plan.quotas || []).forEach(quota => {
                     if (!quota.isPaid && assignedCount < 3) {
-                        projection[assignedCount].amount += netQuotaValue;
+                        projection[assignedCount].amount += netQuotaValue; // Sumar valor NETO
                         assignedCount++;
                     }
                 });
@@ -1547,20 +1605,21 @@
         /** Filtra los egresos para el mes y año en curso. */
         const getCurrentMonthExpenses = () => {
             const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
+            // CORREGIDO: Usar UTC para consistencia con los ingresos
+            const currentMonth = now.getUTCMonth();
+            const currentYear = now.getUTCFullYear();
             
             return expenses.filter(exp => {
                 const expDate = new Date(exp.date);
-                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
+                return expDate.getUTCMonth() === currentMonth && expDate.getUTCFullYear() === currentYear;
             });
         };
         
         /** Calcula los ingresos totales (NETO DE SOCIOS) que se pagaron este mes. */
         const calculateCurrentMonthIncome = () => {
             const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
+            const currentMonth = now.getUTCMonth();
+            const currentYear = now.getUTCFullYear();
             let totalIncome = 0;
             
             clients.forEach(client => {
@@ -1569,7 +1628,7 @@
                 (client.quotas || []).forEach(quota => {
                     if (quota.isPaid && quota.paidDate) {
                         const paidDate = new Date(quota.paidDate);
-                        if (paidDate.getMonth() === currentMonth && paidDate.getFullYear() === currentYear) {
+                        if (paidDate.getUTCMonth() === currentMonth && paidDate.getUTCFullYear() === currentYear) {
                             totalIncome += netQuotaValue; 
                         }
                     }
@@ -1582,7 +1641,7 @@
                 (plan.quotas || []).forEach(quota => {
                     if (quota.isPaid && quota.paidDate) {
                         const paidDate = new Date(quota.paidDate);
-                        if (paidDate.getMonth() === currentMonth && paidDate.getFullYear() === currentYear) {
+                        if (paidDate.getUTCMonth() === currentMonth && paidDate.getUTCFullYear() === currentYear) {
                             totalIncome += netQuotaValue; 
                         }
                     }
@@ -1592,11 +1651,11 @@
             return totalIncome;
         };
         
-        /** Calcula la parte de socios pagada este mes. */
+        /** MODIFICADO: Calcula la parte de socios pagada este mes. */
         const calculateCurrentMonthPartnerCut = () => {
             const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
+            const currentMonth = now.getUTCMonth();
+            const currentYear = now.getUTCFullYear();
             let totalCut = 0;
 
             clients.forEach(client => {
@@ -1605,7 +1664,7 @@
                 (client.quotas || []).forEach(quota => {
                     if (quota.isPaid && quota.paidDate) {
                         const paidDate = new Date(quota.paidDate);
-                        if (paidDate.getMonth() === currentMonth && paidDate.getFullYear() === currentYear) {
+                        if (paidDate.getUTCMonth() === currentMonth && paidDate.getUTCFullYear() === currentYear) {
                             totalCut += partnerCutAmount; 
                         }
                     }
@@ -1618,7 +1677,7 @@
                 (plan.quotas || []).forEach(quota => {
                     if (quota.isPaid && quota.paidDate) {
                         const paidDate = new Date(quota.paidDate);
-                        if (paidDate.getMonth() === currentMonth && paidDate.getFullYear() === currentYear) {
+                        if (paidDate.getUTCMonth() === currentMonth && paidDate.getUTCFullYear() === currentYear) {
                             totalCut += partnerCutAmount; 
                         }
                     }
@@ -1629,31 +1688,76 @@
         };
 
         
-        /** Calcula el valor total de TODAS las cuotas pendientes (NETO DE SOCIOS). */
-        const calculateTotalPendingValue = () => {
-            let totalPending = 0;
-            
-            clients.forEach(client => {
-                const { quotaValueArs, paidCount, partnerCutPercent } = calculatePaymentInfo(client);
-                const netQuotaValue = quotaValueArs * (1 - (partnerCutPercent / 100));
-                const totalQuotas = client.paymentPlan ? client.paymentPlan.totalQuotas : 0;
-                const pendingQuotas = totalQuotas - paidCount;
-                if (pendingQuotas > 0) {
-                    totalPending += pendingQuotas * netQuotaValue; 
+        /** Calcula el valor NETO pendiente SÓLO de este mes. */
+        const calculateCurrentMonthPendingValue = () => {
+            const now = new Date();
+            const currentMonth = now.getUTCMonth(); // 0-11
+            const currentYear = now.getUTCFullYear();
+            let totalPendingThisMonth = 0;
+
+            const allPlans = [
+                ...clients.map(c => ({ ...c.paymentPlan, quotas: c.quotas })),
+                ...otherIncomePlans.map(p => ({ ...p.paymentPlan, quotas: p.quotas }))
+            ];
+
+            allPlans.forEach(plan => {
+                if (!plan.startMonth || !plan.totalQuotas || plan.totalQuotas === 0) {
+                    return;
+                }
+
+                const startDate = new Date(plan.startMonth + '-02T12:00:00Z');
+                const startMonth = startDate.getUTCMonth();
+                const startYear = startDate.getUTCFullYear();
+
+                // Calcular el índice de la cuota para el mes actual
+                const monthsDiff = (currentYear - startYear) * 12 + (currentMonth - startMonth);
+
+                if (monthsDiff >= 0 && monthsDiff < plan.totalQuotas) {
+                    // Este plan tiene una cuota para el mes actual
+                    const currentQuota = plan.quotas[monthsDiff];
+                    
+                    if (currentQuota && !currentQuota.isPaid) {
+                        // ¡Está pendiente! Calcular su valor neto.
+                        const { quotaValueArs, partnerCutPercent } = calculatePlanInfo(plan, plan.quotas);
+                        const netQuotaValue = quotaValueArs * (1 - (partnerCutPercent / 100));
+                        totalPendingThisMonth += netQuotaValue;
+                    }
                 }
             });
+
+            return totalPendingThisMonth;
+        };
+
+        /**
+         * NUEVO: Helper para chequear el estado de pago de la cuota del mes actual de un plan.
+         * @returns {'paid' | 'pending' | 'n/a'}
+         */
+        const getCurrentMonthQuotaStatus = (plan) => {
+            if (!plan.startMonth || !plan.totalQuotas || plan.totalQuotas === 0) {
+                return 'n/a'; // No tiene plan
+            }
             
-            otherIncomePlans.forEach(plan => {
-                const { quotaValueArs, paidCount, partnerCutPercent } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
-                const netQuotaValue = quotaValueArs * (1 - (partnerCutPercent / 100));
-                const totalQuotas = plan.paymentPlan.totalQuotas;
-                const pendingQuotas = totalQuotas - paidCount;
-                if (pendingQuotas > 0) {
-                    totalPending += pendingQuotas * netQuotaValue; 
+            const now = new Date();
+            const currentMonth = now.getUTCMonth();
+            const currentYear = now.getUTCFullYear();
+            
+            const startDate = new Date(plan.startMonth + '-02T12:00:00Z');
+            const startMonth = startDate.getUTCMonth();
+            const startYear = startDate.getUTCFullYear();
+
+            const monthsDiff = (currentYear - startYear) * 12 + (currentMonth - startMonth);
+
+            if (monthsDiff >= 0 && monthsDiff < plan.totalQuotas) {
+                // Tiene cuota este mes
+                const currentQuota = plan.quotas[monthsDiff];
+                if (currentQuota && currentQuota.isPaid) {
+                    return 'paid';
+                } else {
+                    return 'pending';
                 }
-            });
+            }
             
-            return totalPending;
+            return 'n/a'; // El plan no tiene cuota este mes (ya terminó o no empezó)
         };
 
 
@@ -1664,8 +1768,6 @@
         /** RENDERIZA: Panel de Inicio (Dashboard). */
         const renderDashboard = () => {
             const container = document.getElementById('dashboard');
-            
-            // CORRECCIÓN: Renderizar siempre, aunque los datos no estén listos
             if (!container) return;
             
             const totalClients = clients.length;
@@ -1683,9 +1785,11 @@
             const totalRealExpensesThisMonth = currentMonthRealExpenses.reduce((sum, exp) => sum + exp.amount, 0);
             
             const totalIncomeThisMonth = calculateCurrentMonthIncome();
+            // MODIFICADO: Llamar a la nueva función de "Monto Socios"
             const totalPartnerCutThisMonth = calculateCurrentMonthPartnerCut();
             const totalExpensesThisMonth = totalRealExpensesThisMonth + totalPartnerCutThisMonth;
-            const totalPendingValue = calculateTotalPendingValue();
+            
+            const totalPendingValueThisMonth = calculateCurrentMonthPendingValue();
 
             
             const expensesHistoryHtml = currentMonthRealExpenses.length > 0 ? currentMonthRealExpenses.map(exp => `
@@ -1759,12 +1863,12 @@
                             <p class="text-4xl font-extrabold text-red-600">${formatCurrency(totalPartnerCutThisMonth)}</p>
                         </div>
                         <div class="card p-5 text-center transition-transform transform hover:scale-[1.02] border-yellow-400 border-l-4">
-                            <p class="text-sm font-semibold text-gray-500">Pendiente Neto <span class="text-xs font-normal text-gray-400">(Valor Total)</span></p>
-                            <p class="text-4xl font-extrabold text-yellow-600">${formatCurrency(totalPendingValue)}</p>
+                            <p class="text-sm font-semibold text-gray-500">Pendiente Neto <span class="text-xs font-normal text-gray-400">(Mes en curso)</span></p>
+                            <p class="text-4xl font-extrabold text-yellow-600">${formatCurrency(totalPendingValueThisMonth)}</p>
                         </div>
                     </div>
 
-                    <!-- Proyección de Ingresos (Neto) -->
+                    <!-- MODIFICADO: Proyección de Ingresos Netos -->
                     <div class="card p-6">
                         <h3 class="text-xl font-semibold text-[var(--primary-color)] mb-4 border-b pb-2">Proyección de Ingresos Netos (3 meses)</h3>
                         <div class="overflow-x-auto">
@@ -1896,11 +2000,23 @@
                 (c.expedientes || []).some(e => e.toLowerCase().includes(searchTerm.toLowerCase()))
             );
             const clientRows = filteredClients.map(client => {
-                const { paidCount, progressPercent } = calculatePaymentInfo(client);
-                const totalQuotas = client.paymentPlan ? client.paymentPlan.totalQuotas : 0;
-                const statusColor = (totalQuotas > 0 && progressPercent === 100) ? 'bg-green-100 text-green-700' : 
-                                    (totalQuotas > 0) ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700';
-                const quotaText = totalQuotas > 0 ? `${paidCount} / ${totalQuotas} Cuotas` : "Sin Plan";
+                // MODIFICADO: Lógica de color de estado mensual
+                const monthStatus = getCurrentMonthQuotaStatus(client.paymentPlan ? { ...client.paymentPlan, quotas: client.quotas } : {});
+                let statusColor, quotaText;
+
+                switch (monthStatus) {
+                    case 'paid':
+                        statusColor = 'bg-green-100 text-green-700';
+                        quotaText = 'Pagado este mes';
+                        break;
+                    case 'pending':
+                        statusColor = 'bg-red-100 text-red-700';
+                        quotaText = 'Pendiente este mes';
+                        break;
+                    default: // 'n/a'
+                        statusColor = 'bg-gray-100 text-gray-700';
+                        quotaText = 'Sin cuota este mes';
+                }
 
                 return `
                     <li onclick="openClientDetail('${client.id}', 'payments')" class="card p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-all duration-300 transform hover:scale-[1.01] mb-2">
@@ -1926,9 +2042,23 @@
                 p.concept.toLowerCase().includes(searchTerm.toLowerCase())
             );
             const otherIncomeRows = filteredOtherIncomes.map(plan => {
-                const { paidCount, progressPercent } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
-                const totalQuotas = plan.paymentPlan.totalQuotas;
-                const statusColor = progressPercent === 100 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+                // MODIFICADO: Lógica de color de estado mensual
+                const monthStatus = getCurrentMonthQuotaStatus(plan.paymentPlan ? { ...plan.paymentPlan, quotas: plan.quotas } : {});
+                let statusColor, quotaText;
+
+                switch (monthStatus) {
+                    case 'paid':
+                        statusColor = 'bg-green-100 text-green-700';
+                        quotaText = 'Pagado este mes';
+                        break;
+                    case 'pending':
+                        statusColor = 'bg-red-100 text-red-700';
+                        quotaText = 'Pendiente este mes';
+                        break;
+                    default: // 'n/a'
+                        statusColor = 'bg-gray-100 text-gray-700';
+                        quotaText = 'Sin cuota este mes';
+                }
 
                 return `
                     <li onclick="openOtherIncomeDetail('${plan.id}')" class="card p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-all duration-300 transform hover:scale-[1.01] mb-2">
@@ -1938,7 +2068,7 @@
                         </div>
                         <div class="text-right ml-4">
                             <span class="text-sm font-bold block ${statusColor} px-3 py-1 rounded-full shadow-inner">
-                                ${paidCount} / ${totalQuotas} Cuotas
+                                ${quotaText}
                             </span>
                         </div>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -2010,8 +2140,9 @@
         window.openClientDetail = (clientId, originView) => {
             currentClientDetailId = clientId;
             currentOtherIncomeDetailId = null;
-            renderClientDetail(clientId, originView);
+            // CORREGIDO: Invertir el orden
             openFullPanel('client-detail-panel');
+            renderClientDetail(clientId, originView);
         };
         
         /** Renderiza el detalle de un cliente específico. */
@@ -2027,17 +2158,13 @@
             const { totalUnits = 0, totalQuotas = 0, unit = 'N/A' } = client.paymentPlan || {};
 
             document.getElementById('client-detail-name').textContent = client.fullName;
-            document.getElementById('client-detail-expedientes').innerHTML = (client.expedientes || []).map(exp => `
-                <span class="inline-block bg-gray-100 px-3 py-1 rounded-full text-sm font-mono text-[var(--primary-color)] cursor-pointer hover:bg-gray-200 transition-colors mr-2 mb-1"
-                      onclick="event.stopPropagation(); copyToClipboard('${exp}', 'Expediente ${exp} copiado!')">
-                    ${exp}
-                </span>
-            `).join('');
+            // MODIFICADO: Expedientes como texto simple
+            document.getElementById('client-detail-expedientes').textContent = (client.expedientes || []).join(', ');
             
             document.getElementById('client-notes').value = client.notes || '';
 
             // Renderizar Plan de Pagos
-            document.getElementById('plan-units').textContent = `${totalUnits.toFixed(2)}`;
+            document.getElementById('plan-units').textContent = `${totalUnits.toString().replace('.', ',')}`; // Mostrar coma
             document.getElementById('plan-unit-type').textContent = unit;
             document.getElementById('plan-total-quotas').textContent = totalQuotas;
             document.getElementById('plan-partner-cut').textContent = partnerCutPercent || 0;
@@ -2072,15 +2199,25 @@
                     const isPaid = quota.isPaid;
                     const statusBg = isPaid ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200';
                     const statusText = isPaid ? 'Pagada' : 'Pendiente';
-                    const paidDate = isPaid && quota.paidDate ? new Date(quota.paidDate).toLocaleDateString('es-AR') : 'N/A';
-                    const valueDisplay = `${quotaValueUnits.toFixed(2)} ${unit} (${formatCurrency(quotaValueArs)})`;
+                    const paidDate = isPaid && quota.paidDate ? new Date(quota.paidDate).toLocaleDateString('es-AR', { timeZone: 'UTC' }) : 'N/A';
+                    const valueDisplay = `${quotaValueUnits.toFixed(2).replace('.', ',')} ${unit} (${formatCurrency(quotaValueArs)})`;
+
+                    // MODIFICADO: Añadir el mes/año de la cuota
+                    const startDate = client.paymentPlan.startMonth ? new Date(client.paymentPlan.startMonth + '-02T12:00:00Z') : null;
+                    let monthYear = '';
+                    if (startDate) {
+                      const quotaDate = new Date(startDate);
+                      quotaDate.setUTCMonth(startDate.getUTCMonth() + (quota.index - 1));
+                      monthYear = quotaDate.toLocaleString('es-AR', { timeZone: 'UTC', month: 'long', year: 'numeric' });
+                      monthYear = ' - ' + monthYear.charAt(0).toUpperCase() + monthYear.slice(1);
+                    }
 
                     return `
                         <div class="flex items-center justify-between p-3 rounded-lg shadow-sm transition-all duration-200 ${statusBg} border border-gray-200">
                             <div class="flex items-center space-x-4">
                                 <span class="text-xl font-extrabold w-8 text-center text-[var(--primary-color)]">${quota.index}</span>
                                 <div>
-                                    <p class="text-sm font-semibold">Cuota #${quota.index}</p>
+                                    <p class="text-sm font-semibold">Cuota #${quota.index}<span class="text-xs font-normal text-gray-500">${monthYear}</span></p>
                                     <p class="text-xs text-gray-600">${valueDisplay}</p>
                                 </div>
                             </div>
@@ -2104,8 +2241,9 @@
         window.openOtherIncomeDetail = (planId) => {
             currentClientDetailId = null;
             currentOtherIncomeDetailId = planId;
-            renderOtherIncomeDetail(planId);
+            // CORREGIDO: Invertir el orden
             openFullPanel('other-income-detail-panel');
+            renderOtherIncomeDetail(planId);
         };
 
         /** Renderiza el detalle de un plan de "Otro Ingreso". */
@@ -2123,7 +2261,7 @@
             document.getElementById('other-income-detail-name').textContent = plan.concept;
 
             // Renderizar Plan de Pagos
-            document.getElementById('other-income-plan-units').textContent = `${totalUnits.toFixed(2)}`;
+            document.getElementById('other-income-plan-units').textContent = `${totalUnits.toString().replace('.', ',')}`; // Mostrar coma
             document.getElementById('other-income-plan-unit-type').textContent = unit;
             document.getElementById('other-income-plan-total-quotas').textContent = totalQuotas;
             document.getElementById('other-income-partner-cut').textContent = partnerCutPercent || 0;
@@ -2135,15 +2273,25 @@
                 const isPaid = quota.isPaid;
                 const statusBg = isPaid ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200';
                 const statusText = isPaid ? 'Pagada' : 'Pendiente';
-                const paidDate = isPaid && quota.paidDate ? new Date(quota.paidDate).toLocaleDateString('es-AR') : 'N/A';
-                const valueDisplay = `${quotaValueUnits.toFixed(2)} ${unit} (${formatCurrency(quotaValueArs)})`;
+                const paidDate = isPaid && quota.paidDate ? new Date(quota.paidDate).toLocaleDateString('es-AR', { timeZone: 'UTC' }) : 'N/A';
+                const valueDisplay = `${quotaValueUnits.toFixed(2).replace('.', ',')} ${unit} (${formatCurrency(quotaValueArs)})`;
+                
+                // MODIFICADO: Añadir el mes/año de la cuota
+                const startDate = plan.paymentPlan.startMonth ? new Date(plan.paymentPlan.startMonth + '-02T12:00:00Z') : null;
+                let monthYear = '';
+                if (startDate) {
+                  const quotaDate = new Date(startDate);
+                  quotaDate.setUTCMonth(startDate.getUTCMonth() + (quota.index - 1));
+                  monthYear = quotaDate.toLocaleString('es-AR', { timeZone: 'UTC', month: 'long', year: 'numeric' });
+                  monthYear = ' - ' + monthYear.charAt(0).toUpperCase() + monthYear.slice(1);
+                }
 
                 return `
                     <div class="flex items-center justify-between p-3 rounded-lg shadow-sm transition-all duration-200 ${statusBg} border border-gray-200">
                         <div class="flex items-center space-x-4">
                             <span class="text-xl font-extrabold w-8 text-center text-[var(--primary-color)]">${quota.index}</span>
                             <div>
-                                <p class="text-sm font-semibold">Cuota #${quota.index}</p>
+                                <p class="text-sm font-semibold">Cuota #${quota.index}<span class="text-xs font-normal text-gray-500">${monthYear}</span></p>
                                 <p class="text-xs text-gray-600">${valueDisplay}</p>
                             </div>
                         </div>
@@ -2167,7 +2315,6 @@
         // =================================================================================
 
         document.addEventListener('DOMContentLoaded', () => {
-            // CORRECCIÓN: Iniciar Firebase, y los listeners se encargarán de navegar
             setupFirebase();
         });
 
