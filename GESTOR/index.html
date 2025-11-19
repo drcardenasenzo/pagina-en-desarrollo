@@ -174,18 +174,18 @@
 
     <!-- Contenedor Principal de la Aplicación -->
     <div id="app-container" class="mx-auto max-w-7xl">
-        <header class="bg-white p-4 shadow-lg rounded-xl mb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4 sm:gap-0 z-40 relative">
-            <!-- Header ajustado: Más grande en móviles -->
-            <h1 class="text-xl sm:text-2xl font-bold text-gray-700 flex items-center w-auto whitespace-nowrap overflow-hidden">
-                <!-- Logo más grande en móviles (h-12 w-12) -->
-                <img src="logo.jpg" onerror="this.onerror=null;this.src='https://placehold.co/50x50/1E3A8A/D4AF37?text=GC'" alt="Logo" class="h-12 w-12 sm:h-10 sm:w-10 object-contain mr-2 rounded-lg flex-shrink-0">
-                <div class="flex flex-col sm:flex-row sm:items-baseline">
+        <header class="bg-white p-4 shadow-lg rounded-xl mb-4 flex flex-col lg:flex-row justify-between lg:items-center gap-4 lg:gap-0 z-40 relative">
+            <!-- Header ajustado: Siempre en una línea -->
+            <h1 class="text-lg sm:text-2xl font-bold text-gray-700 flex items-center w-full lg:w-auto whitespace-nowrap overflow-hidden">
+                <!-- Logo -->
+                <img src="logo.jpg" onerror="this.onerror=null;this.src='https://placehold.co/50x50/1E3A8A/D4AF37?text=GC'" alt="Logo" class="h-10 w-10 sm:h-12 sm:w-12 object-contain mr-2 rounded-lg flex-shrink-0">
+                <div class="flex flex-row items-baseline overflow-hidden">
                     <span class="text-[var(--primary-color)] mr-1 sm:mr-2">Gestor</span> 
-                    <span class="text-[var(--secondary-color)]">Cárdenas y Asoc.</span>
+                    <span class="text-[var(--secondary-color)] truncate">Cárdenas y Asociados</span>
                 </div>
             </h1>
             <!-- Contenedor de Navegación -->
-            <nav class="flex flex-row gap-2 w-full sm:w-auto justify-center flex-wrap">
+            <nav class="flex flex-row gap-2 w-full lg:w-auto justify-center flex-wrap">
                 <button onclick="navigate('dashboard')" class="text-xs sm:text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 flex-1 sm:flex-none text-center" id="nav-dashboard">Inicio</button>
                 <button onclick="navigate('clients')" class="text-xs sm:text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 flex-1 sm:flex-none text-center" id="nav-clients">Clientes</button>
                 <button onclick="navigate('payments')" class="text-xs sm:text-sm font-semibold p-2 rounded-lg transition-colors hover:bg-gray-100 flex-1 sm:flex-none text-center" id="nav-payments">Pagos</button>
@@ -679,10 +679,6 @@
         </div>
     </div>
 
-    <!-- Datalist para búsqueda en tareas (NUEVO: Solo Clientes) -->
-    <datalist id="related-entities-list"></datalist>
-
-
     <script type="module">
         // =================================================================================
         // FIREBASE SETUP AND GLOBAL VARIABLES
@@ -938,21 +934,6 @@
             }
         };
 
-        // MODIFICADO: Solo nombre del cliente, NO expedientes
-        const updateTaskDatalist = () => {
-            const datalist = document.getElementById('related-entities-list');
-            if(!datalist) return;
-            datalist.innerHTML = '';
-            
-            clients.forEach(c => {
-                // Opción Nombre Cliente
-                const optionName = document.createElement('option');
-                optionName.value = c.fullName;
-                datalist.appendChild(optionName);
-            });
-        };
-
-
         const setupDataListeners = () => {
             if (!isAuthReady) return;
 
@@ -974,10 +955,10 @@
 
             onSnapshot(collection(db, CLIENTS_COLLECTION_PATH), (snapshot) => {
                 clients = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                updateTaskDatalist(); // Actualizar lista para tareas
                 renderDashboard();
                 if (document.getElementById('clients').classList.contains('hidden') === false) renderClientsList();
                 if (document.getElementById('payments').classList.contains('hidden') === false) renderPaymentsList();
+                if (document.getElementById('tasks').classList.contains('hidden') === false) renderTasks(); // Refrescar tareas para lista clientes
                 if (currentClientDetailId) renderClientDetail(currentClientDetailId);
             });
             
@@ -2441,6 +2422,9 @@
                     </div>
                 `).join('');
             };
+            
+            // Generar opciones de datalist inline para evitar problemas de renderizado
+            const clientOptions = clients.map(c => `<option value="${c.fullName}">`).join('');
 
             container.innerHTML = `
                 <div class="max-w-5xl mx-auto space-y-6">
@@ -2453,8 +2437,13 @@
                                 <option value="Enzo">Enzo</option>
                                 <option value="Nora">Nora</option>
                             </select>
-                            <!-- Buscador de Clientes/Expedientes -->
-                            <input type="text" id="task-related-input" list="related-entities-list" placeholder="Cliente/Exp (Opcional)" class="p-2 border rounded-lg w-full md:w-48">
+                            
+                            <!-- CORRECCIÓN: Datalist inline -->
+                            <input type="text" id="task-related-input" list="tasks-client-datalist" placeholder="Cliente/Exp (Opcional)" class="p-2 border rounded-lg w-full md:w-48">
+                            <datalist id="tasks-client-datalist">
+                                ${clientOptions}
+                            </datalist>
+                            
                             <button onclick="addTask()" class="action-btn px-4 py-2 whitespace-nowrap">Agregar</button>
                         </div>
                     </div>
