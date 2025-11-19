@@ -233,7 +233,7 @@
                     <span id="plan-extra-fixed-display" class="hidden text-gray-600 text-sm"> + <span id="plan-extra-fixed-amount" class="font-bold"></span> ARS</span>
                     </p>
                     <p class="text-lg mb-1">Cuotas Totales: <span id="plan-total-quotas" class="font-bold text-gray-800">0</span></p>
-                    <p class="text-lg mb-1">Porcentaje Socio: <span id="plan-partner-cut" class="font-bold text-gray-800">0</span>%</p>
+                    <p class="text-lg mb-1">Porcentaje Socio: <span id="plan-partner-cut" class="font-bold text-gray-800">0</span>% <span id="plan-partner-name" class="text-sm text-gray-500"></span></p>
                     <p class="text-lg font-bold mt-2 border-t pt-2 border-gray-200">Valor Cuota (ARS): <span id="plan-quota-value-ars" class="text-red-600">$ 0.00</span></p>
                 </div>
             </div>
@@ -304,8 +304,17 @@
                         <input type="number" id="plan-total-quotas-input" placeholder="Ej: 36" min="1" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Porcentaje Socio (%)</label>
-                        <input type="number" id="plan-partner-cut" placeholder="Ej: 20" value="0" min="0" max="100" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                         <!-- Selector de Socio y Porcentaje -->
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-sm font-medium">Porcentaje Socio</label>
+                            <button type="button" onclick="openEditPayeesModal()" class="text-xs text-[var(--primary-color)] hover:underline">Gestionar Socios</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" id="plan-partner-cut" placeholder="%" class="w-20 p-3 border border-gray-300 rounded-lg transition-shadow" oninput="this.value = this.value.replace(/[^0-9,]/g, '')">
+                            <select id="plan-partner-select" class="flex-1 p-3 border border-gray-300 rounded-lg transition-shadow">
+                                <option value="">-- Socio --</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 
@@ -338,7 +347,6 @@
                     <input type="text" id="income-custom-concept" placeholder="Especifique el concepto (Ej: Alquiler Local 2)" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow" required>
                 </div>
                 
-                <!-- Nuevos campos solicitados (Optativos) -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                      <div>
                         <label class="block text-sm font-medium mb-1">Teléfono (Optativo)</label>
@@ -376,8 +384,17 @@
                         <input type="number" id="income-total-quotas-input" placeholder="Ej: 12" required min="1" value="1" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Porcentaje Socio (%)</label>
-                        <input type="number" id="income-partner-cut" placeholder="Ej: 20" value="0" min="0" max="100" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-sm font-medium">Porcentaje Socio</label>
+                            <button type="button" onclick="openEditPayeesModal()" class="text-xs text-[var(--primary-color)] hover:underline">Gestionar</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="number" id="income-partner-cut" placeholder="%" value="0" min="0" max="100" class="w-20 p-3 border border-gray-300 rounded-lg transition-shadow">
+                            <select id="income-partner-select" class="flex-1 p-3 border border-gray-300 rounded-lg transition-shadow">
+                                <option value="">-- Socio --</option>
+                                <!-- Se llena dinámicamente -->
+                            </select>
+                        </div>
                     </div>
                 </div>
                 
@@ -408,12 +425,15 @@
 
             <!-- Resumen de Pagos -->
             <div class="card p-6 mb-8">
-                <h3 class="text-xl font-semibold mb-3 text-[var(--primary-color)]">
+                <h3 class="text-xl font-semibold mb-3 flex justify-between items-center text-[var(--primary-color)]">
                     Plan de Ingreso
+                     <button onclick="openEditOtherIncomeModal()" class="text-sm px-3 py-1 bg-[var(--secondary-color)] text-[var(--primary-color)] rounded-full hover:bg-[#C29D32] transition-all duration-200">
+                        Editar Plan
+                    </button>
                 </h3>
                 <p class="text-lg mb-1">Unidades: <span id="other-income-plan-units" class="font-bold text-gray-800">0</span> <span id="other-income-plan-unit-type" class="font-semibold text-[var(--secondary-color)]"></span></p>
                 <p class="text-lg mb-1">Cuotas Totales: <span id="other-income-plan-total-quotas" class="font-bold text-gray-800">0</span></p>
-                <p class="text-lg mb-1">Porcentaje Socio: <span id="other-income-partner-cut" class="font-bold text-gray-800">0</span>%</p>
+                <p class="text-lg mb-1">Porcentaje Socio: <span id="other-income-partner-cut" class="font-bold text-gray-800">0</span>% <span id="other-income-partner-name" class="text-sm text-gray-500"></span></p>
                 <p class="text-lg font-bold mt-2 border-t pt-2 border-gray-200">Valor Cuota (ARS): <span id="other-income-plan-quota-value-ars" class="text-red-600">$ 0.00</span></p>
             </div>
 
@@ -454,10 +474,10 @@
         </div>
     </div>
 
-    <!-- Modal de Edición de Plan de Pagos -->
+    <!-- Modal de Edición de Plan de Pagos (CLIENTES) -->
     <div id="edit-payment-plan-modal" class="modal-overlay">
         <div class="modal-content max-w-lg">
-            <h3 class="text-xl font-bold text-[var(--primary-color)] mb-4">Editar Plan de Pagos</h3>
+            <h3 class="text-xl font-bold text-[var(--primary-color)] mb-4">Editar Plan de Pagos (Cliente)</h3>
             <p class="text-sm text-gray-500 mb-4">Esta acción recalculará el valor de las cuotas futuras (No pagadas).</p>
             <form id="edit-payment-plan-form" class="space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -483,12 +503,66 @@
                         <input type="number" id="edit-plan-total-quotas-input" class="w-full p-3 border border-gray-300 rounded-lg" required min="1">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Porcentaje Socio (%)</label>
-                        <input type="number" id="edit-plan-partner-cut" value="0" min="0" max="100" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                        <!-- NUEVO: Selector de Socio y Porcentaje al editar -->
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-sm font-medium">Porcentaje Socio</label>
+                            <button type="button" onclick="openEditPayeesModal()" class="text-xs text-[var(--primary-color)] hover:underline">Gestionar</button>
+                        </div>
+                        <div class="flex gap-2">
+                             <input type="text" id="edit-plan-partner-cut" value="0" min="0" max="100" class="w-20 p-3 border border-gray-300 rounded-lg transition-shadow" oninput="this.value = this.value.replace(/[^0-9,]/g, '')">
+                             <select id="edit-plan-partner-select" class="flex-1 p-3 border border-gray-300 rounded-lg transition-shadow">
+                                <option value="">-- Socio --</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="flex justify-end space-x-3 mt-6">
                     <button type="button" onclick="closeModal('edit-payment-plan-modal')" class="px-4 py-2 text-[var(--text-color)] hover:bg-gray-100 rounded-lg transition-colors">Cancelar</button>
+                    <button type="submit" class="action-btn px-4 py-2">Aplicar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Edición de Plan (OTROS INGRESOS) -->
+    <div id="edit-other-income-modal" class="modal-overlay">
+        <div class="modal-content max-w-lg">
+            <h3 class="text-xl font-bold text-[var(--primary-color)] mb-4">Editar Otro Ingreso</h3>
+            <p class="text-sm text-gray-500 mb-4">Recalculará cuotas futuras. Puede asignar socio aquí.</p>
+            <form id="edit-other-income-form" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Valor Total</label>
+                        <input type="text" id="edit-income-total-units" class="w-full p-3 border border-gray-300 rounded-lg" required>
+                    </div>
+                     <div>
+                        <label class="block text-sm font-medium mb-1">Tipo Unidad</label>
+                        <select id="edit-income-unit-type-select" class="w-full p-3 border border-gray-300 rounded-lg">
+                            <option value="ARS">ARS (Fijo)</option>
+                            <option value="UMA">UMA</option>
+                            <option value="JUS">JUS</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Cantidad de Cuotas</label>
+                        <input type="number" id="edit-income-total-quotas-input" class="w-full p-3 border border-gray-300 rounded-lg" required min="1">
+                    </div>
+                    <div>
+                         <div class="flex justify-between items-center mb-1">
+                            <label class="block text-sm font-medium">Porcentaje Socio</label>
+                        </div>
+                        <div class="flex gap-2">
+                             <input type="text" id="edit-income-partner-cut" value="0" min="0" max="100" class="w-20 p-3 border border-gray-300 rounded-lg transition-shadow" oninput="this.value = this.value.replace(/[^0-9,]/g, '')">
+                             <select id="edit-income-partner-select" class="flex-1 p-3 border border-gray-300 rounded-lg transition-shadow">
+                                <option value="">-- Socio --</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" onclick="closeModal('edit-other-income-modal')" class="px-4 py-2 text-[var(--text-color)] hover:bg-gray-100 rounded-lg transition-colors">Cancelar</button>
                     <button type="submit" class="action-btn px-4 py-2">Aplicar Cambios</button>
                 </div>
             </form>
@@ -523,8 +597,8 @@
                 <!-- Nuevo Campo: Beneficiario (Pagar a) -->
                 <div>
                     <div class="flex justify-between items-center mb-1">
-                        <label class="block text-sm font-medium">Pagar a (Beneficiario)</label>
-                        <button type="button" onclick="openEditPayeesModal()" class="text-xs text-[var(--primary-color)] hover:underline">Gestionar Beneficiarios</button>
+                        <label class="block text-sm font-medium">Pagar a (Beneficiario/Socio)</label>
+                        <button type="button" onclick="openEditPayeesModal()" class="text-xs text-[var(--primary-color)] hover:underline">Gestionar</button>
                     </div>
                     <select id="expense-payee-select" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                         <option value="">-- Seleccionar Beneficiario --</option>
@@ -570,16 +644,16 @@
     <!-- Modal de Gestión de Beneficiarios (NUEVO) -->
     <div id="edit-payees-modal" class="modal-overlay z-[75]"> 
         <div class="modal-content max-w-md w-full">
-            <h3 class="text-xl font-bold text-[var(--primary-color)] mb-4">Gestionar Beneficiarios</h3>
+            <h3 class="text-xl font-bold text-[var(--primary-color)] mb-4">Gestionar Socios y Beneficiarios</h3>
             
-            <p class="text-sm text-gray-500 mb-2">Personas a las que se les realizan pagos (ej: Socios, Empleados).</p>
+            <p class="text-sm text-gray-500 mb-2">Personas a las que se les realizan pagos o asignan porcentajes.</p>
             
             <div class="space-y-3 max-h-60 overflow-y-auto" id="payees-list-container">
                 <!-- La lista de beneficiarios se renderizará aquí -->
             </div>
             
             <form id="add-payee-form" class="mt-4 flex space-x-2">
-                <input type="text" id="new-payee-input" placeholder="Nuevo nombre (ej: Juan)" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                <input type="text" id="new-payee-input" placeholder="Nuevo nombre (ej: Sabrina)" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                 <button type="submit" class="action-btn px-4 py-2">Agregar</button>
             </form>
             
@@ -652,11 +726,12 @@
             { concept: "Impuestos y Tasas", amount: 0 }
         ];
 
-        // NUEVO: Lista de Beneficiarios por defecto
         let expensePayees = [
             { name: "Nora" },
             { name: "Teo" },
-            { name: "Camila" }
+            { name: "Camila" },
+            { name: "Sabrina" },
+             { name: "Enzo" }
         ];
         
         const SETTINGS_DOC_PATH = "settings/base";
@@ -822,7 +897,11 @@
             document.getElementById('add-other-income-form').reset();
             document.getElementById('income-total-quotas-input').value = 1;
             document.getElementById('income-partner-cut').value = 0;
+            document.getElementById('income-partner-select').value = ""; // Reset
             document.getElementById('income-start-month').value = new Date().toISOString().slice(0, 7);
+            
+            populatePayeesDropdown();
+            
             openFullPanel('add-other-income-panel'); 
         };
 
@@ -866,8 +945,6 @@
                 const optionName = document.createElement('option');
                 optionName.value = c.fullName;
                 datalist.appendChild(optionName);
-                
-                // Ya no se agregan expedientes
             });
         };
 
@@ -1023,6 +1100,7 @@
             const unitType = document.getElementById('income-unit-type-select').value;
             const totalQuotas = parseInt(document.getElementById('income-total-quotas-input').value, 10);
             const partnerCutPercent = parseFloat(document.getElementById('income-partner-cut').value) || 0;
+            const partnerName = document.getElementById('income-partner-select').value || '';
             const startMonth = document.getElementById('income-start-month').value;
             const initialPaidCount = parseInt(document.getElementById('income-initial-paid-quotas').value, 10) || 0;
             
@@ -1044,7 +1122,7 @@
 
             const incomePlanData = {
                 concept, phone, email, expediente,
-                paymentPlan: { unit: unitType, totalUnits, totalQuotas, startMonth, partnerCutPercent },
+                paymentPlan: { unit: unitType, totalUnits, totalQuotas, startMonth, partnerCutPercent, partnerName },
                 quotas: newQuotas
             };
             
@@ -1076,7 +1154,10 @@
             const unitType = document.getElementById('plan-unit-type-select').value;
             const fixedAmount = parseCurrencyInput(document.getElementById('plan-fixed-amount').value) || 0;
             const totalQuotas = parseInt(document.getElementById('plan-total-quotas-input').value, 10) || 0;
-            const partnerCutPercent = parseFloat(document.getElementById('plan-partner-cut').value) || 0;
+            
+            const partnerCutPercent = parseDecimalInput(document.getElementById('plan-partner-cut').value) || 0;
+            const partnerName = document.getElementById('plan-partner-select').value || '';
+
             const startMonth = document.getElementById('plan-start-month').value;
             const initialPaidCount = parseInt(document.getElementById('plan-initial-paid-quotas').value, 10) || 0;
             
@@ -1084,7 +1165,15 @@
 
             const clientData = {
                 fullName, dni, email, phone, caseFacts, expedientes,
-                paymentPlan: { unit: unitType, totalUnits, fixedAmount, totalQuotas, startMonth, partnerCutPercent },
+                paymentPlan: { 
+                    unit: unitType, 
+                    totalUnits, 
+                    fixedAmount, 
+                    totalQuotas, 
+                    startMonth, 
+                    partnerCutPercent, 
+                    partnerName 
+                },
                 lastUpdated: new Date().toISOString()
             };
             
@@ -1133,13 +1222,17 @@
             
             document.getElementById('plan-start-month').value = new Date().toISOString().slice(0, 7);
             document.getElementById('plan-initial-paid-quotas').value = 0;
-            document.getElementById('plan-partner-cut').value = 0;
+            document.getElementById('plan-partner-cut').value = '';
+            document.getElementById('plan-partner-select').value = '';
             document.getElementById('plan-total-units').value = '';
             document.getElementById('plan-fixed-amount').value = '';
             document.getElementById('plan-initial-paid-quotas').disabled = false;
             document.getElementById('plan-initial-paid-quotas').readOnly = false;
             document.getElementById('plan-start-month').disabled = false;
             document.getElementById('plan-start-month').readOnly = false;
+
+            // Recargar selects de socios
+            populatePayeesDropdown();
 
             if (clientId) {
                 const client = clients.find(c => c.id === clientId);
@@ -1159,7 +1252,8 @@
                         document.getElementById('plan-fixed-amount').value = client.paymentPlan.fixedAmount ? `$ ${client.paymentPlan.fixedAmount.toLocaleString('es-AR')}` : '';
                         document.getElementById('plan-unit-type-select').value = client.paymentPlan.unit || 'UMA';
                         document.getElementById('plan-total-quotas-input').value = client.paymentPlan.totalQuotas || 0;
-                        document.getElementById('plan-partner-cut').value = client.paymentPlan.partnerCutPercent || 0;
+                        document.getElementById('plan-partner-cut').value = (client.paymentPlan.partnerCutPercent || 0).toString().replace('.', ',');
+                        document.getElementById('plan-partner-select').value = client.paymentPlan.partnerName || '';
                         document.getElementById('plan-start-month').value = client.paymentPlan.startMonth || '';
                     }
                     const paidCount = (client.quotas || []).filter(q => q.isPaid).length;
@@ -1206,8 +1300,26 @@
             document.getElementById('edit-plan-unit-type-select').value = client.paymentPlan.unit;
             document.getElementById('edit-plan-fixed-amount').value = client.paymentPlan.fixedAmount ? `$ ${client.paymentPlan.fixedAmount.toLocaleString('es-AR')}` : '';
             document.getElementById('edit-plan-total-quotas-input').value = client.paymentPlan.totalQuotas;
-            document.getElementById('edit-plan-partner-cut').value = client.paymentPlan.partnerCutPercent || 0;
+            
+            // Cargar datos de socio en edición
+            document.getElementById('edit-plan-partner-cut').value = (client.paymentPlan.partnerCutPercent || 0).toString().replace('.', ',');
+            document.getElementById('edit-plan-partner-select').value = client.paymentPlan.partnerName || '';
+            
             openModal('edit-payment-plan-modal');
+        };
+        
+        window.openEditOtherIncomeModal = () => {
+            const plan = otherIncomePlans.find(p => p.id === currentOtherIncomeDetailId);
+            if (!plan || !plan.paymentPlan) return;
+            
+            document.getElementById('edit-income-total-units').value = (plan.paymentPlan.totalUnits || 0).toString().replace('.', ',');
+            document.getElementById('edit-income-unit-type-select').value = plan.paymentPlan.unit;
+            document.getElementById('edit-income-total-quotas-input').value = plan.paymentPlan.totalQuotas;
+            
+            document.getElementById('edit-income-partner-cut').value = (plan.paymentPlan.partnerCutPercent || 0).toString().replace('.', ',');
+            document.getElementById('edit-income-partner-select').value = plan.paymentPlan.partnerName || '';
+            
+            openModal('edit-other-income-modal');
         };
 
         document.getElementById('edit-payment-plan-form').addEventListener('submit', async (e) => {
@@ -1220,7 +1332,10 @@
             const newUnitType = document.getElementById('edit-plan-unit-type-select').value;
             const newFixedAmount = parseCurrencyInput(document.getElementById('edit-plan-fixed-amount').value);
             const newTotalQuotas = parseInt(document.getElementById('edit-plan-total-quotas-input').value, 10);
-            const newPartnerCut = parseFloat(document.getElementById('edit-plan-partner-cut').value) || 0;
+            
+            // NUEVO: Capturar socio y porcentaje
+            const newPartnerCut = parseDecimalInput(document.getElementById('edit-plan-partner-cut').value) || 0;
+            const newPartnerName = document.getElementById('edit-plan-partner-select').value || '';
 
             if ((newTotalUnits <= 0 && newFixedAmount <= 0) || newTotalQuotas <= 0) {
                  showToast("Valores inválidos.", 'error');
@@ -1247,11 +1362,61 @@
                 paymentPlan: {
                     ...client.paymentPlan,
                     unit: newUnitType, totalUnits: newTotalUnits, fixedAmount: newFixedAmount,
-                    totalQuotas: newTotalQuotas, partnerCutPercent: newPartnerCut 
+                    totalQuotas: newTotalQuotas, 
+                    partnerCutPercent: newPartnerCut,
+                    partnerName: newPartnerName 
                 },
                 quotas: newQuotas
             });
             closeModal('edit-payment-plan-modal');
+            showToast("Plan actualizado.", 'success');
+        });
+        
+        document.getElementById('edit-other-income-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const planId = currentOtherIncomeDetailId;
+            const plan = otherIncomePlans.find(p => p.id === planId);
+            if (!plan) return;
+            
+            const newTotalUnits = parseDecimalInput(document.getElementById('edit-income-total-units').value);
+            const newUnitType = document.getElementById('edit-income-unit-type-select').value;
+            const newTotalQuotas = parseInt(document.getElementById('edit-income-total-quotas-input').value, 10);
+            
+            const newPartnerCut = parseDecimalInput(document.getElementById('edit-income-partner-cut').value) || 0;
+            const newPartnerName = document.getElementById('edit-income-partner-select').value || '';
+            
+            if (newTotalUnits <= 0 || newTotalQuotas <= 0) {
+                 showToast("Valores inválidos.", 'error');
+                 return;
+            }
+            
+            const oldTotalQuotas = plan.paymentPlan.totalQuotas;
+            const paidCount = (plan.quotas || []).filter(q => q.isPaid).length;
+            let newQuotas = [...(plan.quotas || [])];
+            
+            if (newTotalQuotas > oldTotalQuotas) {
+                 for (let i = oldTotalQuotas; i < newTotalQuotas; i++) {
+                    newQuotas.push({ index: i + 1, isPaid: false, paidDate: null });
+                }
+            } else if (newTotalQuotas < oldTotalQuotas) {
+                 if (newTotalQuotas < paidCount) {
+                    showToast(`No se puede reducir a menos de ${paidCount} cuotas pagadas.`, 'error');
+                    return;
+                }
+                newQuotas = newQuotas.slice(0, newTotalQuotas);
+            }
+            
+            await updateDoc(doc(db, OTHER_INCOME_COLLECTION_PATH, planId), {
+                 paymentPlan: {
+                    ...plan.paymentPlan,
+                    unit: newUnitType, totalUnits: newTotalUnits,
+                    totalQuotas: newTotalQuotas,
+                    partnerCutPercent: newPartnerCut,
+                    partnerName: newPartnerName
+                },
+                quotas: newQuotas
+            });
+            closeModal('edit-other-income-modal');
             showToast("Plan actualizado.", 'success');
         });
 
@@ -1381,22 +1546,39 @@
             select.innerHTML += '<option value="Otro">Otro (Especificar)</option>';
         };
 
-        // NUEVO: Llenar dropdown de beneficiarios
+        // NUEVO: Llenar TODOS los dropdowns de beneficiarios (Egresos y Clientes)
         const populatePayeesDropdown = () => {
-            const select = document.getElementById('expense-payee-select');
-            if (!select) return;
+            const payeeSelects = [
+                document.getElementById('expense-payee-select'),
+                document.getElementById('plan-partner-select'),
+                document.getElementById('edit-plan-partner-select'),
+                document.getElementById('income-partner-select'), // Nuevo
+                document.getElementById('edit-income-partner-select') // Nuevo
+            ];
             
-            // Mantener la opción por defecto
-            select.innerHTML = '<option value="">-- Seleccionar Beneficiario --</option>';
-            
-            if (Array.isArray(expensePayees)) {
-                expensePayees.forEach(item => {
-                    const option = document.createElement('option');
-                    option.value = item.name;
-                    option.textContent = item.name;
-                    select.appendChild(option);
-                });
-            }
+            payeeSelects.forEach(select => {
+                if (!select) return;
+                // Guardar valor actual si existe
+                const currentValue = select.value;
+                
+                // Resetear
+                const defaultText = select.id === 'expense-payee-select' ? '-- Seleccionar Beneficiario --' : '-- Socio --';
+                select.innerHTML = `<option value="">${defaultText}</option>`;
+                
+                if (Array.isArray(expensePayees)) {
+                    expensePayees.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.name;
+                        option.textContent = item.name;
+                        select.appendChild(option);
+                    });
+                }
+                
+                // Restaurar valor si aún existe en la lista
+                if(currentValue && expensePayees.some(p => p.name === currentValue)) {
+                    select.value = currentValue;
+                }
+            });
         };
 
 
@@ -1791,20 +1973,53 @@
             return { paidCount, pendingCount, paidPercent };
         };
         
-        // NUEVO: Calcular total por beneficiario mes actual
+        // NUEVO: Calcular total por beneficiario mes actual (Incluye cortes de socios)
         const calculatePayeeTotals = (currentExpenses) => {
             const totals = {};
-            // Inicializar con 0 para los beneficiarios configurados
+            // Inicializar con 0
             if (Array.isArray(expensePayees)) {
                 expensePayees.forEach(p => totals[p.name] = 0);
             }
             
+            // 1. Sumar Egresos directos
             currentExpenses.forEach(exp => {
                 if (exp.payee) {
                     if (totals[exp.payee] === undefined) totals[exp.payee] = 0;
                     totals[exp.payee] += exp.amount;
                 }
             });
+
+            // 2. Sumar cortes de socios por cuotas pagadas este mes (CLIENTES y OTROS INGRESOS)
+            const now = new Date();
+            const currentMonth = now.getUTCMonth();
+            const currentYear = now.getUTCFullYear();
+
+            const processPartnerCuts = (plans) => {
+                plans.forEach(planDoc => {
+                     const plan = planDoc.paymentPlan;
+                     const quotas = planDoc.quotas;
+
+                     if(!plan || !quotas || !plan.partnerName || !plan.partnerCutPercent) return;
+
+                     const { quotaValueArs } = calculatePlanInfo(plan, quotas);
+                     const cutAmount = quotaValueArs * (plan.partnerCutPercent / 100);
+
+                     quotas.forEach(q => {
+                         if(q.isPaid && q.paidDate) {
+                             const pDate = new Date(q.paidDate);
+                             if(pDate.getUTCMonth() === currentMonth && pDate.getUTCFullYear() === currentYear) {
+                                 const name = plan.partnerName;
+                                 if(totals[name] === undefined) totals[name] = 0;
+                                 totals[name] += cutAmount;
+                             }
+                         }
+                     });
+                });
+            };
+
+            processPartnerCuts(clients);
+            processPartnerCuts(otherIncomePlans);
+
             return totals;
         };
 
@@ -1826,7 +2041,7 @@
             const currentMonthRealExpenses = getCurrentMonthExpenses();
             const totalRealExpensesThisMonth = currentMonthRealExpenses.reduce((sum, exp) => sum + exp.amount, 0);
             
-            // NUEVO: Totales por beneficiario
+            // NUEVO: Totales por beneficiario (Con lógica corregida)
             const payeeTotals = calculatePayeeTotals(currentMonthRealExpenses);
             
             const totalIncomeThisMonth = calculateCurrentMonthIncome();
@@ -2319,7 +2534,7 @@
             }
 
             const { quotaValueArs, paidCount, progressPercent, quotaValueUnits, partnerCutPercent } = calculatePaymentInfo(client);
-            const { totalUnits = 0, totalQuotas = 0, unit = 'N/A', fixedAmount = 0 } = client.paymentPlan || {};
+            const { totalUnits = 0, totalQuotas = 0, unit = 'N/A', fixedAmount = 0, partnerName } = client.paymentPlan || {};
 
             if (document.getElementById('client-detail-name')) document.getElementById('client-detail-name').textContent = client.fullName;
             if (document.getElementById('client-detail-expedientes')) document.getElementById('client-detail-expedientes').textContent = (client.expedientes || []).join(', ');
@@ -2340,6 +2555,12 @@
 
             if (document.getElementById('plan-total-quotas')) document.getElementById('plan-total-quotas').textContent = totalQuotas;
             if (document.getElementById('plan-partner-cut')) document.getElementById('plan-partner-cut').textContent = partnerCutPercent || 0;
+            
+            // NUEVO: Mostrar nombre del socio
+            if (document.getElementById('plan-partner-name')) {
+                document.getElementById('plan-partner-name').textContent = partnerName ? `(${partnerName})` : '';
+            }
+            
             if (document.getElementById('plan-quota-value-ars')) document.getElementById('plan-quota-value-ars').textContent = formatCurrency(quotaValueArs);
 
             const progressIndicator = document.getElementById('progress-indicator');
@@ -2401,7 +2622,7 @@
             }
 
             const { quotaValueArs, paidCount, progressPercent, quotaValueUnits, partnerCutPercent } = calculatePlanInfo(plan.paymentPlan, plan.quotas);
-            const { totalUnits, totalQuotas, unit } = plan.paymentPlan;
+            const { totalUnits, totalQuotas, unit, partnerName } = plan.paymentPlan;
 
             if (document.getElementById('other-income-detail-name')) document.getElementById('other-income-detail-name').textContent = plan.concept;
             const infoContainer = document.getElementById('other-income-extra-info');
@@ -2417,6 +2638,8 @@
             if (document.getElementById('other-income-plan-unit-type')) document.getElementById('other-income-plan-unit-type').textContent = unit;
             if (document.getElementById('other-income-plan-total-quotas')) document.getElementById('other-income-plan-total-quotas').textContent = totalQuotas;
             if (document.getElementById('other-income-partner-cut')) document.getElementById('other-income-partner-cut').textContent = partnerCutPercent || 0;
+            if (document.getElementById('other-income-partner-name')) document.getElementById('other-income-partner-name').textContent = partnerName ? `(${partnerName})` : '';
+
             if (document.getElementById('other-income-plan-quota-value-ars')) document.getElementById('other-income-plan-quota-value-ars').textContent = formatCurrency(quotaValueArs);
 
             const quotasListContainer = document.getElementById('other-income-quotas-list');
