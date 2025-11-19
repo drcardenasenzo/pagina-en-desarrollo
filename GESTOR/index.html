@@ -7,6 +7,8 @@
     <title>Gestor Cárdenas y Asociados | Gestión de Clientes y Pagos</title>
     <!-- Incluir Tailwind CSS desde CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Logo como Favicon -->
+    <link rel="icon" href="logo.jpg">
 
     <style>
         /* Fuentes y Estilos Base de Cárdenas y Asociados */
@@ -495,7 +497,7 @@
 
     <!-- Modal de Registro/Edición de Egresos -->
     <div id="add-expense-modal" class="modal-overlay">
-        <div class="modal-content max-w-md">
+        <div class="modal-content max-w-md w-full">
             <div class="flex justify-between items-center mb-4">
                 <h3 id="expense-modal-title" class="text-xl font-bold text-[var(--primary-color)]">Registrar Egreso</h3>
                 <button onclick="openEditExpenseConceptsModal()" class="text-sm text-[var(--primary-color)] hover:text-[var(--secondary-color)] transition-colors">
@@ -517,6 +519,19 @@
                     <label class="block text-sm font-medium mb-1">Concepto (Otro)</label>
                     <input type="text" id="expense-custom-concept" placeholder="Especifique el concepto" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
                 </div>
+                
+                <!-- Nuevo Campo: Beneficiario (Pagar a) -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-sm font-medium">Pagar a (Beneficiario)</label>
+                        <button type="button" onclick="openEditPayeesModal()" class="text-xs text-[var(--primary-color)] hover:underline">Gestionar Beneficiarios</button>
+                    </div>
+                    <select id="expense-payee-select" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                        <option value="">-- Seleccionar Beneficiario --</option>
+                        <!-- Opciones se cargarán dinámicamente -->
+                    </select>
+                </div>
+
                 <div>
                     <label class="block text-sm font-medium mb-1">Monto (ARS)</label>
                     <input type="text" id="expense-amount" placeholder="$ 0" required min="1" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow" oninput="formatCurrencyInput(event)">
@@ -531,7 +546,7 @@
 
     <!-- Modal de Edición de Conceptos de Egreso -->
     <div id="edit-expense-concepts-modal" class="modal-overlay z-[70]"> 
-        <div class="modal-content max-w-md">
+        <div class="modal-content max-w-md w-full">
             <h3 class="text-xl font-bold text-[var(--primary-color)] mb-4">Editar Conceptos de Egreso</h3>
             
             <p class="text-sm text-gray-500 mb-2">Configure los montos fijos. Un monto de 0 o vacío significa que será variable y se pedirá al registrar.</p>
@@ -551,6 +566,28 @@
             </div>
         </div>
     </div>
+    
+    <!-- Modal de Gestión de Beneficiarios (NUEVO) -->
+    <div id="edit-payees-modal" class="modal-overlay z-[75]"> 
+        <div class="modal-content max-w-md w-full">
+            <h3 class="text-xl font-bold text-[var(--primary-color)] mb-4">Gestionar Beneficiarios</h3>
+            
+            <p class="text-sm text-gray-500 mb-2">Personas a las que se les realizan pagos (ej: Socios, Empleados).</p>
+            
+            <div class="space-y-3 max-h-60 overflow-y-auto" id="payees-list-container">
+                <!-- La lista de beneficiarios se renderizará aquí -->
+            </div>
+            
+            <form id="add-payee-form" class="mt-4 flex space-x-2">
+                <input type="text" id="new-payee-input" placeholder="Nuevo nombre (ej: Juan)" class="w-full p-3 border border-gray-300 rounded-lg transition-shadow">
+                <button type="submit" class="action-btn px-4 py-2">Agregar</button>
+            </form>
+            
+            <div class="flex justify-end space-x-3 mt-6">
+                <button type="button" onclick="closeModal('edit-payees-modal')" class="px-4 py-2 text-[var(--text-color)] hover:bg-gray-100 rounded-lg transition-colors">Cerrar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal de Confirmación Genérico -->
     <div id="confirm-modal" class="modal-overlay z-[80]"> 
@@ -564,7 +601,7 @@
         </div>
     </div>
 
-    <!-- Datalist para búsqueda en tareas (NUEVO) -->
+    <!-- Datalist para búsqueda en tareas (NUEVO: Solo Clientes) -->
     <datalist id="related-entities-list"></datalist>
 
 
@@ -614,6 +651,13 @@
             { concept: "Viáticos", amount: 0 },
             { concept: "Impuestos y Tasas", amount: 0 }
         ];
+
+        // NUEVO: Lista de Beneficiarios por defecto
+        let expensePayees = [
+            { name: "Nora" },
+            { name: "Teo" },
+            { name: "Camila" }
+        ];
         
         const SETTINGS_DOC_PATH = "settings/base";
         const CLIENTS_COLLECTION_PATH = "clients";
@@ -621,6 +665,7 @@
         const OTHER_INCOME_COLLECTION_PATH = "otherIncome";
         const TASKS_COLLECTION_PATH = "tasks";
         const EXPENSE_CONCEPTS_DOC_PATH = "settings/expenseConcepts";
+        const PAYEES_DOC_PATH = "settings/payees";
 
 
         // =================================================================================
@@ -766,7 +811,10 @@
             document.getElementById('custom-concept-wrapper').classList.add('hidden');
             document.getElementById('expense-amount').disabled = false; 
             document.getElementById('expense-amount').readOnly = false;
+            
             populateExpenseConceptsDropdown(); 
+            populatePayeesDropdown(); // Cargar beneficiarios
+
             openModal('add-expense-modal');
         };
         
@@ -807,6 +855,7 @@
             }
         };
 
+        // MODIFICADO: Solo nombre del cliente, NO expedientes
         const updateTaskDatalist = () => {
             const datalist = document.getElementById('related-entities-list');
             if(!datalist) return;
@@ -818,15 +867,7 @@
                 optionName.value = c.fullName;
                 datalist.appendChild(optionName);
                 
-                // Opción Expedientes
-                if(c.expedientes && c.expedientes.length > 0) {
-                    c.expedientes.forEach(exp => {
-                         const optionExp = document.createElement('option');
-                         optionExp.value = exp;
-                         optionExp.label = `Expediente de ${c.fullName}`;
-                         datalist.appendChild(optionExp);
-                    });
-                }
+                // Ya no se agregan expedientes
             });
         };
 
@@ -886,6 +927,20 @@
                 }
                 populateExpenseConceptsDropdown(); 
             });
+
+            // NUEVO: Listener para Beneficiarios
+            onSnapshot(doc(db, PAYEES_DOC_PATH), (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    // Ensure we don't overwrite with undefined if the field is missing
+                    if (data && data.payees) {
+                        expensePayees = data.payees;
+                    }
+                } else {
+                    setDoc(doc(db, PAYEES_DOC_PATH), { payees: expensePayees });
+                }
+                populatePayeesDropdown(); 
+            });
         };
 
         // =================================================================================
@@ -925,6 +980,7 @@
             const isEdit = !!expenseId;
             const conceptSelect = document.getElementById('expense-concept-select').value;
             const customConcept = document.getElementById('expense-custom-concept').value.trim();
+            const payee = document.getElementById('expense-payee-select').value; // Nuevo campo
             const amount = parseCurrencyInput(document.getElementById('expense-amount').value);
 
             let finalConcept = conceptSelect;
@@ -938,6 +994,7 @@
             const expenseData = {
                 date: new Date().toISOString(), 
                 concept: finalConcept,
+                payee: payee || null, // Guardar beneficiario
                 amount: amount
             };
 
@@ -1308,7 +1365,7 @@
 
 
         // =================================================================================
-        // GESTIÓN DE CONCEPTOS DE EGRESO
+        // GESTIÓN DE CONCEPTOS DE EGRESO Y BENEFICIARIOS
         // =================================================================================
 
         const populateExpenseConceptsDropdown = () => {
@@ -1322,6 +1379,24 @@
                 select.appendChild(option);
             });
             select.innerHTML += '<option value="Otro">Otro (Especificar)</option>';
+        };
+
+        // NUEVO: Llenar dropdown de beneficiarios
+        const populatePayeesDropdown = () => {
+            const select = document.getElementById('expense-payee-select');
+            if (!select) return;
+            
+            // Mantener la opción por defecto
+            select.innerHTML = '<option value="">-- Seleccionar Beneficiario --</option>';
+            
+            if (Array.isArray(expensePayees)) {
+                expensePayees.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.name;
+                    option.textContent = item.name;
+                    select.appendChild(option);
+                });
+            }
         };
 
 
@@ -1381,6 +1456,52 @@
                 populateExpenseConceptsDropdown();
             } catch (e) { showToast("Error al guardar.", "error"); }
         };
+        
+        // === LOGICA PARA BENEFICIARIOS (PAYEES) ===
+
+        window.openEditPayeesModal = () => {
+            renderPayeesList();
+            openModal('edit-payees-modal');
+        };
+
+        const renderPayeesList = () => {
+            const container = document.getElementById('payees-list-container');
+            
+            if (!Array.isArray(expensePayees)) {
+                 container.innerHTML = '';
+                 return;
+            }
+            
+            container.innerHTML = expensePayees.map((item, index) => `
+                <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg gap-2">
+                    <span class="text-sm text-gray-700 flex-1">${item.name}</span>
+                    <button onclick="deletePayee(${index})" class="text-red-500 hover:text-red-700 text-sm font-medium">Eliminar</button>
+                </div>
+            `).join('');
+        };
+
+        window.deletePayee = async (index) => {
+            expensePayees.splice(index, 1);
+            try {
+                await setDoc(doc(db, PAYEES_DOC_PATH), { payees: expensePayees });
+                renderPayeesList();
+                populatePayeesDropdown();
+            } catch(e) { showToast("Error al eliminar.", "error"); }
+        };
+
+        document.getElementById('add-payee-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('new-payee-input');
+            const newName = input.value.trim();
+            if (newName && !expensePayees.some(item => item.name === newName)) {
+                const updatedPayees = [...expensePayees, { name: newName }];
+                try {
+                    await setDoc(doc(db, PAYEES_DOC_PATH), { payees: updatedPayees });
+                    input.value = '';
+                } catch (e) { showToast("Error al agregar.", "error"); }
+            }
+        });
+
 
         window.openDeleteExpenseModal = (expenseId) => {
             const expense = expenses.find(e => e.id === expenseId);
@@ -1419,6 +1540,11 @@
                 document.getElementById('custom-concept-wrapper').classList.remove('hidden');
                 document.getElementById('expense-custom-concept').value = expense.concept;
             }
+            
+            // Set Payee
+            const payeeSelect = document.getElementById('expense-payee-select');
+            if (payeeSelect) payeeSelect.value = expense.payee || '';
+
             openModal('add-expense-modal');
         };
 
@@ -1621,7 +1747,8 @@
                      if (d.getUTCMonth() === month && d.getUTCFullYear() === year) monthExpenses += exp.amount;
                 });
                 history.push({
-                    label: date.toLocaleString('es-AR', { month: 'long', year: 'numeric' }),
+                    // MODIFICADO: Meses abreviados (short)
+                    label: date.toLocaleString('es-AR', { month: 'short', year: 'numeric' }),
                     income: monthIncome, expense: monthExpenses, partner: monthPartner, pendingCount: pendingClientsCount
                 });
             }
@@ -1644,6 +1771,42 @@
             }
             return 'n/a'; 
         };
+        
+        // NUEVO: Calcular estadísticas de pagos del mes para clientes
+        const calculateClientMonthStats = () => {
+            let paidCount = 0;
+            let pendingCount = 0;
+            let activeClientsCount = 0; // Clientes con cuota este mes
+
+            clients.forEach(c => {
+                 if (c.paymentPlan && c.quotas) {
+                     const status = getCurrentMonthQuotaStatus({ ...c.paymentPlan, quotas: c.quotas });
+                     if (status === 'paid') paidCount++;
+                     if (status === 'pending') pendingCount++;
+                     if (status !== 'n/a') activeClientsCount++;
+                 }
+            });
+            
+            const paidPercent = activeClientsCount > 0 ? Math.round((paidCount / activeClientsCount) * 100) : 0;
+            return { paidCount, pendingCount, paidPercent };
+        };
+        
+        // NUEVO: Calcular total por beneficiario mes actual
+        const calculatePayeeTotals = (currentExpenses) => {
+            const totals = {};
+            // Inicializar con 0 para los beneficiarios configurados
+            if (Array.isArray(expensePayees)) {
+                expensePayees.forEach(p => totals[p.name] = 0);
+            }
+            
+            currentExpenses.forEach(exp => {
+                if (exp.payee) {
+                    if (totals[exp.payee] === undefined) totals[exp.payee] = 0;
+                    totals[exp.payee] += exp.amount;
+                }
+            });
+            return totals;
+        };
 
         // =================================================================================
         // RENDERIZADO
@@ -1655,14 +1818,16 @@
             
             const totalClients = clients.length;
             const clientsInfo = clients.map(calculatePaymentInfo);
-            const fullyPaidClients = clientsInfo.filter(info => info.progressPercent === 100).length;
-            const pendingClients = totalClients - fullyPaidClients;
-            const fullyPaidPercent = totalClients > 0 ? ((fullyPaidClients / totalClients) * 100).toFixed(0) : 0;
-            const pendingPercent = totalClients > 0 ? ((pendingClients / totalClients) * 100).toFixed(0) : 0;
+            
+            // NUEVO: Estadísticas de pago del mes
+            const { paidCount: clientsPaidThisMonth, pendingCount: clientsPendingThisMonth, paidPercent: clientsPaidPercent } = calculateClientMonthStats();
             
             const projectionData = calculateThreeMonthProjection();
             const currentMonthRealExpenses = getCurrentMonthExpenses();
             const totalRealExpensesThisMonth = currentMonthRealExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            
+            // NUEVO: Totales por beneficiario
+            const payeeTotals = calculatePayeeTotals(currentMonthRealExpenses);
             
             const totalIncomeThisMonth = calculateCurrentMonthIncome();
             const totalPartnerCutThisMonth = calculateCurrentMonthPartnerCut();
@@ -1683,7 +1848,10 @@
             const expensesHistoryHtml = currentMonthRealExpenses.length > 0 ? currentMonthRealExpenses.map(exp => `
                 <tr class="border-b hover:bg-gray-50">
                     <td class="py-3 px-4 text-sm text-gray-700">${new Date(exp.date).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })} hs</td>
-                    <td class="py-3 px-4 text-sm text-gray-700">${exp.concept}</td>
+                    <td class="py-3 px-4 text-sm text-gray-700">
+                        <span class="font-medium text-gray-900">${exp.concept}</span>
+                        ${exp.payee ? `<br><span class="text-xs text-gray-500 bg-gray-100 px-1 rounded">Pagado a: ${exp.payee}</span>` : ''}
+                    </td>
                     <td class="py-3 px-4 text-sm font-bold text-red-600">${formatCurrency(exp.amount)}</td>
                     <td class="py-3 px-4 text-sm text-right">
                         <button onclick="openEditExpenseModal('${exp.id}')" class="p-1 text-blue-600 hover:text-blue-800">
@@ -1695,6 +1863,18 @@
                     </td>
                 </tr>
             `).join('') : `<tr><td colspan="4" class="py-6 px-4 text-center text-gray-500">No hay egresos registrados este mes.</td></tr>`;
+
+            // HTML para totales por beneficiario
+            const payeeTotalsHtml = Object.entries(payeeTotals).length > 0 
+                ? `<div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t pt-4">
+                    ${Object.entries(payeeTotals).map(([name, total]) => `
+                        <div class="text-center sm:text-left">
+                            <p class="text-xs text-gray-500">Total a ${name}</p>
+                            <p class="text-lg font-bold text-gray-800">${formatCurrency(total)}</p>
+                        </div>
+                    `).join('')}
+                   </div>` 
+                : '';
 
             container.innerHTML = `
                 <div class="space-y-6">
@@ -1714,26 +1894,49 @@
                     </div>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- MODIFICADO: Eliminadas las aclaraciones (Mes en curso) -->
                         <div class="card p-5 text-center transition-transform transform hover:scale-[1.02] border-green-400 border-l-4">
-                            <p class="text-sm font-semibold text-gray-500">Ingresos Netos <span class="text-xs font-normal text-gray-400">(Mes en curso)</span></p>
+                            <p class="text-sm font-semibold text-gray-500">Ingresos Netos</p>
                             <p class="text-4xl font-extrabold text-green-600">${formatCurrency(totalIncomeThisMonth)}</p>
                         </div>
                          <div class="card p-5 text-center transition-transform transform hover:scale-[1.02] border-red-400 border-l-4">
-                            <p class="text-sm font-semibold text-gray-500">Egresos Totales <span class="text-xs font-normal text-gray-400">(Mes en curso)</span></p>
+                            <p class="text-sm font-semibold text-gray-500">Egresos Totales</p>
                             <p class="text-4xl font-extrabold text-red-600">${formatCurrency(totalExpensesThisMonth)}</p>
                         </div>
+                        
+                        <!-- NUEVAS TARJETAS DE ESTADO DE CLIENTES -->
+                        <div class="card p-5 text-center transition-transform transform hover:scale-[1.02] border-blue-400 border-l-4">
+                            <p class="text-sm font-semibold text-gray-500">Clientes al Día</p>
+                            <div class="flex justify-center items-end gap-2">
+                                <p class="text-4xl font-extrabold text-blue-600">${clientsPaidThisMonth}</p>
+                                <p class="text-lg font-medium text-blue-400 mb-1">(${clientsPaidPercent}%)</p>
+                            </div>
+                        </div>
+                        <div class="card p-5 text-center transition-transform transform hover:scale-[1.02] border-orange-400 border-l-4">
+                            <p class="text-sm font-semibold text-gray-500">Clientes Deudores</p>
+                            <p class="text-4xl font-extrabold text-orange-600">${clientsPendingThisMonth}</p>
+                        </div>
+                        <!-- FIN NUEVAS TARJETAS -->
+
+                    </div>
+                    
+                    <!-- Mantenemos Pendiente Neto y Monto Socios, pero en grid para que se vea ordenado -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- MODIFICADO: Eliminadas las aclaraciones (Mes en curso) -->
                         <div class="card p-5 text-center transition-transform transform hover:scale-[1.02] border-red-400 border-l-4">
-                            <p class="text-sm font-semibold text-gray-500">Monto Socios <span class="text-xs font-normal text-gray-400">(Mes en curso)</span></p>
+                            <p class="text-sm font-semibold text-gray-500">Monto Socios</p>
                             <p class="text-4xl font-extrabold text-red-600">${formatCurrency(totalPartnerCutThisMonth)}</p>
                         </div>
                         <div class="card p-5 text-center transition-transform transform hover:scale-[1.02] border-yellow-400 border-l-4">
-                            <p class="text-sm font-semibold text-gray-500">Pendiente Neto <span class="text-xs font-normal text-gray-400">(Mes en curso)</span></p>
+                            <p class="text-sm font-semibold text-gray-500">Pendiente Neto</p>
                             <p class="text-4xl font-extrabold text-yellow-600">${formatCurrency(totalPendingValueThisMonth)}</p>
                         </div>
                     </div>
 
+
                     <div class="card p-6">
-                        <h3 class="text-xl font-semibold text-[var(--primary-color)] mb-4 border-b pb-2">Proyección de Ingresos Netos (Solo mi parte)</h3>
+                        <!-- MODIFICADO: Eliminado (Solo mi parte) -->
+                        <h3 class="text-xl font-semibold text-[var(--primary-color)] mb-4 border-b pb-2">Proyección de Ingresos Netos</h3>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
@@ -1751,8 +1954,9 @@
                     </div>
 
                     <div class="card p-6">
+                        <!-- MODIFICADO: Eliminado (Mes en curso) -->
                         <div class="flex flex-col sm:flex-row justify-between items-center mb-4 border-b pb-2 gap-4">
-                            <h3 class="text-xl font-semibold text-[var(--primary-color)]">Historial de Egresos <span class="text-lg font-normal text-gray-400">(Mes en curso)</span></h3>
+                            <h3 class="text-xl font-semibold text-[var(--primary-color)]">Historial de Egresos</h3>
                             <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                                 <button onclick="openEditExpenseConceptsModal()" class="secondary-btn px-4 py-2 text-sm w-full sm:w-auto">Editar Conceptos</button>
                                 <button onclick="openAddExpenseModal()" class="action-btn px-4 py-2 text-sm w-full sm:w-auto">+ Registrar Egreso</button>
@@ -1763,7 +1967,7 @@
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha y Hora</th>
-                                        <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Concepto</th>
+                                        <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Concepto / Beneficiario</th>
                                         <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th>
                                         <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                                     </tr>
@@ -1771,6 +1975,9 @@
                                 <tbody class="bg-white divide-y divide-gray-200">${expensesHistoryHtml}</tbody>
                             </table>
                         </div>
+                        
+                        <!-- NUEVO: Resumen Totales por Beneficiario -->
+                        ${payeeTotalsHtml}
                     </div>
                     
                     <div class="card p-6">
@@ -1811,8 +2018,19 @@
             const clientRows = filteredClients.map(client => {
                 const { paidCount, progressPercent } = calculatePaymentInfo(client);
                 const totalQuotas = client.paymentPlan ? client.paymentPlan.totalQuotas : 0;
-                const statusColor = (totalQuotas > 0 && progressPercent === 100) ? 'bg-green-100 text-green-700' : 
-                                    (totalQuotas > 0) ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700';
+                
+                // MODIFICADO: Lógica de color basada en el mes actual
+                const monthStatus = getCurrentMonthQuotaStatus(client.paymentPlan ? { ...client.paymentPlan, quotas: client.quotas } : {});
+                let statusColor = 'bg-gray-100 text-gray-700'; // Default (Sin cuota activa este mes)
+
+                if (totalQuotas > 0) {
+                    if (monthStatus === 'paid') {
+                        statusColor = 'bg-green-100 text-green-700'; // Pagó este mes
+                    } else if (monthStatus === 'pending') {
+                        statusColor = 'bg-red-100 text-red-700'; // Debe este mes
+                    }
+                }
+                
                 const quotaText = totalQuotas > 0 ? `${paidCount} / ${totalQuotas} Cuotas` : "Sin Plan";
 
                 return `
