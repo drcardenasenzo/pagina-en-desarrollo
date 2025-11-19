@@ -175,11 +175,14 @@
     <!-- Contenedor Principal de la Aplicación -->
     <div id="app-container" class="mx-auto max-w-7xl">
         <header class="bg-white p-4 shadow-lg rounded-xl mb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4 sm:gap-0 z-40 relative">
-            <!-- Header ajustado para una sola línea -->
-            <h1 class="text-base sm:text-2xl font-bold text-gray-700 flex items-center w-auto whitespace-nowrap overflow-hidden">
-                <img src="logo.jpg" onerror="this.onerror=null;this.src='https://placehold.co/40x40/1E3A8A/D4AF37?text=GC'" alt="Logo" class="h-8 w-8 sm:h-10 sm:w-10 object-contain mr-2 rounded-lg flex-shrink-0">
-                <span class="text-[var(--primary-color)] mr-1 sm:mr-2">Gestor</span> 
-                <span class="text-[var(--secondary-color)]">Cárdenas y Asoc.</span>
+            <!-- Header ajustado: Más grande en móviles -->
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-700 flex items-center w-auto whitespace-nowrap overflow-hidden">
+                <!-- Logo más grande en móviles (h-12 w-12) -->
+                <img src="logo.jpg" onerror="this.onerror=null;this.src='https://placehold.co/50x50/1E3A8A/D4AF37?text=GC'" alt="Logo" class="h-12 w-12 sm:h-10 sm:w-10 object-contain mr-2 rounded-lg flex-shrink-0">
+                <div class="flex flex-col sm:flex-row sm:items-baseline">
+                    <span class="text-[var(--primary-color)] mr-1 sm:mr-2">Gestor</span> 
+                    <span class="text-[var(--secondary-color)]">Cárdenas y Asoc.</span>
+                </div>
             </h1>
             <!-- Contenedor de Navegación -->
             <nav class="flex flex-row gap-2 w-full sm:w-auto justify-center flex-wrap">
@@ -210,8 +213,8 @@
             <button onclick="closeFullPanel('client-detail-panel')" class="px-4 py-2 mb-4 rounded-lg bg-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-300 transition-colors">
                 Volver
             </button>
-            <h2 id="client-detail-name" class="text-3xl font-extrabold text-[var(--primary-color)] mb-2"></h2>
-            <p class="text-lg text-gray-600 mb-6">Expediente(s): <span id="client-detail-expedientes" class="font-medium text-gray-700"></span></p>
+            <h2 id="client-detail-name" class="text-3xl font-extrabold text-[var(--primary-color)] mb-2 break-words"></h2>
+            <p class="text-lg text-gray-600 mb-6 break-words">Expediente(s): <span id="client-detail-expedientes" class="font-medium text-gray-700"></span></p>
 
             <!-- Resumen de Pagos e Indicador -->
             <div class="card p-6 mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -421,7 +424,7 @@
             <button onclick="closeFullPanel('other-income-detail-panel')" class="px-4 py-2 mb-4 rounded-lg bg-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-300 transition-colors">
                 Volver
             </button>
-            <h2 id="other-income-detail-name" class="text-3xl font-extrabold text-[var(--primary-color)] mb-6"></h2>
+            <h2 id="other-income-detail-name" class="text-3xl font-extrabold text-[var(--primary-color)] mb-6 break-words"></h2>
             <div id="other-income-extra-info" class="mb-6 text-gray-600 grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm"></div>
 
             <!-- Resumen de Pagos -->
@@ -2084,8 +2087,9 @@
             const filteredPayeeTotals = Object.entries(payeeTotals).filter(([name]) => name.toLowerCase() !== 'enzo');
 
             // HTML para totales por beneficiario
+            // CORREGIDO: En PC se ve en una sola fila, en mobile se apilan
             const payeeTotalsHtml = filteredPayeeTotals.length > 0 
-                ? `<div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t pt-4">
+                ? `<div class="mt-4 grid grid-cols-2 md:grid-cols-5 gap-4 border-t pt-4">
                     ${filteredPayeeTotals.map(([name, total]) => `
                         <div class="text-center sm:text-left">
                             <p class="text-xs text-gray-500">Total a ${name}</p>
@@ -2253,15 +2257,15 @@
                 
                 const quotaText = totalQuotas > 0 ? `${paidCount} / ${totalQuotas} Cuotas` : "Sin Plan";
 
+                // CORREGIDO: Agregado 'break-words whitespace-normal' para que el expediente baje de línea en móviles
                 return `
                     <li onclick="openClientDetail('${client.id}', 'clients')" class="card p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between cursor-pointer hover:bg-gray-50 transition-all duration-300 transform hover:scale-[1.01] mb-2 gap-3">
-                        <div class="flex-1 min-w-0">
-                            <!-- CORREGIDO: items-start para que no se estire el DNI -->
+                        <div class="flex-1 min-w-0 w-full">
                             <div class="flex flex-col items-start sm:flex-row sm:items-center gap-2">
                                 <p class="text-lg font-semibold text-[var(--primary-color)]">${client.fullName}</p>
                                 <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded whitespace-nowrap">DNI: ${client.dni || 'N/A'}</span>
                             </div>
-                            <p class="text-sm text-gray-500 truncate">Exp: ${(client.expedientes || []).join(', ') || 'N/A'}</p>
+                            <p class="text-sm text-gray-500 break-words whitespace-normal mt-1">Exp: ${(client.expedientes || []).join(', ') || 'N/A'}</p>
                             <div class="mt-1 text-xs text-gray-500 flex flex-wrap gap-2">
                                 ${client.phone ? `<span class="flex items-center gap-1">📞 ${client.phone}</span>` : ''}
                                 ${client.email ? `<span class="flex items-center gap-1">✉️ ${client.email}</span>` : ''}
