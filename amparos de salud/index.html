@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amparos de Salud | Cárdenas & Asociados</title>
+    <meta name="description" content="Abogados especialistas en Amparos de Salud. Cárdenas & Asociados: Reclamos por falta de cobertura médica, medicación oncológica y discapacidad.">
+    
+    <!-- FAVICON: El logo de la pestaña -->
+    <link rel="icon" href="logo.jpg" type="image/jpeg">
+
+    <!-- Fuentes Google: Montserrat (Títulos) y Open Sans (Cuerpo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Iconos (FontAwesome CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- VARIABLES DE DISEÑO --- */
+        :root {
+            --azul-profundo: #1E3A8A;
+            --azul-claro: #3B82F6;
+            --dorado-suave: #D4AF37;
+            --dorado-brillante: #FCD34D;
+            --gris-oscuro: #334155;
+            --gris-claro: #F1F5F9;
+            --blanco: #FFFFFF;
+            --whatsapp-color: #25D366;
+            --sombra-suave: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --sombra-fuerte: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transicion: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- ESTILOS BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--blanco);
+            color: var(--gris-oscuro);
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--azul-profundo);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; letter-spacing: -1px; }
+        h2 { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700; }
+        h3 { font-size: 1.5rem; font-weight: 600; }
+
+        p { margin-bottom: 1rem; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .text-center { text-align: center; }
+        .text-white { color: var(--blanco); }
+        .bg-light { background-color: var(--gris-claro); }
+
+        /* --- HEADER & NAV (HAMBURGUESA) --- */
+        header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 0;
+            box-shadow: var(--sombra-suave);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transicion);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--azul-profundo);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        /* Estilo para el logo imagen */
+        .logo-img {
+            height: 50px; /* Ajusta la altura del logo */
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Navegación Desktop */
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gris-oscuro);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            transition: var(--transicion);
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--dorado-suave);
+            transition: var(--transicion);
+        }
+
+        .nav-links a:hover { color: var(--azul-profundo); }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* Hamburguesa Icono */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--azul-profundo);
+        }
+
+        /* Mobile Nav */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                align-items: center;
+                padding: 2rem 0;
+                gap: 1.5rem;
+                box-shadow: var(--sombra-fuerte);
+                clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+                transition: 0.4s ease-in-out;
+            }
+            .nav-links.active {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            }
+            .hamburger { display: block; }
+        }
+
+        /* --- BOTONES --- */
+        .btn-primario {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--dorado-suave) 0%, var(--dorado-brillante) 100%);
+            color: var(--azul-profundo);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800; /* Más negrita */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+            transition: var(--transicion);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primario::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-primario:hover::before { left: 100%; }
+        .btn-primario:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            /* IMPORTANTE: Para que la imagen funcione, guarda tu foto como 'inicio.jpg' en la misma carpeta */
+            background: linear-gradient(rgba(30, 58, 138, 0.85), rgba(30, 58, 138, 0.65)), url('inicio.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--blanco);
+            padding: 9rem 0 7rem;
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        /* Modificación solicitada: Títulos más fuertes */
+        .hero h1 {
+            color: #FFFFFF;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .hero h2 {
+            font-size: clamp(1.2rem, 3vw, 1.8rem); 
+            color: #F8FAFC; 
+            font-weight: 600; 
+            margin-bottom: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            font-family: 'Open Sans', sans-serif; /* Más legible */
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- CARDS & GRID --- */
+        .grid-2 { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-top: 2rem; }
+        .grid-4 { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-top: 2rem; }
+
+        @media (min-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr 1fr; align-items: center; }
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (min-width: 1024px) {
+            .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        .card {
+            background: var(--blanco);
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            box-shadow: var(--sombra-suave);
+            transition: var(--transicion);
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 0;
+            background: var(--azul-profundo);
+            transition: 0.4s ease;
+            z-index: -1;
+            opacity: 0.05;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--sombra-fuerte);
+            border-color: var(--dorado-suave);
+        }
+        
+        .card:hover::after { height: 10px; opacity: 1; }
+
+        .icon-box {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #eef2ff 0%, #dbeafe 100%);
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--azul-profundo);
+            margin-bottom: 1.5rem;
+            transition: var(--transicion);
+        }
+
+        .card:hover .icon-box {
+            background: var(--azul-profundo);
+            color: var(--dorado-suave);
+            transform: rotateY(180deg);
+        }
+
+        /* --- LISTAS DE PROBLEMAS --- */
+        .problem-list { list-style: none; }
+        .problem-list li {
+            padding: 1.2rem;
+            background: var(--blanco);
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            box-shadow: var(--sombra-suave);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transicion);
+            border-left: 5px solid transparent;
+        }
+
+        .problem-list li:hover {
+            transform: translateX(10px);
+            border-left-color: #EF4444; /* Rojo error */
+        }
+
+        .problem-list i { color: #EF4444; font-size: 1.2rem; }
+
+        .mensaje-clave {
+            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+            border-left: 5px solid var(--azul-profundo);
+            padding: 2rem;
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+            position: relative;
+        }
+        .mensaje-clave::before {
+            content: '\f10d';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 10px; right: 20px;
+            font-size: 2rem;
+            color: rgba(30, 58, 138, 0.1);
+        }
+
+        /* --- FAQ MODERNOS --- */
+        .faq-item {
+            background: var(--blanco);
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            box-shadow: var(--sombra-suave);
+            overflow: hidden;
+        }
+        
+        summary {
+            padding: 1.5rem;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--azul-profundo);
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transicion);
+        }
+        
+        summary:hover { background-color: #F8FAFC; }
+        
+        summary::after {
+            content: '\f078'; /* Flecha abajo */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            transition: transform 0.3s;
+        }
+        
+        details[open] summary::after { transform: rotate(180deg); }
+        
+        details p {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--gris-oscuro);
+            border-top: 1px solid #eee;
+            margin-top: 1rem;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- WHATSAPP FLOTANTE --- */
+        .wa-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            width: 65px; height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            text-decoration: none;
+            transition: var(--transicion);
+            animation: pulse 2s infinite;
+        }
+
+        .wa-float:hover { transform: scale(1.1) rotate(10deg); }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--azul-profundo);
+            color: var(--blanco);
+            padding: 4rem 0 2rem;
+            text-align: center;
+            position: relative;
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -50px; left: 0;
+            width: 100%; height: 50px;
+            background: var(--azul-profundo);
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+        }
+
+        /* --- EFECTO SCROLL REVEAL (JS) --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Padding Fix */
+        section { padding: 5rem 0; }
+
+        @media (max-width: 768px) {
+            section { padding: 3rem 0; }
+            .hero { padding: 6rem 0 4rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header con Navegación y Hamburguesa -->
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <!-- Se reemplazó el icono por logo.jpg -->
+                <img src="logo.jpg" alt="Logo Cárdenas & Asociados" class="logo-img">
+                <span>Cárdenas & Asociados</span>
+            </a>
+            
+            <nav>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#hero">Inicio</a></li>
+                    <li><a href="#problemas">Problemas</a></li>
+                    <li><a href="#coberturas">Coberturas</a></li>
+                    <li><a href="#faq">Preguntas</a></li>
+                    <!-- Botón CTA en menú -->
+                    <li>
+                        <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" style="color: var(--azul-profundo); border: 2px solid var(--dorado-suave); padding: 0.5rem 1rem; border-radius: 20px;">
+                            <i class="fab fa-whatsapp"></i> Contacto
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- 🔹 SECCIÓN 1 – HERO -->
+    <section id="hero" class="hero">
+        <div class="container hero-content">
+            <h1>AMPAROS DE SALUD</h1>
+            <h2>Contra Obras Sociales y Prepagas</h2>
+            
+            <!-- Mensaje personalizado en el enlace de WhatsApp -->
+            <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" class="btn-primario">
+                Consultar mi Caso Gratis <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- 🔹 SECCIÓN 2 – PROBLEMAS FRECUENTES -->
+    <section id="problemas" class="bg-light">
+        <div class="container">
+            <h2 class="text-center reveal">¿Te enfrentás a esto?</h2>
+            <div class="grid-2 reveal">
+                <div>
+                    <ul class="problem-list">
+                        <li><i class="fas fa-ban"></i> <span>Negativa de cobertura o afiliación.</span></li>
+                        <li><i class="fas fa-pills"></i> <span>Medicación rechazada o entrega interrumpida.</span></li>
+                        <li><i class="fas fa-clock"></i> <span>Demoras administrativas eternas.</span></li>
+                        <li><i class="fas fa-wheelchair"></i> <span>Tratamientos para discapacidad no autorizados.</span></li>
+                        <li><i class="fas fa-hospital"></i> <span>Rechazo de internaciones o cirugías.</span></li>
+                    </ul>
+                </div>
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <div class="mensaje-clave">
+                        <p style="font-size: 1.1rem; font-weight: 600; color: var(--azul-profundo); margin-bottom: 0;">
+                            "No te quedes con el NO. Estas negativas suelen ser arbitrarias e ilegales. La justicia puede ordenar la cobertura inmediata."
+                        </p>
+                    </div>
+                    <div class="text-center" style="margin-top: 2rem;">
+                        <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" class="btn-primario">
+                            <i class="fab fa-whatsapp"></i> Evaluar Caso
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🔹 SECCIÓN 3 – QUÉ ES UN AMPARO -->
+    <section class="text-center">
+        <div class="container reveal">
+            <div style="max-width: 800px; margin: 0 auto; padding: 3rem; background: white; border-radius: 20px; box-shadow: var(--sombra-fuerte); border-top: 5px solid var(--azul-profundo);">
+                <i class="fas fa-gavel fa-3x" style="color: var(--dorado-suave); margin-bottom: 1rem;"></i>
+                <h2>¿Qué es un Amparo de Salud?</h2>
+                <p>
+                    Es una <strong>acción judicial rápida (exprés)</strong> para proteger tu salud cuando corre peligro.
+                </p>
+                <p>
+                    Mediante una <strong>Medida Cautelar</strong>, los jueces ordenan a la Obra Social o Prepaga cubrir el tratamiento <strong>de inmediato</strong>, sin esperar al final del juicio.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🔹 SECCIÓN 4 – COBERTURAS -->
+    <section id="coberturas" style="background: linear-gradient(to bottom, #f8fafc, #e2e8f0);">
+        <div class="container">
+            <h2 class="text-center mb-4 reveal">Cobertura 100% Garantizada por Ley</h2>
+            <div class="grid-4 reveal">
+                <!-- Card 1 -->
+                <div class="card">
+                    <div class="icon-box"><i class="fas fa-puzzle-piece"></i></div>
+                    <h3>Discapacidad</h3>
+                    <p style="font-size: 0.9rem;">Ley 24.901: Cobertura total en terapias, acompañantes, transporte y educación.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="card">
+                    <div class="icon-box"><i class="fas fa-ribbon"></i></div>
+                    <h3>Oncología</h3>
+                    <p style="font-size: 0.9rem;">Acceso inmediato a medicación oncológica, quimioterapia y estudios complejos (PET).</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="card">
+                    <div class="icon-box"><i class="fas fa-prescription-bottle-alt"></i></div>
+                    <h3>Medicación</h3>
+                    <p style="font-size: 0.9rem;">Cobertura de medicamentos del PMO, patologías crónicas y enfermedades poco frecuentes.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="card">
+                    <div class="icon-box"><i class="fas fa-procedures"></i></div>
+                    <h3>Internación</h3>
+                    <p style="font-size: 0.9rem;">Cirugías, prótesis e internaciones sin topes ni copagos sorpresa.</p>
+                </div>
+            </div>
+            <div class="text-center" style="margin-top: 3rem;">
+                <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" class="btn-primario">
+                    ¡Reclamá lo tuyo ahora!
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🔹 SECCIÓN 6 – URGENCIA -->
+    <section class="text-center" style="background-color: var(--azul-profundo); color: white;">
+        <div class="container reveal">
+            <h2 class="text-white" style="font-size: 2.5rem;"><i class="fas fa-hourglass-half"></i> El tiempo es salud</h2>
+            <p style="font-size: 1.2rem; max-width: 700px; margin: 0 auto 2rem;">
+                Las demoras agravan el daño. No esperes a que sea tarde. Iniciamos las acciones legales en menos de 24hs.
+            </p>
+            <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" class="btn-primario" style="background: white; color: var(--azul-profundo);">
+                Contactar Urgente
+            </a>
+        </div>
+    </section>
+
+    <!-- 🔹 SECCIÓN 8 – FAQ (Acordeón Moderno) -->
+    <section id="faq" class="bg-light">
+        <div class="container" style="max-width: 800px;">
+            <h2 class="text-center mb-4 reveal">Preguntas Frecuentes</h2>
+            
+            <div class="reveal">
+                <details class="faq-item">
+                    <summary>¿Cuánto tarda en salir la cobertura?</summary>
+                    <p>La <strong>Medida Cautelar</strong> suele dictarse en muy pocos días o semanas, obligando a la empresa a cubrir la prestación inmediatamente.</p>
+                </details>
+
+                <details class="faq-item">
+                    <summary>¿Puedo reclamar si solo me lo negaron verbalmente?</summary>
+                    <p>Sí, pero necesitamos una constancia. Te ayudamos a redactar la carta documento o nota para formalizar la negativa y habilitar el amparo.</p>
+                </details>
+
+                <details class="faq-item">
+                    <summary>¿Qué costo tiene?</summary>
+                    <!-- Eliminada la frase sobre costas como solicitado -->
+                    <p>La consulta inicial es gratuita. Trabajamos con honorarios accesibles y planes de pago.</p>
+                </details>
+
+                <details class="faq-item">
+                    <summary>¿Qué documentos necesito?</summary>
+                    <p>Carnet, DNI, último recibo de sueldo (o pago de cuota), orden médica original y la negativa de la empresa.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <h3 style="color: var(--dorado-suave); margin-bottom: 1rem;">Cárdenas & Asociados</h3>
+            <p style="opacity: 0.8;">Especialistas en Derecho de Salud y Amparos.</p>
+            
+            <div style="margin: 2rem 0;">
+                <p style="color: var(--dorado-suave); font-weight: bold;">Atención Personalizada</p>
+            </div>
+
+            <p style="font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
+                © 2024 Todos los derechos reservados.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Botón Flotante WhatsApp -->
+    <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" class="wa-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Scripts para Hamburguesa y Animaciones -->
+    <script>
+        // Toggle Menú Hamburguesa
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        const links = document.querySelectorAll('.nav-links li');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            
+            // Animación del icono
+            const icon = hamburger.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Cerrar menú al hacer clic en un enlace
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                hamburger.querySelector('i').classList.remove('fa-times');
+                hamburger.querySelector('i').classList.add('fa-bars');
+            });
+        });
+
+        // Animación al hacer Scroll (Reveal)
+        window.addEventListener('scroll', reveal);
+
+        function reveal() {
+            var reveals = document.querySelectorAll('.reveal');
+
+            for (var i = 0; i < reveals.length; i++) {
+                var windowheight = window.innerHeight;
+                var revealtop = reveals[i].getBoundingClientRect().top;
+                var revealpoint = 150;
+
+                if (revealtop < windowheight - revealpoint) {
+                    reveals[i].classList.add('active');
+                }
+            }
+        }
+        
+        // Disparar una vez al inicio para elementos ya visibles
+        reveal();
+    </script>
+</body>
+</html>
