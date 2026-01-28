@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-P8H9J343');</script>
+    <!-- End Google Tag Manager -->
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amparos de Salud | Cárdenas & Asociados</title>
@@ -104,14 +112,12 @@
             gap: 12px;
         }
         
-        /* Estilo para el logo imagen */
         .logo-img {
-            height: 50px; /* Ajusta la altura del logo */
+            height: 50px; 
             width: auto;
             object-fit: contain;
         }
 
-        /* Navegación Desktop */
         .nav-links {
             display: flex;
             gap: 2rem;
@@ -143,7 +149,6 @@
         .nav-links a:hover { color: var(--azul-profundo); }
         .nav-links a:hover::after { width: 100%; }
 
-        /* Hamburguesa Icono */
         .hamburger {
             display: none;
             cursor: pointer;
@@ -151,7 +156,6 @@
             color: var(--azul-profundo);
         }
 
-        /* Mobile Nav */
         @media (max-width: 768px) {
             .nav-links {
                 position: absolute;
@@ -183,7 +187,7 @@
             padding: 1rem 2.5rem;
             border-radius: 50px;
             text-decoration: none;
-            font-weight: 800; /* Más negrita */
+            font-weight: 800; 
             text-transform: uppercase;
             letter-spacing: 1px;
             font-size: 0.95rem;
@@ -212,7 +216,6 @@
 
         /* --- HERO SECTION --- */
         .hero {
-            /* IMPORTANTE: Para que la imagen funcione, guarda tu foto como 'inicio.jpg' en la misma carpeta */
             background: linear-gradient(rgba(30, 58, 138, 0.85), rgba(30, 58, 138, 0.65)), url('inicio.jpg');
             background-size: cover;
             background-position: center;
@@ -229,7 +232,6 @@
             animation: fadeInUp 1s ease-out;
         }
 
-        /* Modificación solicitada: Títulos más fuertes */
         .hero h1 {
             color: #FFFFFF;
             text-shadow: 0 4px 8px rgba(0,0,0,0.4);
@@ -243,7 +245,7 @@
             font-weight: 600; 
             margin-bottom: 2.5rem;
             text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-            font-family: 'Open Sans', sans-serif; /* Más legible */
+            font-family: 'Open Sans', sans-serif; 
             letter-spacing: 0.5px;
         }
 
@@ -334,7 +336,7 @@
 
         .problem-list li:hover {
             transform: translateX(10px);
-            border-left-color: #EF4444; /* Rojo error */
+            border-left-color: #EF4444; 
         }
 
         .problem-list i { color: #EF4444; font-size: 1.2rem; }
@@ -381,7 +383,7 @@
         summary:hover { background-color: #F8FAFC; }
         
         summary::after {
-            content: '\f078'; /* Flecha abajo */
+            content: '\f078'; 
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             transition: transform 0.3s;
@@ -458,23 +460,24 @@
             transform: translateY(0);
         }
 
-        /* Responsive Padding Fix */
         section { padding: 5rem 0; }
 
         @media (max-width: 768px) {
             section { padding: 3rem 0; }
             .hero { padding: 6rem 0 4rem; }
         }
-
     </style>
 </head>
 <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P8H9J343"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
 
     <!-- Header con Navegación y Hamburguesa -->
     <header>
         <div class="container nav-container">
             <a href="#" class="logo">
-                <!-- Se reemplazó el icono por logo.jpg -->
                 <img src="logo.jpg" alt="Logo Cárdenas & Asociados" class="logo-img">
                 <span>Cárdenas & Asociados</span>
             </a>
@@ -485,7 +488,6 @@
                     <li><a href="#problemas">Problemas</a></li>
                     <li><a href="#coberturas">Coberturas</a></li>
                     <li><a href="#faq">Preguntas</a></li>
-                    <!-- Botón CTA en menú -->
                     <li>
                         <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" style="color: var(--azul-profundo); border: 2px solid var(--dorado-suave); padding: 0.5rem 1rem; border-radius: 20px;">
                             <i class="fab fa-whatsapp"></i> Contacto
@@ -506,18 +508,17 @@
             <h1>AMPAROS DE SALUD</h1>
             <h2>Contra Obras Sociales y Prepagas</h2>
             
-            <!-- Mensaje personalizado en el enlace de WhatsApp -->
             <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" class="btn-primario">
                 Consultar mi Caso Gratis <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </section>
 
-    <!-- 🔹 SECCIÓN 2 – PROBLEMAS FRECUENTES -->
+    <!-- 🔹 SECCIÓN 2 – PROBLEMAS FRECUENTES (Se quitó la clase 'reveal' para visibilidad inmediata) -->
     <section id="problemas" class="bg-light">
         <div class="container">
-            <h2 class="text-center reveal">¿Te enfrentás a esto?</h2>
-            <div class="grid-2 reveal">
+            <h2 class="text-center">¿Te enfrentás a esto?</h2>
+            <div class="grid-2">
                 <div>
                     <ul class="problem-list">
                         <li><i class="fas fa-ban"></i> <span>Negativa de cobertura o afiliación.</span></li>
@@ -564,25 +565,21 @@
         <div class="container">
             <h2 class="text-center mb-4 reveal">Cobertura 100% Garantizada por Ley</h2>
             <div class="grid-4 reveal">
-                <!-- Card 1 -->
                 <div class="card">
                     <div class="icon-box"><i class="fas fa-puzzle-piece"></i></div>
                     <h3>Discapacidad</h3>
                     <p style="font-size: 0.9rem;">Ley 24.901: Cobertura total en terapias, acompañantes, transporte y educación.</p>
                 </div>
-                <!-- Card 2 -->
                 <div class="card">
                     <div class="icon-box"><i class="fas fa-ribbon"></i></div>
                     <h3>Oncología</h3>
                     <p style="font-size: 0.9rem;">Acceso inmediato a medicación oncológica, quimioterapia y estudios complejos (PET).</p>
                 </div>
-                <!-- Card 3 -->
                 <div class="card">
                     <div class="icon-box"><i class="fas fa-prescription-bottle-alt"></i></div>
                     <h3>Medicación</h3>
                     <p style="font-size: 0.9rem;">Cobertura de medicamentos del PMO, patologías crónicas y enfermedades poco frecuentes.</p>
                 </div>
-                <!-- Card 4 -->
                 <div class="card">
                     <div class="icon-box"><i class="fas fa-procedures"></i></div>
                     <h3>Internación</h3>
@@ -610,7 +607,7 @@
         </div>
     </section>
 
-    <!-- 🔹 SECCIÓN 8 – FAQ (Acordeón Moderno) -->
+    <!-- 🔹 SECCIÓN 8 – FAQ -->
     <section id="faq" class="bg-light">
         <div class="container" style="max-width: 800px;">
             <h2 class="text-center mb-4 reveal">Preguntas Frecuentes</h2>
@@ -628,7 +625,6 @@
 
                 <details class="faq-item">
                     <summary>¿Qué costo tiene?</summary>
-                    <!-- Eliminada la frase sobre costas como solicitado -->
                     <p>La consulta inicial es gratuita. Trabajamos con honorarios accesibles y planes de pago.</p>
                 </details>
 
@@ -645,11 +641,9 @@
         <div class="container">
             <h3 style="color: var(--dorado-suave); margin-bottom: 1rem;">Cárdenas & Asociados</h3>
             <p style="opacity: 0.8;">Especialistas en Derecho de Salud y Amparos.</p>
-            
             <div style="margin: 2rem 0;">
                 <p style="color: var(--dorado-suave); font-weight: bold;">Atención Personalizada</p>
             </div>
-
             <p style="font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
                 © 2024 Todos los derechos reservados.
             </p>
@@ -661,7 +655,6 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- Scripts para Hamburguesa y Animaciones -->
     <script>
         // Toggle Menú Hamburguesa
         const hamburger = document.getElementById('hamburger');
@@ -670,8 +663,6 @@
 
         hamburger.addEventListener('click', () => {
             navLinks.classList.toggle('active');
-            
-            // Animación del icono
             const icon = hamburger.querySelector('i');
             if (navLinks.classList.contains('active')) {
                 icon.classList.remove('fa-bars');
@@ -682,7 +673,6 @@
             }
         });
 
-        // Cerrar menú al hacer clic en un enlace
         links.forEach(link => {
             link.addEventListener('click', () => {
                 navLinks.classList.remove('active');
@@ -696,19 +686,15 @@
 
         function reveal() {
             var reveals = document.querySelectorAll('.reveal');
-
             for (var i = 0; i < reveals.length; i++) {
                 var windowheight = window.innerHeight;
                 var revealtop = reveals[i].getBoundingClientRect().top;
                 var revealpoint = 150;
-
                 if (revealtop < windowheight - revealpoint) {
                     reveals[i].classList.add('active');
                 }
             }
         }
-        
-        // Disparar una vez al inicio para elementos ya visibles
         reveal();
     </script>
 </body>
