@@ -46,6 +46,9 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            /* ELIMINAR RECUADRO AZUL Y RESALTADO */
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent;
         }
 
         html {
@@ -466,6 +469,157 @@
             section { padding: 3rem 0; }
             .hero { padding: 6rem 0 4rem; }
         }
+
+        /* --- ESTILOS DEL FORMULARIO MODAL (TAMAÑOS REDUCIDOS) --- */
+        #modalFormulario {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--blanco);
+            z-index: 2000;
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-container {
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .form-header img { height: 45px; margin-bottom: 0.5rem; }
+        
+        .form-header h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .form-header p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        .form-group { margin-bottom: 1rem; }
+        
+        .form-group label {
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--azul-profundo);
+            margin-bottom: 0.3rem;
+            font-size: 0.95rem;
+        }
+
+        .input-text, select {
+            width: 100%;
+            padding: 0.7rem;
+            border: 2px solid var(--gris-claro);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: var(--transicion);
+        }
+
+        .input-text:focus, select:focus {
+            border-color: var(--azul-claro);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.2rem;
+        }
+
+        .radio-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .radio-option input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .radio-label {
+            display: block;
+            padding: 0.6rem;
+            text-align: center;
+            background: var(--gris-claro);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transicion);
+        }
+
+        .radio-option input:checked + .radio-label {
+            background: var(--azul-profundo);
+            color: white;
+        }
+
+        .error-msg {
+            color: #EF4444;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+            display: none;
+            padding: 0.6rem;
+            background: #FEF2F2;
+            border-radius: 8px;
+            border-left: 4px solid #EF4444;
+        }
+
+        /* Pantalla de Carga dentro del modal */
+        #loadingState {
+            display: none;
+            text-align: center;
+            padding: 1rem 0;
+        }
+        
+        #loadingState h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        #loadingState p { font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid var(--gris-claro);
+            border-top: 4px solid var(--dorado-suave);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .aviso-doc {
+            background: #FFFBEB;
+            border: 1px solid #FCD34D;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--gris-oscuro);
+        }
     </style>
 </head>
 <body>
@@ -474,7 +628,7 @@
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    <!-- Header con Navegación y Hamburguesa -->
+    <!-- Header -->
     <header>
         <div class="container nav-container">
             <a href="#" class="logo">
@@ -489,7 +643,7 @@
                     <li><a href="#coberturas">Coberturas</a></li>
                     <li><a href="#faq">Preguntas</a></li>
                     <li>
-                        <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" style="color: var(--azul-profundo); border: 2px solid var(--dorado-suave); padding: 0.5rem 1rem; border-radius: 20px;">
+                        <a href="#" onclick="abrirFormulario(event)" style="color: var(--azul-profundo); border: 2px solid var(--dorado-suave); padding: 0.5rem 1rem; border-radius: 20px;">
                             <i class="fab fa-whatsapp"></i> Contacto
                         </a>
                     </li>
@@ -508,13 +662,13 @@
             <h1>AMPAROS DE SALUD</h1>
             <h2>Contra Obras Sociales y Prepagas</h2>
             
-            <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" class="btn-primario">
+            <a href="#" onclick="abrirFormulario(event)" class="btn-primario">
                 Consultar mi Caso Gratis <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </section>
 
-    <!-- 🔹 SECCIÓN 2 – PROBLEMAS FRECUENTES (Se quitó la clase 'reveal' para visibilidad inmediata) -->
+    <!-- 🔹 SECCIÓN 2 – PROBLEMAS FRECUENTES -->
     <section id="problemas" class="bg-light">
         <div class="container">
             <h2 class="text-center">¿Te enfrentás a esto?</h2>
@@ -535,8 +689,8 @@
                         </p>
                     </div>
                     <div class="text-center" style="margin-top: 2rem;">
-                        <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" class="btn-primario">
-                            <i class="fab fa-whatsapp"></i> Evaluar Caso
+                        <a href="#" onclick="abrirFormulario(event)" class="btn-primario">
+                            <i class="fab fa-whatsapp"></i> Evaluar Caso Gratis
                         </a>
                     </div>
                 </div>
@@ -587,7 +741,7 @@
                 </div>
             </div>
             <div class="text-center" style="margin-top: 3rem;">
-                <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" class="btn-primario">
+                <a href="#" onclick="abrirFormulario(event)" class="btn-primario">
                     ¡Reclamá lo tuyo ahora!
                 </a>
             </div>
@@ -601,8 +755,8 @@
             <p style="font-size: 1.2rem; max-width: 700px; margin: 0 auto 2rem;">
                 Las demoras agravan el daño. No esperes a que sea tarde. Iniciamos las acciones legales en menos de 24hs.
             </p>
-            <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" class="btn-primario" style="background: white; color: var(--azul-profundo);">
-                Contactar Urgente
+            <a href="#" onclick="abrirFormulario(event)" class="btn-primario" style="background: white; color: var(--azul-profundo);">
+                Contactar Urgente Gratis
             </a>
         </div>
     </section>
@@ -615,22 +769,22 @@
             <div class="reveal">
                 <details class="faq-item">
                     <summary>¿Cuánto tarda en salir la cobertura?</summary>
-                    <p>La <strong>Medida Cautelar</strong> suele dictarse en muy pocos días o semanas, obligando a la empresa a cubrir la prestación inmediatamente.</p>
+                    <p>La <strong>Medida Cautelar</strong> suele dictarse en muy pocos días o semanas, obligando a la entidad de salud a cubrir la prestación inmediatamente. El juicio continúa hasta llegar a la sentencia definitiva, generalmente tarda entre 12 y 18 meses. Nosotros nos encargamos de todo y de reclamar tus derechos.</p>
                 </details>
 
                 <details class="faq-item">
                     <summary>¿Puedo reclamar si solo me lo negaron verbalmente?</summary>
-                    <p>Sí, pero necesitamos una constancia. Te ayudamos a redactar la carta documento o nota para formalizar la negativa y habilitar el amparo.</p>
+                    <p>Sí, pero necesitamos una constancia. Redactamos la carta documento o nota para formalizar la negativa y habilitar el amparo.</p>
                 </details>
 
                 <details class="faq-item">
-                    <summary>¿Qué costo tiene?</summary>
-                    <p>Luego del asesoramiento se le van a indicar los costos y honorarios. Trabajamos con honorarios accesibles y planes de pago.</p>
+                    <summary>¿Cuánto debo gastar para relizar un amparo de salud?</summary>
+                    <p>Para tu tranquilidad, NO DEBÉS ABONAR HONORARIOS A NUESTRO ESTUDIO; en el 99% de los casos es condenada a pagar la entidad de salud. Al ser la obra social o prepaga quién incumple con sus obligaciones legales, los jueces suelen ordenar que sea la entidad de salud quien abone la totalidad del pago de nuestra intervención profesional. Tus únicos gastos son los costos del proceso judicial que, en la mayoría de los casos, son el arancel que cobra el Correo Argentino para enviar una carta documento ($22.500 al 23/04/26) y el Bono Ley ($27.700 al 23/04/26).  </p>
                 </details>
 
                 <details class="faq-item">
-                    <summary>¿Qué documentos necesito?</summary>
-                    <p>Carnet, DNI, último recibo de sueldo (o pago de cuota), orden médica original y la negativa de la empresa.</p>
+                    <summary>¿Qué necesito para que puedan tomar mi caso?</summary>
+                    <p> En primer lugar, debés contactarte por WhatsApp así evaluamos tu caso y te asesoramos sin costo. Recordá que solo trabajamos con obras sociales/prepagas y únicamente en CABA o PBA. La documentación que debés enviarnos (por foto vía WhatsApp) es la siguiente: Carnet, DNI, último recibo de sueldo (o pago de cuota), orden médica original y constancia la negativa de la entidad de salud (solo si la tenés).</p>
                 </details>
             </div>
         </div>
@@ -645,18 +799,235 @@
                 <p style="color: var(--dorado-suave); font-weight: bold;">Atención Personalizada</p>
             </div>
             <p style="font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
-                © 2024 Todos los derechos reservados.
+                © 2026 Todos los derechos reservados.
             </p>
         </div>
     </footer>
 
     <!-- Botón Flotante WhatsApp -->
-    <a href="https://wa.me/5491131166233?text=¡Hola!%20necesito%20asesoramiento%20jurídico%20por%20un%20tema%20de%20salud:%20…" class="wa-float" target="_blank">
+    <a href="#" onclick="abrirFormulario(event)" class="wa-float">
         <i class="fab fa-whatsapp"></i>
     </a>
 
+    <!-- FORMULARIO MODAL -->
+    <div id="modalFormulario">
+        <span class="close-modal" onclick="cerrarFormulario()">&times;</span>
+        <div class="modal-container">
+            <div class="form-header">
+                <img src="logo.jpg" alt="Cárdenas & Asociados">
+                
+                <!-- Contenedor del texto de cabecera que se ocultará -->
+                <div id="formHeaderText">
+                    <h2>Para ser redirigido a WhatsApp</h2>
+                    <p>Completá estos breves datos para iniciar tu consulta.</p>
+                </div>
+            </div>
+
+            <form id="amparoForm">
+                <div class="form-group">
+                    <label>Nombre y Apellido</label>
+                    <input type="text" id="nombreInput" class="input-text" placeholder="Ej: Juan Pérez" required>
+                </div>
+
+                <div class="form-group">
+                    <label>¿Vive o recibe cobertura médica en CABA o PBA?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="zona" id="zonaSi" value="si" onchange="validarZona()">
+                            <label for="zonaSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="zona" id="zonaNo" value="no" onchange="validarZona()">
+                            <label for="zonaNo" class="radio-label">NO</label>
+                        </div>
+                    </div>
+                    <div id="errorZona" class="error-msg">Nosotros solo trabajamos para casos en CABA o PBA.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>¿Tiene obra social o prepaga?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="tieneOS" id="osSi" value="si" onchange="toggleOSName()">
+                            <label for="osSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="tieneOS" id="osNo" value="no" onchange="toggleOSName()">
+                            <label for="osNo" class="radio-label">NO</label>
+                        </div>
+                    </div>
+                    <div id="wrapperOSName" style="display: none; margin-top: 1rem;">
+                        <input type="text" id="nombreOS" class="input-text" placeholder="Nombre de su Obra Social o Prepaga">
+                    </div>
+                    <div id="errorOS" class="error-msg">Nosotros trabajamos únicamente con reclamos a prepagas y obras sociales.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Elegir la opción en la que encuadra su necesidad médica:</label>
+                    <select id="tipoProblema" class="input-text">
+                        <option value="" disabled selected>Seleccione una opción...</option>
+                        <option value="cobertura por discapacidad">Cobertura por discapacidad</option>
+                        <option value="oncología">Oncología</option>
+                        <option value="internación">Internación</option>
+                        <option value="prótesis">Prótesis</option>
+                        <option value="negativa de afiliación">Negativa de afiliación</option>
+                        <option value="baja sin consentimiento">Baja sin consentimiento</option>
+                        <option value="enfermedad crónica">Enfermedad crónica</option>
+                        <option value="cirugías">Cirugías</option>
+                        <option value="aumentos en la cuota">Aumentos en la cuota</option>
+                        <option value="otro problema">Otro problema</option>
+                    </select>
+                </div>
+
+                <button type="button" id="btnSiguiente" class="btn-primario" style="width: 100%; justify-content: center; margin-top: 0.5rem;" onclick="procesarFormulario()">
+                    Siguiente
+                </button>
+            </form>
+
+            <!-- Estado de Carga -->
+            <div id="loadingState">
+                <div class="spinner"></div>
+                <h3 style="color: var(--azul-profundo);">Procesando Solicitud...</h3>
+                <p style="font-weight: 600;">Recordá que el análisis y el asesoramiento sobre tu caso es 100% sin costo.</p>
+                
+                <div class="aviso-doc">
+                    <p><strong>Para lograr una asesoría completa e integral</strong>, recordá que la documentación que debés enviarnos es la siguiente:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Carnet de afiliado.</li>
+                        <li>DNI (frente y dorso).</li>
+                        <li>Último recibo de sueldo (o comprobante de pago de cuota).</li>
+                        <li>Orden médica original.</li>
+                        <li>Constancia de la negativa de la entidad de salud (solo si la tenés).</li>
+                    </ul>
+                </div>
+
+                <div id="waBtnContainer" style="margin-top: 1.5rem; display: none;">
+                    <!-- Se le asigna target="_blank" solo a este enlace final para que abra WhatsApp en una app externa / nueva pestaña -->
+                    <a id="finalWABtn" href="#" target="_blank" class="btn-primario" style="width: 100%; justify-content: center; background: var(--whatsapp-color);">
+                        <i class="fab fa-whatsapp"></i> IR A WHATSAPP
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Toggle Menú Hamburguesa
+        // --- CONTADOR DE LEGAJO ---
+        let nroLegajo = parseInt(localStorage.getItem('legajoActual')) || 456;
+
+        // --- FUNCIONES DEL FORMULARIO ---
+        function abrirFormulario(event) {
+            // Evita que el enlace salte hacia arriba o intente abrir algo raro en el navegador
+            if (event) {
+                event.preventDefault();
+            }
+
+            document.getElementById('modalFormulario').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Reseteo total del formulario cada vez que se abre
+            const form = document.getElementById('amparoForm');
+            form.style.display = 'block';
+            form.reset(); // Limpia todos los inputs y radios
+            
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('waBtnContainer').style.display = 'none';
+            
+            // Mostrar texto de cabecera de nuevo
+            document.getElementById('formHeaderText').style.display = 'block';
+            
+            // Ocultar mensajes de error/opciones dinámicas para arrancar en limpio
+            document.getElementById('wrapperOSName').style.display = 'none';
+            document.getElementById('errorZona').style.display = 'none';
+            document.getElementById('errorOS').style.display = 'none';
+            
+            // Habilitar botón de siguiente
+            const btn = document.getElementById('btnSiguiente');
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }
+
+        function cerrarFormulario() {
+            document.getElementById('modalFormulario').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function validarZona() {
+            const zonaNo = document.getElementById('zonaNo').checked;
+            const errorZona = document.getElementById('errorZona');
+            const btn = document.getElementById('btnSiguiente');
+            if (zonaNo) {
+                errorZona.style.display = 'block';
+                btn.style.opacity = '0.5';
+                btn.disabled = true;
+            } else {
+                errorZona.style.display = 'none';
+                btn.style.opacity = '1';
+                btn.disabled = false;
+            }
+        }
+
+        function toggleOSName() {
+            const osSi = document.getElementById('osSi').checked;
+            const wrapper = document.getElementById('wrapperOSName');
+            const errorOS = document.getElementById('errorOS');
+            const btn = document.getElementById('btnSiguiente');
+            if (osSi) {
+                wrapper.style.display = 'block';
+                errorOS.style.display = 'none';
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            } else {
+                wrapper.style.display = 'none';
+                errorOS.style.display = 'block';
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+            }
+        }
+
+        function procesarFormulario() {
+            const nombre = document.getElementById('nombreInput').value.trim();
+            const zonaSi = document.getElementById('zonaSi').checked;
+            const osSi = document.getElementById('osSi').checked;
+            const nombreOS = document.getElementById('nombreOS').value.trim();
+            const problema = document.getElementById('tipoProblema').value;
+
+            if (!nombre || !zonaSi || !osSi || !nombreOS || !problema) {
+                alert("Por favor, completá todos los campos requeridos para avanzar.");
+                return;
+            }
+
+            // Ocultar texto del header
+            document.getElementById('formHeaderText').style.display = 'none';
+
+            // Cambiar vista a carga
+            document.getElementById('amparoForm').style.display = 'none';
+            document.getElementById('loadingState').style.display = 'block';
+            document.querySelector('.spinner').style.display = 'block';
+
+            // Preparar Mensaje
+            const legajoTexto = `L ${nroLegajo}-26`;
+            const headerMsg = `[${nombre.toUpperCase()} c/ ${nombreOS.toUpperCase()} s/ amparo por ${problema.toUpperCase()}]; legajo de cliente N° ${legajoTexto}.`;
+            const bodyMsg = `Hola, mi nombre es ${nombre}, tengo un problema con ${nombreOS} sobre ${problema} y necesito asesoramiento jurídico urgente. Mi problema concreto consiste en: `;
+            
+            const fullMsg = `${headerMsg}\n\n${bodyMsg}`;
+            const waURL = `https://wa.me/5491131166233?text=${encodeURIComponent(fullMsg)}`;
+
+            // Actualizar Legajo localmente
+            nroLegajo++;
+            localStorage.setItem('legajoActual', nroLegajo);
+
+            // Simular carga de 3 segundos
+            setTimeout(() => {
+                document.querySelector('.spinner').style.display = 'none';
+                const container = document.getElementById('waBtnContainer');
+                const btn = document.getElementById('finalWABtn');
+                container.style.display = 'block';
+                btn.href = waURL;
+            }, 3000);
+        }
+
+        // --- SCRIPTS ORIGINALES ---
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('navLinks');
         const links = document.querySelectorAll('.nav-links li');
@@ -681,9 +1052,7 @@
             });
         });
 
-        // Animación al hacer Scroll (Reveal)
         window.addEventListener('scroll', reveal);
-
         function reveal() {
             var reveals = document.querySelectorAll('.reveal');
             for (var i = 0; i < reveals.length; i++) {
