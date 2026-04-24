@@ -149,8 +149,11 @@
             transition: var(--transicion);
         }
 
-        .nav-links a:hover { color: var(--azul-profundo); }
-        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover,
+        .nav-links a.touch-active { color: var(--azul-profundo); }
+        
+        .nav-links a:hover::after,
+        .nav-links a.touch-active::after { width: 100%; }
 
         .hamburger {
             display: none;
@@ -211,8 +214,12 @@
             transition: 0.5s;
         }
 
-        .btn-primario:hover::before { left: 100%; }
-        .btn-primario:hover {
+        .btn-primario:hover::before,
+        .btn-primario.touch-active::before { left: 100%; }
+        
+        .btn-primario:hover,
+        .btn-primario:active,
+        .btn-primario.touch-active {
             transform: translateY(-3px);
             box-shadow: 0 15px 25px rgba(212, 175, 55, 0.4);
         }
@@ -295,13 +302,15 @@
             opacity: 0.05;
         }
 
-        .card:hover {
+        .card:hover,
+        .card.touch-active {
             transform: translateY(-10px);
             box-shadow: var(--sombra-fuerte);
             border-color: var(--dorado-suave);
         }
         
-        .card:hover::after { height: 10px; opacity: 1; }
+        .card:hover::after,
+        .card.touch-active::after { height: 10px; opacity: 1; }
 
         .icon-box {
             font-size: 3rem;
@@ -316,7 +325,8 @@
             transition: var(--transicion);
         }
 
-        .card:hover .icon-box {
+        .card:hover .icon-box,
+        .card.touch-active .icon-box {
             background: var(--azul-profundo);
             color: var(--dorado-suave);
             transform: rotateY(180deg);
@@ -337,7 +347,8 @@
             border-left: 5px solid transparent;
         }
 
-        .problem-list li:hover {
+        .problem-list li:hover,
+        .problem-list li.touch-active {
             transform: translateX(10px);
             border-left-color: #EF4444; 
         }
@@ -383,7 +394,8 @@
             transition: var(--transicion);
         }
         
-        summary:hover { background-color: #F8FAFC; }
+        summary:hover,
+        summary.touch-active { background-color: #F8FAFC; }
         
         summary::after {
             content: '\f078'; 
@@ -400,6 +412,14 @@
             border-top: 1px solid #eee;
             margin-top: 1rem;
             animation: slideDown 0.3s ease-out;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            letter-spacing: 0.2px;
+        }
+
+        details p strong {
+            color: var(--azul-profundo);
+            font-weight: 700;
         }
 
         @keyframes slideDown {
@@ -427,7 +447,8 @@
             animation: pulse 2s infinite;
         }
 
-        .wa-float:hover { transform: scale(1.1) rotate(10deg); }
+        .wa-float:hover,
+        .wa-float.touch-active { transform: scale(1.1) rotate(10deg); }
 
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
@@ -582,37 +603,6 @@
             border-left: 4px solid #EF4444;
         }
 
-        /* Pantalla de Carga dentro del modal */
-        #loadingState {
-            display: none;
-            text-align: center;
-            padding: 1rem 0;
-        }
-        
-        #loadingState h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
-        #loadingState p { font-size: 0.9rem; margin-bottom: 0.5rem; }
-
-        .spinner {
-            width: 40px; height: 40px;
-            border: 4px solid var(--gris-claro);
-            border-top: 4px solid var(--dorado-suave);
-            border-radius: 50%;
-            margin: 0 auto 1rem;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .aviso-doc {
-            background: #FFFBEB;
-            border: 1px solid #FCD34D;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            text-align: left;
-            font-size: 0.85rem;
-        }
-
         .close-modal {
             position: absolute;
             top: 10px; right: 15px;
@@ -638,19 +628,19 @@
             
             <nav>
                 <ul class="nav-links" id="navLinks">
-                    <li><a href="#hero">Inicio</a></li>
-                    <li><a href="#problemas">Problemas</a></li>
-                    <li><a href="#coberturas">Coberturas</a></li>
-                    <li><a href="#faq">Preguntas</a></li>
+                    <li><a href="#hero" class="touch-interactive">Inicio</a></li>
+                    <li><a href="#problemas" class="touch-interactive">Problemas</a></li>
+                    <li><a href="#coberturas" class="touch-interactive">Coberturas</a></li>
+                    <li><a href="#faq" class="touch-interactive">Preguntas</a></li>
                     <li>
-                        <a href="#" onclick="abrirFormulario(event)" style="color: var(--azul-profundo); border: 2px solid var(--dorado-suave); padding: 0.5rem 1rem; border-radius: 20px;">
+                        <a href="#" class="touch-interactive" onclick="abrirFormulario(event)" style="color: var(--azul-profundo); border: 2px solid var(--dorado-suave); padding: 0.5rem 1rem; border-radius: 20px;">
                             <i class="fab fa-whatsapp"></i> Contacto
                         </a>
                     </li>
                 </ul>
             </nav>
 
-            <div class="hamburger" id="hamburger">
+            <div class="hamburger touch-interactive" id="hamburger">
                 <i class="fas fa-bars"></i>
             </div>
         </div>
@@ -662,7 +652,7 @@
             <h1>AMPAROS DE SALUD</h1>
             <h2>Contra Obras Sociales y Prepagas</h2>
             
-            <a href="#" onclick="abrirFormulario(event)" class="btn-primario">
+            <a href="#" onclick="abrirFormulario(event)" class="btn-primario touch-interactive">
                 Consultar mi Caso Gratis <i class="fas fa-arrow-right"></i>
             </a>
         </div>
@@ -675,11 +665,11 @@
             <div class="grid-2">
                 <div>
                     <ul class="problem-list">
-                        <li><i class="fas fa-ban"></i> <span>Negativa de cobertura o afiliación.</span></li>
-                        <li><i class="fas fa-pills"></i> <span>Medicación rechazada o entrega interrumpida.</span></li>
-                        <li><i class="fas fa-clock"></i> <span>Demoras administrativas eternas.</span></li>
-                        <li><i class="fas fa-wheelchair"></i> <span>Tratamientos para discapacidad no autorizados.</span></li>
-                        <li><i class="fas fa-hospital"></i> <span>Rechazo de internaciones o cirugías.</span></li>
+                        <li class="touch-interactive"><i class="fas fa-ban"></i> <span>Negativa de cobertura o afiliación.</span></li>
+                        <li class="touch-interactive"><i class="fas fa-pills"></i> <span>Medicación rechazada o entrega interrumpida.</span></li>
+                        <li class="touch-interactive"><i class="fas fa-clock"></i> <span>Demoras administrativas eternas.</span></li>
+                        <li class="touch-interactive"><i class="fas fa-wheelchair"></i> <span>Tratamientos para discapacidad no autorizados.</span></li>
+                        <li class="touch-interactive"><i class="fas fa-hospital"></i> <span>Rechazo de internaciones o cirugías.</span></li>
                     </ul>
                 </div>
                 <div style="display: flex; flex-direction: column; justify-content: center;">
@@ -689,7 +679,7 @@
                         </p>
                     </div>
                     <div class="text-center" style="margin-top: 2rem;">
-                        <a href="#" onclick="abrirFormulario(event)" class="btn-primario">
+                        <a href="#" onclick="abrirFormulario(event)" class="btn-primario touch-interactive">
                             <i class="fab fa-whatsapp"></i> Evaluar Caso Gratis
                         </a>
                     </div>
@@ -719,29 +709,29 @@
         <div class="container">
             <h2 class="text-center mb-4 reveal">Cobertura 100% Garantizada por Ley</h2>
             <div class="grid-4 reveal">
-                <div class="card">
+                <div class="card touch-interactive">
                     <div class="icon-box"><i class="fas fa-puzzle-piece"></i></div>
                     <h3>Discapacidad</h3>
                     <p style="font-size: 0.9rem;">Ley 24.901: Cobertura total en terapias, acompañantes, transporte y educación.</p>
                 </div>
-                <div class="card">
+                <div class="card touch-interactive">
                     <div class="icon-box"><i class="fas fa-ribbon"></i></div>
                     <h3>Oncología</h3>
                     <p style="font-size: 0.9rem;">Acceso inmediato a medicación oncológica, quimioterapia y estudios complejos (PET).</p>
                 </div>
-                <div class="card">
+                <div class="card touch-interactive">
                     <div class="icon-box"><i class="fas fa-prescription-bottle-alt"></i></div>
                     <h3>Medicación</h3>
                     <p style="font-size: 0.9rem;">Cobertura de medicamentos del PMO, patologías crónicas y enfermedades poco frecuentes.</p>
                 </div>
-                <div class="card">
+                <div class="card touch-interactive">
                     <div class="icon-box"><i class="fas fa-procedures"></i></div>
                     <h3>Internación</h3>
                     <p style="font-size: 0.9rem;">Cirugías, prótesis e internaciones sin topes ni copagos sorpresa.</p>
                 </div>
             </div>
             <div class="text-center" style="margin-top: 3rem;">
-                <a href="#" onclick="abrirFormulario(event)" class="btn-primario">
+                <a href="#" onclick="abrirFormulario(event)" class="btn-primario touch-interactive">
                     ¡Reclamá lo tuyo ahora!
                 </a>
             </div>
@@ -755,7 +745,7 @@
             <p style="font-size: 1.2rem; max-width: 700px; margin: 0 auto 2rem;">
                 Las demoras agravan el daño. No esperes a que sea tarde. Iniciamos las acciones legales en menos de 24hs.
             </p>
-            <a href="#" onclick="abrirFormulario(event)" class="btn-primario" style="background: white; color: var(--azul-profundo);">
+            <a href="#" onclick="abrirFormulario(event)" class="btn-primario touch-interactive" style="background: white; color: var(--azul-profundo);">
                 Contactar Urgente Gratis
             </a>
         </div>
@@ -768,23 +758,23 @@
             
             <div class="reveal">
                 <details class="faq-item">
-                    <summary>¿Cuánto tarda en salir la cobertura?</summary>
-                    <p>La <strong>Medida Cautelar</strong> suele dictarse en muy pocos días o semanas, obligando a la entidad de salud a cubrir la prestación inmediatamente. El juicio continúa hasta llegar a la sentencia definitiva, generalmente tarda entre 12 y 18 meses. Nosotros nos encargamos de todo y de reclamar tus derechos.</p>
+                    <summary class="touch-interactive">¿Cuánto tarda en salir la cobertura?</summary>
+                    <p>La <strong>Medida Cautelar</strong> suele dictarse en <strong>muy pocos días o semanas</strong>, obligando a la entidad de salud a cubrir la prestación <strong>inmediatamente</strong>. El juicio continúa hasta llegar a la sentencia definitiva, generalmente tarda entre 12 y 18 meses. <strong>Nosotros nos encargamos de todo</strong> y de reclamar tus derechos.</p>
                 </details>
 
                 <details class="faq-item">
-                    <summary>¿Puedo reclamar si solo me lo negaron verbalmente?</summary>
-                    <p>Sí, pero necesitamos una constancia. Redactamos la carta documento o nota para formalizar la negativa y habilitar el amparo.</p>
+                    <summary class="touch-interactive">¿Puedo reclamar si solo me lo negaron verbalmente?</summary>
+                    <p>Sí, pero necesitamos una constancia. Redactamos la <strong>carta documento o nota</strong> para formalizar la negativa y <strong>habilitar el amparo</strong>.</p>
                 </details>
 
                 <details class="faq-item">
-                    <summary>¿Cuánto debo gastar para relizar un amparo de salud?</summary>
-                    <p>Para tu tranquilidad, NO DEBÉS ABONAR HONORARIOS A NUESTRO ESTUDIO; en el 99% de los casos es condenada a pagar la entidad de salud. Al ser la obra social o prepaga quién incumple con sus obligaciones legales, los jueces suelen ordenar que sea la entidad de salud quien abone la totalidad del pago de nuestra intervención profesional. Tus únicos gastos son los costos del proceso judicial que, en la mayoría de los casos, son el arancel que cobra el Correo Argentino para enviar una carta documento ($22.500 al 23/04/26) y el Bono Ley ($27.700 al 23/04/26).  </p>
+                    <summary class="touch-interactive">¿Cuánto debo gastar para relizar un amparo de salud?</summary>
+                    <p>Para tu tranquilidad, <strong>NO DEBÉS ABONAR HONORARIOS A NUESTRO ESTUDIO</strong>; en el 99% de los casos es condenada a pagar la entidad de salud. Al ser la obra social o prepaga quién incumple con sus obligaciones legales, los jueces suelen ordenar que sea la entidad de salud quien abone la <strong>totalidad del pago de nuestra intervención profesional</strong>. Tus únicos gastos son los costos del proceso judicial que, en la mayoría de los casos, son el arancel que cobra el Correo Argentino para enviar una carta documento ($22.500 al 23/04/26) y el Bono Ley ($27.700 al 23/04/26).</p>
                 </details>
 
                 <details class="faq-item">
-                    <summary>¿Qué necesito para que puedan tomar mi caso?</summary>
-                    <p> En primer lugar, debés contactarte por WhatsApp así evaluamos tu caso y te asesoramos sin costo. Recordá que solo trabajamos con obras sociales/prepagas y únicamente en CABA o PBA. La documentación que debés enviarnos (por foto vía WhatsApp) es la siguiente: Carnet, DNI, último recibo de sueldo (o pago de cuota), orden médica original y constancia la negativa de la entidad de salud (solo si la tenés).</p>
+                    <summary class="touch-interactive">¿Qué necesito para que puedan tomar mi caso?</summary>
+                    <p>En primer lugar, debés <strong>contactarte por WhatsApp</strong> así evaluamos tu caso y te asesoramos <strong>sin costo</strong>. Recordá que <strong>solo trabajamos con obras sociales/prepagas y únicamente en CABA o PBA</strong>. La documentación que recomendamos enviar es la siguiente: <strong>Orden médica original y constancia de la negativa</strong> de la entidad de salud (solo si la tenés).</p>
                 </details>
             </div>
         </div>
@@ -805,7 +795,7 @@
     </footer>
 
     <!-- Botón Flotante WhatsApp -->
-    <a href="#" onclick="abrirFormulario(event)" class="wa-float">
+    <a href="#" onclick="abrirFormulario(event)" class="wa-float touch-interactive">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -816,7 +806,6 @@
             <div class="form-header">
                 <img src="logo.jpg" alt="Cárdenas & Asociados">
                 
-                <!-- Contenedor del texto de cabecera que se ocultará -->
                 <div id="formHeaderText">
                     <h2>Para ser redirigido a WhatsApp</h2>
                     <p>Completá estos breves datos para iniciar tu consulta.</p>
@@ -879,45 +868,39 @@
                     </select>
                 </div>
 
-                <button type="button" id="btnSiguiente" class="btn-primario" style="width: 100%; justify-content: center; margin-top: 0.5rem;" onclick="procesarFormulario()">
-                    Siguiente
+                <!-- Botón de Envío Cambiado a WhatsApp Directo -->
+                <button type="button" id="btnSiguiente" class="btn-primario touch-interactive" style="width: 100%; justify-content: center; margin-top: 0.5rem; background: var(--whatsapp-color);" onclick="procesarFormulario()">
+                    <i class="fab fa-whatsapp"></i> Ir a WhatsApp
                 </button>
             </form>
-
-            <!-- Estado de Carga -->
-            <div id="loadingState">
-                <div class="spinner"></div>
-                <h3 style="color: var(--azul-profundo);">Procesando Solicitud...</h3>
-                <p style="font-weight: 600;">Recordá que el análisis y el asesoramiento sobre tu caso es 100% sin costo.</p>
-                
-                <div class="aviso-doc">
-                    <p><strong>Para lograr una asesoría completa e integral</strong>, recordá que la documentación que debés enviarnos es la siguiente:</p>
-                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
-                        <li>Carnet de afiliado.</li>
-                        <li>DNI (frente y dorso).</li>
-                        <li>Último recibo de sueldo (o comprobante de pago de cuota).</li>
-                        <li>Orden médica original.</li>
-                        <li>Constancia de la negativa de la entidad de salud (solo si la tenés).</li>
-                    </ul>
-                </div>
-
-                <div id="waBtnContainer" style="margin-top: 1.5rem; display: none;">
-                    <!-- Se le asigna target="_blank" solo a este enlace final para que abra WhatsApp en una app externa / nueva pestaña -->
-                    <a id="finalWABtn" href="#" target="_blank" class="btn-primario" style="width: 100%; justify-content: center; background: var(--whatsapp-color);">
-                        <i class="fab fa-whatsapp"></i> IR A WHATSAPP
-                    </a>
-                </div>
-            </div>
         </div>
     </div>
 
     <script>
+        // --- LOGICA PARA EFECTOS TÁCTILES INMEDIATOS ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const touchElements = document.querySelectorAll('.touch-interactive');
+            touchElements.forEach(el => {
+                el.addEventListener('touchstart', () => {
+                    el.classList.add('touch-active');
+                }, {passive: true});
+                
+                el.addEventListener('touchend', () => {
+                    setTimeout(() => el.classList.remove('touch-active'), 150);
+                });
+                
+                el.addEventListener('touchcancel', () => {
+                    el.classList.remove('touch-active');
+                });
+            });
+        });
+
         // --- CONTADOR DE LEGAJO ---
         let nroLegajo = parseInt(localStorage.getItem('legajoActual')) || 456;
 
         // --- FUNCIONES DEL FORMULARIO ---
         function abrirFormulario(event) {
-            // Evita que el enlace salte hacia arriba o intente abrir algo raro en el navegador
+            // Evita que el enlace salte hacia arriba
             if (event) {
                 event.preventDefault();
             }
@@ -927,21 +910,14 @@
             
             // Reseteo total del formulario cada vez que se abre
             const form = document.getElementById('amparoForm');
-            form.style.display = 'block';
-            form.reset(); // Limpia todos los inputs y radios
-            
-            document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('waBtnContainer').style.display = 'none';
-            
-            // Mostrar texto de cabecera de nuevo
-            document.getElementById('formHeaderText').style.display = 'block';
+            form.reset(); 
             
             // Ocultar mensajes de error/opciones dinámicas para arrancar en limpio
             document.getElementById('wrapperOSName').style.display = 'none';
             document.getElementById('errorZona').style.display = 'none';
             document.getElementById('errorOS').style.display = 'none';
             
-            // Habilitar botón de siguiente
+            // Habilitar botón
             const btn = document.getElementById('btnSiguiente');
             btn.disabled = false;
             btn.style.opacity = '1';
@@ -997,14 +973,6 @@
                 return;
             }
 
-            // Ocultar texto del header
-            document.getElementById('formHeaderText').style.display = 'none';
-
-            // Cambiar vista a carga
-            document.getElementById('amparoForm').style.display = 'none';
-            document.getElementById('loadingState').style.display = 'block';
-            document.querySelector('.spinner').style.display = 'block';
-
             // Preparar Mensaje
             const legajoTexto = `L ${nroLegajo}-26`;
             const headerMsg = `[${nombre.toUpperCase()} c/ ${nombreOS.toUpperCase()} s/ amparo por ${problema.toUpperCase()}]; legajo de cliente N° ${legajoTexto}.`;
@@ -1017,14 +985,11 @@
             nroLegajo++;
             localStorage.setItem('legajoActual', nroLegajo);
 
-            // Simular carga de 3 segundos
-            setTimeout(() => {
-                document.querySelector('.spinner').style.display = 'none';
-                const container = document.getElementById('waBtnContainer');
-                const btn = document.getElementById('finalWABtn');
-                container.style.display = 'block';
-                btn.href = waURL;
-            }, 3000);
+            // Redirigir de inmediato a WhatsApp
+            window.open(waURL, '_blank');
+            
+            // Opcional: cerrar el formulario después de abrir WA
+            cerrarFormulario();
         }
 
         // --- SCRIPTS ORIGINALES ---
