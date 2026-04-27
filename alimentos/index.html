@@ -6,7 +6,7 @@
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-P8H9J343');</script>
+    })(window,document,'script','dataLayer','GTM-P9BRX6NS');</script>
     <!-- End Google Tag Manager -->
 
     <meta charset="UTF-8">
@@ -486,6 +486,11 @@
     </style>
 </head>
 <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P9BRX6NS"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     <!-- NAVEGACIÓN -->
     <nav id="navbar">
         <a href="#" class="logo">
@@ -556,7 +561,7 @@
             <div class="faq-item">
                 <h3 onclick="toggleFaq(this)">¿Cuánto me sale iniciar el juicio de alimentos? <i class="fas fa-chevron-down"></i></h3>
                 <div class="faq-answer">
-                    <p><strong>De honorarios profesionales pagás $0.</strong> Nuestro acuerdo establece que le cobraremos nuestros honorarios a la parte demandada cuando finalice el juicio. <br><br>Tu único compromiso económico inicial son los <strong>gastos mínimos de justicia</strong> obligatorios para poder dar curso al expediente: los costos de notificación de la mediación ($20.000) al iniciar; el bono Ley ($27.000) al interponer la demanda; y eventuales gastos en fotocopias durante el proceso (total aprox. $15.000).</p>
+                    <p><strong>De honorarios profesionales pagás $0 (se estima un ahorro de $2.000.000).</strong> Nuestro acuerdo establece que le cobraremos nuestros honorarios a la parte demandada cuando finalice el juicio. <br><br>Tu único compromiso económico son los <strong>gastos mínimos de justicia</strong> obligatorios para poder dar curso al expediente: los costos de notificación de la mediación ($20.000) al iniciar; el bono Ley ($27.700) al interponer la demanda; ya avanzado el juicio, oficio al empleador del demandado ($17.500); y eventuales gastos en fotocopias durante el proceso (total aprox. $15.000).</p>
                 </div>
             </div>
 
@@ -737,6 +742,7 @@
                     <div id="wrapperCuit" style="display: none; margin-top: 1rem;">
                         <input type="text" id="cuitInput" class="input-text" placeholder="Ingresá su CUIT y lo verificaremos luego" oninput="validarFormulario()">
                     </div>
+                    <div id="errorTrabajo" class="error-msg">Nuestro modelo de honorarios a cobrar al demandado/a requiere obligatoriamente que posea ingresos comprobables (sueldo en blanco). No podemos tomar el reclamo bajo esta modalidad.</div>
                 </div>
 
                 <div class="form-group">
@@ -769,7 +775,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>6. ¿Estás de acuerdo en abonar los gastos mínimos de justicia ($47.700)?</label>
+                    <label>6. ¿Estás de acuerdo en abonar los gastos judiciales mínimos?</label>
                     <div class="radio-group">
                         <div class="radio-option">
                             <input type="radio" name="gastos" id="gasSi" value="si" onchange="validarFormulario()">
@@ -891,6 +897,12 @@
                 document.getElementById('errorFiliacion').style.display = 'block'; hayError = true;
             } else {
                 document.getElementById('errorFiliacion').style.display = 'none';
+            }
+
+            if (document.getElementById('trabNo').checked) {
+                document.getElementById('errorTrabajo').style.display = 'block'; hayError = true;
+            } else {
+                document.getElementById('errorTrabajo').style.display = 'none';
             }
 
             if (document.getElementById('ingNo').checked) {
