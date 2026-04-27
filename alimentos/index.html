@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-P8H9J343');</script>
+    <!-- End Google Tag Manager -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Juicios de Alimentos | Cárdenas & Asociados</title>
+    <meta name="description" content="Abogados especialistas en Juicios de Alimentos. Honorarios $0 para vos, paga el demandado.">
+    
+    <!-- FAVICON -->
+    <link rel="icon" href="logo.jpg" type="image/jpeg">
+    
+    <!-- Iconos (FontAwesome CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ==================================================================
+           VARIABLES Y BASE (ENFOQUE MOBILE FIRST)
+           ================================================================== */
+        :root {
+            --azul-profundo: #1E3A8A;
+            --dorado-suave: #D4AF37;
+            --dorado-brillante: #FCD34D;
+            --gris-oscuro: #4B5E6A;
+            --blanco: #FFFFFF;
+            --gris-claro: #F1F5F9;
+            --whatsapp-color: #25D366;
+            --transicion: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--blanco);
+            color: var(--gris-oscuro);
+            line-height: 1.6;
+            overflow-x: hidden;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        /* --- NAVEGACIÓN (Diseño Móvil por defecto) --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            background: var(--azul-profundo);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: background 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav.scrolled {
+            background: rgba(30, 58, 138, 0.98);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        nav .logo {
+            color: var(--dorado-suave); font-size: 1.3rem; font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+        
+        .menu-toggle {
+            display: block; background: none; border: none;
+            cursor: pointer; padding: 0; width: 30px; height: 22px;
+            position: relative;
+        }
+
+        .hamburger {
+            width: 100%; height: 3px; background: var(--dorado-suave);
+            position: absolute; top: 50%; left: 0;
+            transform: translateY(-50%); transition: all 0.3s ease;
+        }
+        .hamburger::before, .hamburger::after {
+            content: ''; position: absolute; width: 100%; height: 3px;
+            background: var(--dorado-suave); left: 0; transition: all 0.3s ease;
+        }
+        .hamburger::before { top: -8px; }
+        .hamburger::after { top: 8px; }
+
+        .menu-toggle.active .hamburger { background: transparent; }
+        .menu-toggle.active .hamburger::before { transform: translateY(8px) rotate(45deg); }
+        .menu-toggle.active .hamburger::after { transform: translateY(-8px) rotate(-45deg); }
+
+        .nav-links {
+            display: none; flex-direction: column; width: 100%;
+            background: var(--azul-profundo); padding: 1rem 0;
+            position: absolute; top: 100%; left: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav-links.active { display: flex; }
+
+        nav a.nav-item {
+            color: var(--blanco); text-decoration: none; font-size: 1.1rem;
+            margin: 0.8rem 0; padding: 0.5rem 1rem; width: 100%; text-align: center;
+            transition: color 0.3s ease; display: block;
+        }
+
+        /* --- SECCIONES GENERALES (Móvil) --- */
+        section { padding: 4rem 5%; }
+
+        h1, h2, h3 { color: var(--azul-profundo); position: relative; margin-bottom: 1.5rem; }
+        h2 { font-size: 2rem; }
+        h2::after {
+            content: ''; position: absolute; width: 50px; height: 3px;
+            background: var(--dorado-suave); bottom: -10px; left: 0; transition: width 0.5s ease;
+        }
+
+        /* ==================================================================
+           HERO INICIO (Móvil)
+           ================================================================== */
+        #inicio {
+            background-image: linear-gradient(rgba(30, 58, 138, 0.85), rgba(30, 58, 138, 0.65)), url('portada.jpg');
+            background-color: var(--azul-profundo); /* Fallback */
+            background-size: cover; background-position: center;
+            background-attachment: fixed; /* EFECTO PARALLAX */
+            color: var(--blanco); padding: 8rem 5% 4rem;
+            text-align: center;
+            width: 100%;
+        }
+
+        .inicio-content {
+            width: 100%; margin: 0 auto;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .inicio-content h1 {
+            color: #FFFFFF; font-size: 2.2rem; 
+            font-weight: 800; letter-spacing: -1px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.4); margin-bottom: 0.5rem; text-transform: uppercase;
+        }
+        .inicio-content h1::after { display: none; }
+
+        .inicio-content p {
+            font-size: 1.2rem; color: #F8FAFC; 
+            font-weight: 600; margin-bottom: 2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .btn-primario {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: linear-gradient(135deg, var(--dorado-suave) 0%, var(--dorado-brillante) 100%);
+            color: var(--azul-profundo); padding: 0.8rem 1.5rem; border-radius: 50px;
+            text-decoration: none; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 1px; font-size: 0.9rem; border: none; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); transition: var(--transicion);
+            width: 100%; max-width: 280px; margin: 0 auto;
+        }
+        .btn-primario:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(212, 175, 55, 0.4); }
+
+        #btnSiguiente {
+            max-width: 100%; padding: 1rem; font-size: 1rem;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- TARJETAS DE BENEFICIOS (Móvil) --- */
+        .areas-grid {
+            display: grid; grid-template-columns: 1fr;
+            gap: 2rem; margin-top: 2rem;
+        }
+        .area-card {
+            background: var(--blanco); padding: 2rem 1.5rem; border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); text-align: center;
+            border-bottom: 3px solid transparent; transition: all 0.3s;
+        }
+        .area-card:hover { border-bottom: 3px solid var(--dorado-suave); }
+        .area-card i { font-size: 2.5rem; color: var(--dorado-suave); margin-bottom: 1rem; }
+        .area-card h3 { font-size: 1.4rem; color: var(--azul-profundo); margin-bottom: 1rem; }
+        .area-card p { color: var(--gris-oscuro); font-size: 1rem; }
+
+        /* --- MENSAJE CLAVE --- */
+        #mensaje-clave {
+            padding: 4rem 5%; text-align: center;
+            background: linear-gradient(to right, var(--blanco) 50%, rgba(212, 175, 55, 0.1) 100%);
+        }
+        #mensaje-clave p { font-size: 1.1rem; margin-bottom: 2rem; color: var(--gris-oscuro); }
+
+        /* --- PREGUNTAS FRECUENTES --- */
+        #faq h2 { text-align: center; margin-bottom: 2rem; }
+        #faq h2::after { left: 50%; transform: translateX(-50%); }
+
+        .faq-item {
+            margin: 1rem 0; text-align: left; background: #f9f9f9;
+            padding: 1rem 1.5rem; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .faq-item h3 {
+            font-size: 1.1rem; color: var(--azul-profundo); cursor: pointer;
+            margin-bottom: 0; display: flex; justify-content: space-between; align-items: center;
+            font-family: 'Arial', sans-serif; font-weight: bold;
+        }
+        .faq-item h3::after { display: none; }
+        .faq-answer {
+            max-height: 0; overflow: hidden; opacity: 0; transition: all 0.3s ease-in-out;
+            font-size: 1rem; color: var(--gris-oscuro); padding: 0;
+        }
+        .faq-answer.active {
+            max-height: 1000px; opacity: 1; padding: 1rem 0;
+            border-top: 1px solid #ddd; margin-top: 1rem;
+        }
+
+        /* --- SOBRE NOSOTROS --- */
+        #sobre-nosotros { background: var(--blanco); }
+        .sobre-nosotros-container {
+            display: flex; flex-direction: column; align-items: center; gap: 2rem;
+            text-align: center;
+        }
+        .sobre-nosotros-img {
+            width: 100%; max-width: 300px; border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); border-bottom: 5px solid var(--dorado-suave);
+        }
+        .sobre-nosotros-img img { width: 100%; height: auto; display: block; border-radius: 10px; }
+        .sobre-nosotros-text { font-size: 1rem; color: var(--gris-oscuro); text-align: justify; }
+        .sobre-nosotros-text h2 { text-align: center; }
+        .sobre-nosotros-text h2::after { display: none; }
+
+        /* --- FOOTER / CONTACTO --- */
+        #contacto {
+            padding: 4rem 5%; background: var(--gris-oscuro);
+            color: var(--blanco); text-align: center;
+        }
+        #contacto h2 { color: var(--dorado-suave); margin-bottom: 1rem; font-size: 1.8rem;}
+        #contacto h2::after { display: none; }
+        .footer-info { margin: 2rem 0; font-size: 1.1rem; }
+        .footer-info p { margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .footer-text { margin-top: 2rem; font-size: 0.9rem; color: rgba(255, 255, 255, 0.6); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; }
+
+        /* ==================================================================
+           BOTÓN WHATSAPP FLOTANTE
+           ================================================================== */
+        .wa-float {
+            position: fixed; bottom: 20px; right: 20px;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white; width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+            z-index: 1000; text-decoration: none; animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
+        /* ==================================================================
+           FORMULARIO MODAL (PANTALLA COMPLETA)
+           ================================================================== */
+        #modalFormulario {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--blanco); z-index: 2000; overflow-y: auto; overflow-x: hidden;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-container {
+            width: 100%; padding: 1.5rem 1rem; position: relative; min-height: 100vh;
+            max-width: 800px; margin: 0 auto;
+        }
+
+        .close-modal {
+            position: absolute; top: 10px; right: 15px; font-size: 2rem;
+            cursor: pointer; color: var(--gris-oscuro);
+        }
+
+        .form-header { text-align: center; margin-bottom: 1.2rem; margin-top: 0.5rem; }
+        .form-header h2 { font-size: 1.4rem; margin-bottom: 0.3rem; color: var(--azul-profundo); }
+        .form-header h2::after { display: none; }
+        .form-header p { font-size: 0.9rem; color: var(--gris-oscuro); line-height: 1.3; }
+
+        .form-group { margin-bottom: 1.2rem; text-align: left; }
+        .form-group label {
+            display: block; font-weight: bold; color: var(--azul-profundo);
+            margin-bottom: 0.5rem; font-size: 0.95rem; line-height: 1.3;
+        }
+
+        .input-text {
+            width: 100%; padding: 0.7rem; border: 2px solid var(--gris-claro);
+            border-radius: 8px; font-size: 0.95rem;
+        }
+
+        .radio-group { display: flex; flex-direction: row; gap: 0.5rem; }
+        .radio-option { flex: 1; position: relative; }
+        .radio-option input { position: absolute; opacity: 0; cursor: pointer; }
+        
+        .radio-label {
+            display: block; padding: 0.7rem; text-align: center;
+            background: var(--gris-claro); border-radius: 8px; cursor: pointer;
+            font-weight: bold; font-size: 0.95rem; color: var(--gris-oscuro);
+            border: 2px solid transparent; transition: all 0.2s ease;
+            white-space: nowrap; 
+        }
+        .radio-option input:checked + .radio-label {
+            background: var(--azul-profundo); color: var(--blanco); border-color: var(--azul-profundo);
+        }
+
+        .error-msg {
+            color: #EF4444; font-weight: bold; font-size: 0.85rem; margin-top: 0.5rem;
+            display: none; padding: 0.7rem; background: #FEF2F2;
+            border-radius: 8px; border-left: 4px solid #EF4444; line-height: 1.3;
+        }
+
+        .btn-whatsapp-disabled {
+            background: #E2E8F0 !important; 
+            color: #94A3B8 !important; 
+            cursor: not-allowed !important;
+            box-shadow: none !important;
+            transform: none !important;
+            border: 2px solid #CBD5E1 !important;
+        }
+
+        /* ==================================================================
+           MODAL INTENCIÓN DE SALIDA (EXIT INTENT)
+           ================================================================== */
+        #modalExit {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-exit-container {
+            background: var(--blanco); width: 90%; max-width: 420px;
+            border-radius: 15px; padding: 2.5rem 2rem; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .modal-exit-container i {
+            font-size: 4rem; color: var(--dorado-suave); margin-bottom: 1rem;
+        }
+
+        .modal-exit-container h2 {
+            font-size: 1.6rem; color: var(--azul-profundo); margin-bottom: 0.5rem;
+        }
+        .modal-exit-container h2::after { display: none; }
+
+        .modal-exit-container p {
+            font-size: 1.05rem; color: var(--gris-oscuro); margin-bottom: 1.5rem; line-height: 1.4;
+        }
+
+        /* ==================================================================
+           MEDIA QUERIES 
+           ================================================================== */
+        @media (min-width: 768px) {
+            section { padding: 5rem 10%; }
+            h2 { font-size: 2.5rem; }
+            
+            #inicio { padding: 12rem 0 8rem; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
+            .inicio-content h1 { font-size: 3.5rem; }
+            .inicio-content p { font-size: 1.5rem; }
+            .btn-primario { display: inline-flex; width: auto; max-width: none; padding: 1rem 2.5rem; font-size: 1rem; }
+            
+            .areas-grid { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+            
+            #mensaje-clave { padding: 5rem 10%; }
+            #mensaje-clave p { font-size: 1.2rem; }
+            
+            .sobre-nosotros-container { flex-direction: row; gap: 4rem; text-align: left; }
+            .sobre-nosotros-text h2 { text-align: left; }
+            
+            .modal-container { padding: 3rem 2rem; }
+            .form-header h2 { font-size: 1.8rem; }
+            .form-header p { font-size: 1.1rem; }
+            .form-group { margin-bottom: 2rem; }
+            .form-group label { font-size: 1.1rem; margin-bottom: 1rem; }
+            .input-text { padding: 1rem; font-size: 1rem; }
+            .radio-label { padding: 1rem; font-size: 1rem; }
+            .wa-float { width: 65px; height: 65px; font-size: 35px; bottom: 30px; right: 30px; }
+        }
+
+        @media (min-width: 1024px) {
+            nav { padding: 1.5rem 10%; }
+            .menu-toggle { display: none; }
+            .nav-links {
+                display: flex; flex-direction: row; position: static;
+                width: auto; background: transparent; padding: 0; box-shadow: none;
+            }
+            nav a.nav-item {
+                margin: 0 1.5rem; width: auto; padding: 0;
+            }
+            nav a.nav-item::after {
+                content: ''; position: absolute; width: 0; height: 2px;
+                background: var(--dorado-suave); bottom: -5px; left: 0; transition: width 0.3s ease;
+            }
+            nav a.nav-item:hover::after { width: 100%; }
+            nav .logo { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVEGACIÓN -->
+    <nav id="navbar">
+        <a href="#" class="logo">
+            Cárdenas & Asociados
+        </a>
+        <button class="menu-toggle" id="hamburger" aria-label="Abrir menú">
+            <div class="hamburger"></div>
+        </button>
+        <div class="nav-links" id="navLinks">
+            <a href="#inicio" class="nav-item">Inicio</a>
+            <a href="#areas" class="nav-item">Beneficios</a>
+            <a href="#faq" class="nav-item">Preguntas</a>
+            <a href="#sobre-nosotros" class="nav-item">Nosotros</a>
+            <a href="#" onclick="abrirFiltro(event)" class="nav-item">Evaluar mi caso</a>
+        </div>
+    </nav>
+
+    <!-- INICIO (HERO) -->
+    <section id="inicio" class="hero">
+        <div class="inicio-content">
+            <span style="display: inline-block; padding: 6px 18px; border: 2px solid var(--dorado-suave); border-radius: 50px; margin-bottom: 1.5rem; font-weight: bold; font-size: 1rem; color: #fff; background: rgba(0,0,0,0.3);">
+                HONORARIOS $0 PARA VOS
+            </span>
+            <h1>JUICIOS DE ALIMENTOS</h1>
+            <p>Asegurá la cuota alimentaria que tus hijos merecen. Nosotros le cobramos al demandado.</p>
+            
+            <a href="#" onclick="abrirFiltro(event)" class="btn-primario">
+                Evaluar mi Caso Gratis <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- BENEFICIOS -->
+    <section id="areas">
+        <h2 style="text-align: center;">¿Por qué elegirnos?</h2>
+        <div class="areas-grid">
+            <div class="area-card">
+                <i class="fas fa-hand-holding-dollar"></i>
+                <h3>Sin Costos Ocultos</h3>
+                <p><strong>Vos pagás $0 de honorarios.</strong> Nuestro trabajo lo paga el demandado/a. Tus únicos gastos serán los costos judiciales (Bono Ley y mediación) y fotocopias. De nuestra labor profesional no pagás absolutamente nada.</p>
+            </div>
+            <div class="area-card">
+                <i class="fas fa-handshake"></i>
+                <h3>Socios Estratégicos</h3>
+                <p>Somos los primeros interesados en que tu juicio salga lo más <strong>rápido posible</strong> y con el monto de <strong>cuota más alto</strong>. Al cobrarle al demandado, nuestro éxito depende del tuyo.</p>
+            </div>
+            <div class="area-card">
+                <i class="fas fa-gavel"></i>
+                <h3>Ejecución Efectiva</h3>
+                <p>Si el progenitor tiene un <strong>sueldo en blanco</strong>, nosotros sabemos cómo asegurar el pago mediante <strong>embargos y retenciones directas</strong> del empleador.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MENSAJE CLAVE -->
+    <section id="mensaje-clave">
+        <i class="fas fa-scale-balanced fa-3x" style="color: var(--dorado-suave); margin-bottom: 1rem;"></i>
+        <h2>No financies a quien evade su responsabilidad</h2>
+        <p>Los honorarios de tu abogado deben ser soportados por quien dio motivo al reclamo judicial. Recuperá tu tranquilidad económica delegando el conflicto en profesionales.</p>
+        <button class="btn-primario" onclick="abrirFiltro(event)">Iniciar Reclamo Hoy</button>
+    </section>
+
+    <!-- PREGUNTAS FRECUENTES -->
+    <section id="faq">
+        <h2>Preguntas Frecuentes</h2>
+        <div style="max-width: 800px; margin: 0 auto;">
+            
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">¿Cuánto me sale iniciar el juicio de alimentos? <i class="fas fa-chevron-down"></i></h3>
+                <div class="faq-answer">
+                    <p><strong>De honorarios profesionales pagás $0.</strong> Nuestro acuerdo establece que le cobraremos nuestros honorarios a la parte demandada cuando finalice el juicio. <br><br>Tu único compromiso económico inicial son los <strong>gastos mínimos de justicia</strong> obligatorios para poder dar curso al expediente: los costos de notificación de la mediación ($20.000) al iniciar; el bono Ley ($27.000) al interponer la demanda; y eventuales gastos en fotocopias durante el proceso (total aprox. $15.000).</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">¿Cómo es el proceso si decido avanzar con ustedes? <i class="fas fa-chevron-down"></i></h3>
+                <div class="faq-answer">
+                    <p>Una vez que completás el formulario y vemos que tu caso califica para el modelo $0, coordinamos una <strong>asesoría gratuita</strong> (vía WhastApp). Allí analizamos tu caso a fondo, evaluamos la solvencia del demandado y te explicamos la estrategia legal. Si estás de acuerdo, comenzamos el reclamo de inmediato.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">¿Tengo que hacer trámites o ir a los juzgados personalmente? <i class="fas fa-chevron-down"></i></h3>
+                <div class="faq-answer">
+                    <p><strong>No.</strong> Nosotros nos encargamos de todo el proceso judicial y administrativo. Hoy en día, la justicia opera mediante expedientes 100% digitales. Nosotros te mantendremos informada/o por WhatsApp de cada avance sin que tengas que perder tiempo en trámites o moverte de tu casa.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">¿De qué depende el valor de la cuota alimentaria? <i class="fas fa-chevron-down"></i></h3>
+                <div class="faq-answer">
+                    <p>El valor no es un número fijo al azar. Se calcula principalmente en base a dos factores:<br><br>
+                    1. <strong>Las necesidades del menor:</strong> Vivienda, educación, alimentación, vestimenta, esparcimiento, salud.<br>
+                    2. <strong>La capacidad económica del demandado/a:</strong> Se evalúan sus ingresos (sueldo en blanco), su nivel de vida y sus bienes (autos, propiedades).</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">¿Cuánto tarda el juicio de alimentos? <i class="fas fa-chevron-down"></i></h3>
+                <div class="faq-answer">
+                    <p>Comienza con una Mediación Obligatoria que dura unas semanas. Si no hay acuerdo, se inicia la vía judicial. <br><br>Aunque el juicio completo lleve aproximadamente 12 meses, solicitamos al juez la fijación de <strong>alimentos provisorios</strong> al presentar la demanda. Esta es una cuota rápida que se establece mientras dure el juicio para garantizar las necesidades básicas inmediatas.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">¿Se puede retener la cuota directamente del sueldo del demandado? <i class="fas fa-chevron-down"></i></h3>
+                <div class="faq-answer">
+                    <p><strong>Sí, es la vía más segura y efectiva.</strong> Cuando el demandado trabaja en blanco, frente al incumplimiento del pago en tiempo y forma, el Juez suele ordenar a la empresa empleadora retener el monto o porcentaje de la cuota directamente de su recibo de sueldo todos los meses, depositándolo en una cuenta bancaria a tu nombre. Así evitamos retrasos e incumplimientos.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">¿Trabajan solamente con casos de CABA? <i class="fas fa-chevron-down"></i></h3>
+                <div class="faq-answer">
+                    <p>Sí, trabajamos únicamente con casos que tramitan en la justicia de CABA. Para que un caso tramite en CABA el domicilio del menor debe encontrarse en esa jurisdicción.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">¿Qué pasa si el progenitor trabaja "en negro"? <i class="fas fa-chevron-down"></i></h3>
+                <div class="faq-answer">
+                    <p>Si el demandado no tiene ingresos comprobables, se puede investigar su nivel de vida (tarjetas de crédito, viajes, vehículos) o, en última instancia, reclamar a los abuelos. <br><br><em>Nota: Nuestro modelo de honorarios $0 (a cargo exclusivo del demandado) requiere que la otra parte posea ingresos en blanco no inferiores a los $1.200.000 netos para garantizar el cobro final.</em></p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">¿Puedo reclamar alimentos si nunca estuvimos casados? <i class="fas fa-chevron-down"></i></h3>
+                <div class="faq-answer">
+                    <p><strong>Absolutamente sí.</strong> El estado civil de los padres no tiene ninguna relevancia. El derecho a recibir la cuota alimentaria le corresponde al hijo/a por el simple hecho de existir el vínculo filial (estar reconocido en la partida de nacimiento).</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">¿Hasta qué edad se paga la cuota alimentaria? <i class="fas fa-chevron-down"></i></h3>
+                <div class="faq-answer">
+                    <p>Por ley, la obligación de pasar alimentos se extiende hasta que el hijo cumple los <strong>21 años</strong>. Sin embargo, si el hijo mayor de edad (entre 21 y 25 años) se encuentra estudiando una carrera o preparándose profesionalmente de forma tal que le impide mantenerse por sus propios medios, la cuota se puede extender <strong>hasta los 25 años</strong>.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">¿Se puede actualizar el monto de la cuota? <i class="fas fa-chevron-down"></i></h3>
+                <div class="faq-answer">
+                    <p><strong>Sí.</strong> La cuota alimentaria no queda congelada en el tiempo. Sin excepción siemple reclamamos que se aplique un método de actualización para impedir que la inflación merme el valor de la cuota que le corresponde al menor.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">¿Qué gastos incluye la cuota alimentaria? <i class="fas fa-chevron-down"></i></h3>
+                <div class="faq-answer">
+                    <p>La cuota es integral. Debe cubrir la manutención (comida), educación (colegio, útiles, transporte), vivienda (alquiler, servicios), salud (obra social, medicamentos), vestimenta y esparcimiento (actividades recreativas, deportes). Todo en base al nivel de vida que la familia venía manteniendo.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SOBRE NOSOTROS -->
+    <section id="sobre-nosotros">
+        <div class="sobre-nosotros-container">
+            <div class="sobre-nosotros-img">
+                <img src="mifoto.jpg" alt="Abogado Especialista en Familia">
+            </div>
+            <div class="sobre-nosotros-text">
+                <h2>Sobre Cárdenas & Asociados</h2>
+                <p>Somos un estudio jurídico especializado exclusivamente en Derecho de Familia. Nuestra misión es garantizar que los derechos de los menores sean respetados, sin que el factor económico sea un impedimento para acceder a una justicia de calidad.</p>
+                <p>Entendemos la carga emocional y financiera que conlleva reclamar lo que es justo. Por eso, diseñamos nuestro modelo de <strong>Honorarios $0</strong>: trabajamos bajo la firme convicción de que quien evade su responsabilidad alimentaria debe ser quien soporte los honorarios de los profesionales.</p>
+                <p>Con años de experiencia ejecutando cuotas alimentarias, embargos y retenciones directas, nuestro equipo se encarga de todo el litigio para que vos puedas recuperar tu tranquilidad.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER / CONTACTO (SIN WHATSAPP) -->
+    <section id="contacto">
+        <h2>Cárdenas & Asociados</h2>
+        <p style="font-size: 1.1rem; color: var(--dorado-suave);">Especialistas en Derecho de Familia y Alimentos.</p>
+        
+        <div class="footer-info">
+            <p><i class="fas fa-envelope" style="color: var(--dorado-suave);"></i> Email: info@cardenasyasociados.com.ar</p>
+        </div>
+
+        <p class="footer-text">© 2026 Todos los derechos reservados.</p>
+    </section>
+
+    <!-- WHATSAPP FLOTANTE -->
+    <a href="#" onclick="abrirFiltro(event)" class="wa-float" aria-label="Abrir formulario de evaluación">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- ==========================================
+         FORMULARIO MODAL (PANTALLA COMPLETA)
+         ========================================== -->
+    <div id="modalFormulario">
+        <div class="modal-container">
+            <span class="close-modal" onclick="cerrarFiltro()">&times;</span>
+            
+            <div class="form-header">
+                <h2>Evaluación de tu Caso</h2>
+                <p>Respondé estas preguntas para saber si tu reclamo califica para el modelo de <strong>Honorarios $0</strong>.</p>
+            </div>
+
+            <form id="alimentosForm">
+                
+                <div class="form-group">
+                    <label>1. ¿El vive en CABA?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="caba" id="cabaSi" value="si" onchange="validarFormulario()">
+                            <label for="cabaSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="caba" id="cabaNo" value="no" onchange="validarFormulario()">
+                            <label for="cabaNo" class="radio-label">NO</label>
+                        </div>
+                    </div>
+                    <div id="errorCaba" class="error-msg">Por el momento, nuestro estudio solo opera y toma casos radicados en los Tribunales de la Ciudad Autónoma de Buenos Aires.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>2. ¿Fifuran ambos padres en la partida de nacimiento?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="filiacion" id="filSi" value="si" onchange="validarFormulario()">
+                            <label for="filSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="filiacion" id="filNo" value="no" onchange="validarFormulario()">
+                            <label for="filNo" class="radio-label">NO</label>
+                        </div>
+                    </div>
+                    <div id="errorFiliacion" class="error-msg">Se requiere iniciar un juicio de filiación previo. Nuestro modelo de honorarios a cobrar al demandado/a no aplica para este proceso.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>3. ¿El progenitor/a a reclamarle tiene un sueldo en blanco?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="trabajo" id="trabSi" value="si" onchange="validarFormulario()">
+                            <label for="trabSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="trabajo" id="trabNo" value="no" onchange="validarFormulario()">
+                            <label for="trabNo" class="radio-label">NO</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="trabajo" id="trabNose" value="nose" onchange="validarFormulario()">
+                            <label for="trabNose" class="radio-label">NO SÉ</label>
+                        </div>
+                    </div>
+                    <div id="wrapperCuit" style="display: none; margin-top: 1rem;">
+                        <input type="text" id="cuitInput" class="input-text" placeholder="Ingresá su CUIT y lo verificaremos luego" oninput="validarFormulario()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>4. ¿Ese sueldo en blanco es de al menos $1.200.000 mensuales?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="ingresos" id="ingSi" value="si" onchange="validarFormulario()">
+                            <label for="ingSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="ingresos" id="ingNo" value="no" onchange="validarFormulario()">
+                            <label for="ingNo" class="radio-label">NO</label>
+                        </div>
+                    </div>
+                    <div id="errorIngresos" class="error-msg">El modelo de honorarios a cargo del demandado/a requiere un piso de solvencia demostrable que este caso no alcanza actualmente.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>5. ¿El demandado/a tiene un auto o propiedad a su nombre?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="bienes" id="bienesSi" value="si" onchange="validarFormulario()">
+                            <label for="bienesSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="bienes" id="bienesNo" value="no" onchange="validarFormulario()">
+                            <label for="bienesNo" class="radio-label">NO</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>6. ¿Estás de acuerdo en abonar los gastos mínimos de justicia ($47.700)?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="gastos" id="gasSi" value="si" onchange="validarFormulario()">
+                            <label for="gasSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="gastos" id="gasNo" value="no" onchange="validarFormulario()">
+                            <label for="gasNo" class="radio-label">NO</label>
+                        </div>
+                    </div>
+                    <div id="errorGastos" class="error-msg">Los gastos de judiciales son requisitos obligatorios. Sin cubrirlos, no es posible iniciar legalmente el reclamo judicial.</div>
+                </div>
+
+                <!-- Botón de Envío -->
+                <button type="button" id="btnSiguiente" class="btn-primario btn-whatsapp-disabled" style="width: 100%; margin-top: 1rem;" onclick="procesarFormulario()" disabled>
+                    <i class="fab fa-whatsapp" style="font-size: 1.4rem;"></i> IR A WHATSAPP
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL DE INTENCIÓN DE SALIDA (EXIT INTENT)
+         ========================================== -->
+    <div id="modalExit">
+        <div class="modal-exit-container">
+            <i class="fas fa-exclamation-circle"></i>
+            <h2>¡Esperá un segundo!</h2>
+            <p>¿Estás seguro/a de que querés irte sin averiguar si podés iniciar tu juicio con <strong>Honorarios $0</strong>?</p>
+            <button onclick="cerrarExitYAbrirFiltro()" class="btn-primario" style="max-width: 100%; width: 100%; margin-bottom: 1rem;">
+                SÍ, EVALUAR MI CASO GRÁTIS
+            </button>
+            <button onclick="cerrarExit()" style="background: none; border: none; color: var(--gris-oscuro); text-decoration: underline; font-size: 0.95rem; cursor: pointer;">
+                No, prefiero salir
+            </button>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- NAVBAR Y SCROLL ---
+        const nav = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        const links = document.querySelectorAll('.nav-links a');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // --- ACORDEÓN FAQ ---
+        function toggleFaq(elemento) {
+            const answer = elemento.nextElementSibling;
+            const icon = elemento.querySelector('i');
+            
+            if (answer.classList.contains('active')) {
+                answer.classList.remove('active');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            } else {
+                document.querySelectorAll('.faq-answer').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.faq-item h3 i').forEach(el => {
+                    el.classList.remove('fa-chevron-up');
+                    el.classList.add('fa-chevron-down');
+                });
+                answer.classList.add('active');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
+        }
+
+        // --- LÓGICA DEL FORMULARIO MODAL ---
+        function abrirFiltro(e) {
+            if(e) e.preventDefault();
+            document.getElementById('modalFormulario').style.display = 'block';
+            document.body.style.overflow = 'hidden'; 
+            
+            document.getElementById('alimentosForm').reset();
+            document.getElementById('wrapperCuit').style.display = 'none';
+            document.querySelectorAll('.error-msg').forEach(msg => msg.style.display = 'none');
+            
+            // Estado inicial del botón: desactivado
+            const btn = document.getElementById('btnSiguiente');
+            btn.disabled = true;
+            btn.classList.add('btn-whatsapp-disabled');
+            btn.style.background = ''; 
+            btn.style.color = '';
+        }
+
+        function cerrarFiltro() {
+            document.getElementById('modalFormulario').style.display = 'none';
+            document.body.style.overflow = 'auto'; 
+        }
+
+        function validarFormulario() {
+            let hayError = false;
+            let completado = true;
+
+            if (document.getElementById('cabaNo').checked) {
+                document.getElementById('errorCaba').style.display = 'block'; hayError = true;
+            } else {
+                document.getElementById('errorCaba').style.display = 'none';
+            }
+
+            if (document.getElementById('filNo').checked) {
+                document.getElementById('errorFiliacion').style.display = 'block'; hayError = true;
+            } else {
+                document.getElementById('errorFiliacion').style.display = 'none';
+            }
+
+            if (document.getElementById('ingNo').checked) {
+                document.getElementById('errorIngresos').style.display = 'block'; hayError = true;
+            } else {
+                document.getElementById('errorIngresos').style.display = 'none';
+            }
+
+            if (document.getElementById('gasNo').checked) {
+                document.getElementById('errorGastos').style.display = 'block'; hayError = true;
+            } else {
+                document.getElementById('errorGastos').style.display = 'none';
+            }
+
+            const preguntasObligatorias = ['caba', 'filiacion', 'trabajo', 'ingresos', 'bienes', 'gastos'];
+            preguntasObligatorias.forEach(name => {
+                if (!document.querySelector(`input[name="${name}"]:checked`)) {
+                    completado = false;
+                }
+            });
+
+            if (document.getElementById('trabNose').checked) {
+                document.getElementById('wrapperCuit').style.display = 'block';
+                if (document.getElementById('cuitInput').value.trim() === "") {
+                    completado = false;
+                }
+            } else {
+                document.getElementById('wrapperCuit').style.display = 'none';
+            }
+
+            const btn = document.getElementById('btnSiguiente');
+            if (hayError || !completado) {
+                btn.disabled = true;
+                btn.classList.add('btn-whatsapp-disabled');
+                btn.style.background = '';
+                btn.style.color = '';
+            } else {
+                btn.disabled = false;
+                btn.classList.remove('btn-whatsapp-disabled');
+                btn.style.background = 'var(--whatsapp-color)';
+                btn.style.color = 'white';
+            }
+        }
+
+        function procesarFormulario() {
+            let texto = "¡Hola! Me contacto desde la página web porque califico para iniciar mi juicio de alimentos con Honorarios $0, ya que soy de CABA y el demandado/a tiene un sueldo en blanco. Mi caso es el siguiente: ";
+            
+            const trabNose = document.getElementById('trabNose').checked;
+            if (trabNose) {
+                let cuit = document.getElementById('cuitInput').value.trim();
+                texto += `\n\n(Nota del formulario: DNI/CUIT para verificar sueldo: ${cuit})`;
+            }
+
+            const waURL = `https://wa.me/5491131166233?text=${encodeURIComponent(texto)}`;
+            
+            window.open(waURL, '_blank');
+            cerrarFiltro();
+        }
+
+        // --- SISTEMA DE INTENCIÓN DE SALIDA (EXIT INTENT) ---
+        let exitActivado = false;
+
+        // 1. Atrapar el botón "Atrás" del celular o navegador
+        setTimeout(() => {
+            window.history.pushState({page: 1}, "", "");
+        }, 1000);
+
+        window.addEventListener('popstate', function(event) {
+            // Si el formulario principal no está abierto y no mostramos el exit aún
+            if(document.getElementById('modalFormulario').style.display !== 'block' && !exitActivado) {
+                mostrarExit();
+                // Volvemos a empujar estado para atraparlo en la página
+                window.history.pushState({page: 2}, "", "");
+            }
+        });
+
+        // 2. Atrapar si el mouse se va hacia la barra de pestañas (PC)
+        document.addEventListener('mouseleave', function(e) {
+            if(e.clientY < 0 && document.getElementById('modalFormulario').style.display !== 'block' && !exitActivado) {
+                mostrarExit();
+            }
+        });
+
+        function mostrarExit() {
+            document.getElementById('modalExit').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            exitActivado = true;
+        }
+
+        function cerrarExit() {
+            document.getElementById('modalExit').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            // Como forzó salir, le damos back
+            window.history.back();
+        }
+
+        function cerrarExitYAbrirFiltro() {
+            document.getElementById('modalExit').style.display = 'none';
+            abrirFiltro();
+        }
+    </script>
+</body>
+</html>
