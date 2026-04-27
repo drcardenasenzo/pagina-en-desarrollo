@@ -257,10 +257,6 @@
         }
         .btn-primario:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(212, 175, 55, 0.4); }
 
-        #btnSiguiente {
-            max-width: 100%; padding: 1rem; font-size: 1rem;
-        }
-
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -355,71 +351,6 @@
         }
 
         /* ==================================================================
-           FORMULARIO MODAL (PANTALLA COMPLETA)
-           ================================================================== */
-        #modalFormulario {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--blanco); z-index: 2000; overflow-y: auto; overflow-x: hidden;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .modal-container {
-            width: 100%; padding: 1.5rem 1rem; position: relative; min-height: 100vh;
-            max-width: 800px; margin: 0 auto;
-        }
-
-        .close-modal {
-            position: absolute; top: 10px; right: 15px; font-size: 2rem;
-            cursor: pointer; color: var(--gris-oscuro);
-        }
-
-        .form-header { text-align: center; margin-bottom: 1.2rem; margin-top: 0.5rem; }
-        .form-header h2 { font-size: 1.4rem; margin-bottom: 0.3rem; color: var(--azul-profundo); }
-        .form-header h2::after { display: none; }
-        .form-header p { font-size: 0.9rem; color: var(--gris-oscuro); line-height: 1.3; }
-
-        .form-group { margin-bottom: 1.2rem; text-align: left; }
-        .form-group label {
-            display: block; font-weight: bold; color: var(--azul-profundo);
-            margin-bottom: 0.5rem; font-size: 0.95rem; line-height: 1.3;
-        }
-
-        .input-text {
-            width: 100%; padding: 0.7rem; border: 2px solid var(--gris-claro);
-            border-radius: 8px; font-size: 0.95rem;
-        }
-
-        .radio-group { display: flex; flex-direction: row; gap: 0.5rem; }
-        .radio-option { flex: 1; position: relative; }
-        .radio-option input { position: absolute; opacity: 0; cursor: pointer; }
-        
-        .radio-label {
-            display: block; padding: 0.7rem; text-align: center;
-            background: var(--gris-claro); border-radius: 8px; cursor: pointer;
-            font-weight: bold; font-size: 0.95rem; color: var(--gris-oscuro);
-            border: 2px solid transparent; transition: all 0.2s ease;
-            white-space: nowrap; 
-        }
-        .radio-option input:checked + .radio-label {
-            background: var(--azul-profundo); color: var(--blanco); border-color: var(--azul-profundo);
-        }
-
-        .error-msg {
-            color: #EF4444; font-weight: bold; font-size: 0.85rem; margin-top: 0.5rem;
-            display: none; padding: 0.7rem; background: #FEF2F2;
-            border-radius: 8px; border-left: 4px solid #EF4444; line-height: 1.3;
-        }
-
-        .btn-whatsapp-disabled {
-            background: #E2E8F0 !important; 
-            color: #94A3B8 !important; 
-            cursor: not-allowed !important;
-            box-shadow: none !important;
-            transform: none !important;
-            border: 2px solid #CBD5E1 !important;
-        }
-
-        /* ==================================================================
            MODAL INTENCIÓN DE SALIDA (EXIT INTENT)
            ================================================================== */
         #modalExit {
@@ -467,13 +398,6 @@
             .sobre-nosotros-container { flex-direction: row; gap: 4rem; text-align: left; }
             .sobre-nosotros-text h2 { text-align: left; }
             
-            .modal-container { padding: 3rem 2rem; }
-            .form-header h2 { font-size: 1.8rem; }
-            .form-header p { font-size: 1.1rem; }
-            .form-group { margin-bottom: 2rem; }
-            .form-group label { font-size: 1.1rem; margin-bottom: 1rem; }
-            .input-text { padding: 1rem; font-size: 1rem; }
-            .radio-label { padding: 1rem; font-size: 1rem; }
             .wa-float { width: 65px; height: 65px; font-size: 35px; bottom: 30px; right: 30px; }
         }
 
@@ -515,7 +439,7 @@
             <a href="#areas" class="nav-item">Beneficios</a>
             <a href="#faq" class="nav-item">Preguntas</a>
             <a href="#sobre-nosotros" class="nav-item">Nosotros</a>
-            <a href="#" onclick="abrirFiltro(event)" class="nav-item">Evaluar mi caso</a>
+            <a href="#" onclick="irAWhatsApp(event)" class="nav-item">Evaluar mi caso</a>
         </div>
     </nav>
 
@@ -528,7 +452,7 @@
             <h1>JUICIOS DE ALIMENTOS</h1>
             <p>Asegurá la cuota alimentaria que tus hijos merecen. Nosotros le cobramos al demandado.</p>
             
-            <a href="#" onclick="abrirFiltro(event)" class="btn-primario">
+            <a href="#" onclick="irAWhatsApp(event)" class="btn-primario">
                 Evaluar mi Caso Gratis <i class="fas fa-arrow-right"></i>
             </a>
         </div>
@@ -561,7 +485,7 @@
         <i class="fas fa-scale-balanced fa-3x" style="color: var(--dorado-suave); margin-bottom: 1rem;"></i>
         <h2>No financies a quien evade su responsabilidad</h2>
         <p>Los honorarios de tu abogado deben ser soportados por quien dio motivo al reclamo judicial. Recuperá tu tranquilidad económica delegando el conflicto en profesionales.</p>
-        <button class="btn-primario" onclick="abrirFiltro(event)">Iniciar Reclamo Hoy</button>
+        <button class="btn-primario" onclick="irAWhatsApp(event)">Iniciar Reclamo Hoy</button>
     </section>
 
     <!-- PREGUNTAS FRECUENTES -->
@@ -686,127 +610,9 @@
     </section>
 
     <!-- WHATSAPP FLOTANTE -->
-    <a href="#" onclick="abrirFiltro(event)" class="wa-float" aria-label="Abrir formulario de evaluación">
+    <a href="#" onclick="irAWhatsApp(event)" class="wa-float" aria-label="Abrir WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
-
-    <!-- ==========================================
-         FORMULARIO MODAL (PANTALLA COMPLETA)
-         ========================================== -->
-    <div id="modalFormulario">
-        <div class="modal-container">
-            <span class="close-modal" onclick="cerrarFiltro()">&times;</span>
-            
-            <div class="form-header">
-                <h2>Evaluación de tu Caso</h2>
-                <p>Respondé estas preguntas para saber si tu reclamo califica para el modelo de <strong>Honorarios $0</strong>.</p>
-            </div>
-
-            <form id="alimentosForm">
-                
-                <div class="form-group">
-                    <label>1. ¿Vivís en CABA?</label>
-                    <div class="radio-group">
-                        <div class="radio-option">
-                            <input type="radio" name="caba" id="cabaSi" value="si" onchange="validarFormulario()">
-                            <label for="cabaSi" class="radio-label">SÍ</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" name="caba" id="cabaNo" value="no" onchange="validarFormulario()">
-                            <label for="cabaNo" class="radio-label">NO</label>
-                        </div>
-                    </div>
-                    <div id="errorCaba" class="error-msg">Por el momento, nuestro estudio solo opera y toma casos radicados en los Tribunales de la Ciudad Autónoma de Buenos Aires.</div>
-                </div>
-
-                <div class="form-group">
-                    <label>2. ¿Figuran ambos padres en la partida de nacimiento?</label>
-                    <div class="radio-group">
-                        <div class="radio-option">
-                            <input type="radio" name="filiacion" id="filSi" value="si" onchange="validarFormulario()">
-                            <label for="filSi" class="radio-label">SÍ</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" name="filiacion" id="filNo" value="no" onchange="validarFormulario()">
-                            <label for="filNo" class="radio-label">NO</label>
-                        </div>
-                    </div>
-                    <div id="errorFiliacion" class="error-msg">Se requiere iniciar un juicio de filiación previo. Nuestro modelo de honorarios a cobrar al demandado/a no aplica para este proceso.</div>
-                </div>
-
-                <div class="form-group">
-                    <label>3. ¿El progenitor/a a reclamarle tiene un sueldo en blanco?</label>
-                    <div class="radio-group">
-                        <div class="radio-option">
-                            <input type="radio" name="trabajo" id="trabSi" value="si" onchange="validarFormulario()">
-                            <label for="trabSi" class="radio-label">SÍ</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" name="trabajo" id="trabNo" value="no" onchange="validarFormulario()">
-                            <label for="trabNo" class="radio-label">NO</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" name="trabajo" id="trabNose" value="nose" onchange="validarFormulario()">
-                            <label for="trabNose" class="radio-label">NO SÉ</label>
-                        </div>
-                    </div>
-                    <div id="wrapperCuit" style="display: none; margin-top: 1rem;">
-                        <input type="text" id="cuitInput" class="input-text" placeholder="Ingresá su CUIT y lo verificaremos luego" oninput="validarFormulario()">
-                    </div>
-                    <div id="errorTrabajo" class="error-msg">Nuestro modelo de honorarios a cobrar al demandado/a requiere obligatoriamente que posea ingresos comprobables (sueldo en blanco). No podemos tomar el reclamo bajo esta modalidad.</div>
-                </div>
-
-                <div class="form-group">
-                    <label>4. ¿Ese sueldo en blanco es de al menos $1.200.000 mensuales?</label>
-                    <div class="radio-group">
-                        <div class="radio-option">
-                            <input type="radio" name="ingresos" id="ingSi" value="si" onchange="validarFormulario()">
-                            <label for="ingSi" class="radio-label">SÍ</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" name="ingresos" id="ingNo" value="no" onchange="validarFormulario()">
-                            <label for="ingNo" class="radio-label">NO</label>
-                        </div>
-                    </div>
-                    <div id="errorIngresos" class="error-msg">El modelo de honorarios a cargo del demandado/a requiere un piso de solvencia demostrable que este caso no alcanza actualmente.</div>
-                </div>
-
-                <div class="form-group">
-                    <label>5. ¿El demandado/a tiene un auto o propiedad a su nombre?</label>
-                    <div class="radio-group">
-                        <div class="radio-option">
-                            <input type="radio" name="bienes" id="bienesSi" value="si" onchange="validarFormulario()">
-                            <label for="bienesSi" class="radio-label">SÍ</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" name="bienes" id="bienesNo" value="no" onchange="validarFormulario()">
-                            <label for="bienesNo" class="radio-label">NO</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>6. ¿Estás de acuerdo en abonar los gastos judiciales mínimos?</label>
-                    <div class="radio-group">
-                        <div class="radio-option">
-                            <input type="radio" name="gastos" id="gasSi" value="si" onchange="validarFormulario()">
-                            <label for="gasSi" class="radio-label">SÍ</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" name="gastos" id="gasNo" value="no" onchange="validarFormulario()">
-                            <label for="gasNo" class="radio-label">NO</label>
-                        </div>
-                    </div>
-                    <div id="errorGastos" class="error-msg">Los gastos de judiciales son requisitos obligatorios. Sin cubrirlos, no es posible iniciar legalmente el reclamo judicial.</div>
-                </div>
-
-                <!-- Botón de Envío -->
-                <button type="button" id="btnSiguiente" class="btn-primario btn-whatsapp-disabled" style="width: 100%; margin-top: 1rem;" onclick="procesarFormulario()" disabled>
-                    <i class="fab fa-whatsapp" style="font-size: 1.4rem;"></i> IR A WHATSAPP
-                </button>
-            </form>
-        </div>
-    </div>
 
     <!-- ==========================================
          MODAL DE INTENCIÓN DE SALIDA (EXIT INTENT)
@@ -816,7 +622,7 @@
             <i class="fas fa-exclamation-circle"></i>
             <h2>¡Esperá un segundo!</h2>
             <p>¿Estás seguro/a de que querés irte sin averiguar si podés iniciar tu juicio con <strong>Honorarios $0</strong>?</p>
-            <button onclick="cerrarExitYAbrirFiltro()" class="btn-primario" style="max-width: 100%; width: 100%; margin-bottom: 1rem;">
+            <button onclick="cerrarExitYIrAWhatsApp(event)" class="btn-primario" style="max-width: 100%; width: 100%; margin-bottom: 1rem;">
                 SÍ, EVALUAR MI CASO GRÁTIS
             </button>
             <button onclick="cerrarExit()" style="background: none; border: none; color: var(--gris-oscuro); text-decoration: underline; font-size: 0.95rem; cursor: pointer;">
@@ -871,101 +677,9 @@
             }
         }
 
-        // --- LÓGICA DEL FORMULARIO MODAL ---
-        function abrirFiltro(e) {
+        // --- LÓGICA DIRECTA A WHATSAPP ---
+        function irAWhatsApp(e) {
             if(e) e.preventDefault();
-            document.getElementById('modalFormulario').style.display = 'block';
-            document.body.style.overflow = 'hidden'; 
-            
-            document.getElementById('alimentosForm').reset();
-            document.getElementById('wrapperCuit').style.display = 'none';
-            document.querySelectorAll('.error-msg').forEach(msg => msg.style.display = 'none');
-            
-            // Estado inicial del botón: desactivado
-            const btn = document.getElementById('btnSiguiente');
-            btn.disabled = true;
-            btn.classList.add('btn-whatsapp-disabled');
-            btn.style.background = ''; 
-            btn.style.color = '';
-        }
-
-        function cerrarFiltro() {
-            document.getElementById('modalFormulario').style.display = 'none';
-            document.body.style.overflow = 'auto'; 
-        }
-
-        function validarFormulario() {
-            let hayError = false;
-            let completado = true;
-
-            if (document.getElementById('cabaNo').checked) {
-                document.getElementById('errorCaba').style.display = 'block'; hayError = true;
-            } else {
-                document.getElementById('errorCaba').style.display = 'none';
-            }
-
-            if (document.getElementById('filNo').checked) {
-                document.getElementById('errorFiliacion').style.display = 'block'; hayError = true;
-            } else {
-                document.getElementById('errorFiliacion').style.display = 'none';
-            }
-
-            if (document.getElementById('trabNo').checked) {
-                document.getElementById('errorTrabajo').style.display = 'block'; hayError = true;
-            } else {
-                document.getElementById('errorTrabajo').style.display = 'none';
-            }
-
-            if (document.getElementById('ingNo').checked) {
-                document.getElementById('errorIngresos').style.display = 'block'; hayError = true;
-            } else {
-                document.getElementById('errorIngresos').style.display = 'none';
-            }
-
-            if (document.getElementById('gasNo').checked) {
-                document.getElementById('errorGastos').style.display = 'block'; hayError = true;
-            } else {
-                document.getElementById('errorGastos').style.display = 'none';
-            }
-
-            const preguntasObligatorias = ['caba', 'filiacion', 'trabajo', 'ingresos', 'bienes', 'gastos'];
-            preguntasObligatorias.forEach(name => {
-                if (!document.querySelector(`input[name="${name}"]:checked`)) {
-                    completado = false;
-                }
-            });
-
-            if (document.getElementById('trabNose').checked) {
-                document.getElementById('wrapperCuit').style.display = 'block';
-                if (document.getElementById('cuitInput').value.trim() === "") {
-                    completado = false;
-                }
-            } else {
-                document.getElementById('wrapperCuit').style.display = 'none';
-            }
-
-            const btn = document.getElementById('btnSiguiente');
-            if (hayError || !completado) {
-                btn.disabled = true;
-                btn.classList.add('btn-whatsapp-disabled');
-                btn.style.background = '';
-                btn.style.color = '';
-            } else {
-                btn.disabled = false;
-                btn.classList.remove('btn-whatsapp-disabled');
-                btn.style.background = 'var(--whatsapp-color)';
-                btn.style.color = 'white';
-            }
-        }
-
-        function procesarFormulario() {
-            let texto = "¡Hola! Me contacto desde la página web porque califico para iniciar mi juicio de alimentos con Honorarios $0, ya que soy de CABA y el demandado/a tiene un sueldo en blanco. Mi caso es el siguiente: ";
-            
-            const trabNose = document.getElementById('trabNose').checked;
-            if (trabNose) {
-                let cuit = document.getElementById('cuitInput').value.trim();
-                texto += `\n\n(Nota del formulario: DNI/CUIT para verificar sueldo: ${cuit})`;
-            }
 
             // Disparar el evento de conversión de Google Ads
             if (typeof gtag === 'function') {
@@ -974,10 +688,10 @@
                 });
             }
 
+            const texto = "¡Hola! Me contacto desde la web porque cumplo con los 3 requisitos para acceder al *beneficio* de honorarios $0 para mí: (1) Vivo en CABA con el menor; (2) ambos padres figuramos en la partida de nacimiento; y (3) el padre tiene un *sueldo en blanco* superior a $1.200.000 en mano. Quiero más información sobre el beneficio y paso a contarles todo sobre mi caso para asesorarme gratis: ...";
             const waURL = `https://wa.me/5491131166233?text=${encodeURIComponent(texto)}`;
             
             window.open(waURL, '_blank');
-            cerrarFiltro();
         }
 
         // --- SISTEMA DE INTENCIÓN DE SALIDA (EXIT INTENT) ---
@@ -989,8 +703,8 @@
         }, 1000);
 
         window.addEventListener('popstate', function(event) {
-            // Si el formulario principal no está abierto y no mostramos el exit aún
-            if(document.getElementById('modalFormulario').style.display !== 'block' && !exitActivado) {
+            // Si no mostramos el exit aún
+            if(!exitActivado) {
                 mostrarExit();
                 // Volvemos a empujar estado para atraparlo en la página
                 window.history.pushState({page: 2}, "", "");
@@ -999,7 +713,7 @@
 
         // 2. Atrapar si el mouse se va hacia la barra de pestañas (PC)
         document.addEventListener('mouseleave', function(e) {
-            if(e.clientY < 0 && document.getElementById('modalFormulario').style.display !== 'block' && !exitActivado) {
+            if(e.clientY < 0 && !exitActivado) {
                 mostrarExit();
             }
         });
@@ -1017,9 +731,10 @@
             window.history.back();
         }
 
-        function cerrarExitYAbrirFiltro() {
+        function cerrarExitYIrAWhatsApp(e) {
             document.getElementById('modalExit').style.display = 'none';
-            abrirFiltro();
+            document.body.style.overflow = 'auto';
+            irAWhatsApp(e);
         }
     </script>
 </body>
