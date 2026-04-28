@@ -503,7 +503,7 @@
             <div class="faq-item">
                 <h3 onclick="toggleFaq(this)">¿Cómo es el proceso si decido avanzar con ustedes? <i class="fas fa-chevron-down"></i></h3>
                 <div class="faq-answer">
-                    <p>Una vez que completás el formulario y vemos que tu caso califica para el modelo $0, coordinamos una <strong>asesoría gratuita</strong> (vía WhastApp). Allí analizamos tu caso a fondo, evaluamos la solvencia del demandado y te explicamos la estrategia legal. Si estás de acuerdo, comenzamos el reclamo de inmediato.</p>
+                    <p>Una vez que te contactes por WhastApp y vemos que tu caso califica para el modelo $0, coordinamos una <strong>asesoría gratuita</strong> (vía WhastApp). Allí analizamos tu caso a fondo, evaluamos la solvencia del demandado y te explicamos la estrategia legal. Si estás de acuerdo, comenzamos el reclamo de inmediato.</p>
                 </div>
             </div>
 
@@ -677,17 +677,17 @@
             }
         }
 
-        // --- LÓGICA DIRECTA A WHATSAPP ---
+        // --- LÓGICA DIRECTA A WHATSAPP Y DATALAYER ---
         function irAWhatsApp(e) {
             if(e) e.preventDefault();
 
-            // Disparar el evento de conversión de Google Ads
-            if (typeof gtag === 'function') {
-                gtag('event', 'conversion', {
-                    'send_to': 'AW-16897720887/vEKICMDe0qMcELeEu_k-'
-                });
-            }
+            // 1. Empujar el evento al dataLayer para que GTM lo detecte
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                'event': 'conversion_whatsapp_landing'
+            });
 
+            // 2. Ejecutar la redirección a WhatsApp
             const texto = "¡Hola! Me contacto desde la web porque cumplo con los 3 requisitos para acceder al *beneficio* de honorarios $0 para mí: (1) Vivo en CABA con el menor; (2) ambos padres figuramos en la partida de nacimiento; y (3) el padre tiene un *sueldo en blanco* superior a $1.200.000 en mano. Quiero más información sobre el beneficio y paso a contarles todo sobre mi caso para asesorarme gratis: ...";
             const waURL = `https://wa.me/5491131166233?text=${encodeURIComponent(texto)}`;
             
