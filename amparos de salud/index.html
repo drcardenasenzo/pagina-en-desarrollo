@@ -611,6 +611,24 @@
             color: var(--gris-oscuro);
         }
     </style>
+    
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1536814911346613');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1536814911346613&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
 </head>
 <body>
     <!-- Google Tag Manager (noscript) -->
@@ -815,45 +833,75 @@
             <form id="amparoForm">
                 <div class="form-group">
                     <label>Nombre y Apellido</label>
-                    <input type="text" id="nombreInput" class="input-text" placeholder="Ej: Juan Pérez" required>
+                    <input type="text" id="nombreInput" class="input-text" placeholder="Ej: Juan Pérez" oninput="validarCampos()" required>
                 </div>
 
                 <div class="form-group">
                     <label>¿Vive o recibe cobertura médica en CABA o PBA?</label>
                     <div class="radio-group">
                         <div class="radio-option">
-                            <input type="radio" name="zona" id="zonaSi" value="si" onchange="validarZona()">
+                            <input type="radio" name="zona" id="zonaSi" value="si" onchange="validarCampos()">
                             <label for="zonaSi" class="radio-label">SÍ</label>
                         </div>
                         <div class="radio-option">
-                            <input type="radio" name="zona" id="zonaNo" value="no" onchange="validarZona()">
+                            <input type="radio" name="zona" id="zonaNo" value="no" onchange="validarCampos()">
                             <label for="zonaNo" class="radio-label">NO</label>
                         </div>
                     </div>
                     <div id="errorZona" class="error-msg">Nosotros solo trabajamos para casos en CABA o PBA.</div>
                 </div>
-
+                
                 <div class="form-group">
                     <label>¿Tiene obra social o prepaga?</label>
                     <div class="radio-group">
                         <div class="radio-option">
-                            <input type="radio" name="tieneOS" id="osSi" value="si" onchange="toggleOSName()">
+                            <input type="radio" name="tieneOS" id="osSi" value="si" onchange="validarCampos()">
                             <label for="osSi" class="radio-label">SÍ</label>
                         </div>
                         <div class="radio-option">
-                            <input type="radio" name="tieneOS" id="osNo" value="no" onchange="toggleOSName()">
+                            <input type="radio" name="tieneOS" id="osNo" value="no" onchange="validarCampos()">
                             <label for="osNo" class="radio-label">NO</label>
                         </div>
                     </div>
                     <div id="wrapperOSName" style="display: none; margin-top: 1rem;">
-                        <input type="text" id="nombreOS" class="input-text" placeholder="Nombre de su Obra Social o Prepaga">
+                        <input type="text" id="nombreOS" class="input-text" placeholder="Nombre de su Obra Social o Prepaga" oninput="validarCampos()">
                     </div>
                     <div id="errorOS" class="error-msg">Nosotros trabajamos únicamente con reclamos a prepagas y obras sociales.</div>
                 </div>
 
                 <div class="form-group">
+                    <label>¿Tiene PAMI?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="tienePami" id="pamiSi" value="si" onchange="validarCampos()">
+                            <label for="pamiSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="tienePami" id="pamiNo" value="no" onchange="validarCampos()">
+                            <label for="pamiNo" class="radio-label">NO</label>
+                        </div>
+                    </div>
+                    <div id="errorPami" class="error-msg">No trabajamos con reclamos contra PAMI.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>¿Estás en condiciones de abonar los costos del proceso? (aprox. $85.000 a lo largo del juicio; honorarios $0)</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="costos" id="costosSi" value="si" onchange="validarCampos()">
+                            <label for="costosSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="costos" id="costosNo" value="no" onchange="validarCampos()">
+                            <label for="costosNo" class="radio-label">NO</label>
+                        </div>
+                    </div>
+                    <div id="errorCostos" class="error-msg">Para iniciar el reclamo es necesario poder cubrir los gastos administrativos del proceso judicial.</div>
+                </div>
+
+                <div class="form-group">
                     <label>Elegir la opción en la que encuadra su necesidad médica:</label>
-                    <select id="tipoProblema" class="input-text">
+                    <select id="tipoProblema" class="input-text" onchange="validarCampos()">
                         <option value="" disabled selected>Seleccione una opción...</option>
                         <option value="cobertura por discapacidad">Cobertura por discapacidad</option>
                         <option value="oncología">Oncología</option>
@@ -869,7 +917,7 @@
                 </div>
 
                 <!-- Botón de Envío Cambiado a WhatsApp Directo -->
-                <button type="button" id="btnSiguiente" class="btn-primario touch-interactive" style="width: 100%; justify-content: center; margin-top: 0.5rem; background: var(--whatsapp-color);" onclick="procesarFormulario()">
+                <button type="button" id="btnSiguiente" class="btn-primario touch-interactive" style="width: 100%; justify-content: center; margin-top: 0.5rem; background: var(--whatsapp-color); opacity: 0.5;" onclick="procesarFormulario()" disabled>
                     <i class="fab fa-whatsapp"></i> Ir a WhatsApp
                 </button>
             </form>
@@ -915,12 +963,14 @@
             // Ocultar mensajes de error/opciones dinámicas para arrancar en limpio
             document.getElementById('wrapperOSName').style.display = 'none';
             document.getElementById('errorZona').style.display = 'none';
+            document.getElementById('errorPami').style.display = 'none';
             document.getElementById('errorOS').style.display = 'none';
+            document.getElementById('errorCostos').style.display = 'none';
             
-            // Habilitar botón
+            // Deshabilitar botón por defecto hasta que se llene todo
             const btn = document.getElementById('btnSiguiente');
-            btn.disabled = false;
-            btn.style.opacity = '1';
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
         }
 
         function cerrarFormulario() {
@@ -928,36 +978,73 @@
             document.body.style.overflow = 'auto';
         }
 
-        function validarZona() {
+        // --- VALIDADOR CENTRAL DE TODOS LOS CAMPOS QUE BLOQUEAN ---
+        function validarCampos() {
+            // Checkboxes
+            const zonaSi = document.getElementById('zonaSi').checked;
             const zonaNo = document.getElementById('zonaNo').checked;
+            const pamiSi = document.getElementById('pamiSi').checked;
+            const pamiNo = document.getElementById('pamiNo').checked;
+            const osSi = document.getElementById('osSi').checked;
+            const osNo = document.getElementById('osNo').checked;
+            const costosSi = document.getElementById('costosSi').checked;
+            const costosNo = document.getElementById('costosNo').checked;
+            
+            // Textos y Select (Para obligar a que estén llenos)
+            const nombre = document.getElementById('nombreInput').value.trim();
+            const nombreOS = document.getElementById('nombreOS').value.trim();
+            const problema = document.getElementById('tipoProblema').value;
+            
             const errorZona = document.getElementById('errorZona');
+            const errorPami = document.getElementById('errorPami');
+            const errorOS = document.getElementById('errorOS');
+            const wrapperOSName = document.getElementById('wrapperOSName');
+            const errorCostos = document.getElementById('errorCostos');
             const btn = document.getElementById('btnSiguiente');
+
+            // Lógica para Zona
             if (zonaNo) {
                 errorZona.style.display = 'block';
-                btn.style.opacity = '0.5';
-                btn.disabled = true;
             } else {
                 errorZona.style.display = 'none';
-                btn.style.opacity = '1';
-                btn.disabled = false;
             }
-        }
 
-        function toggleOSName() {
-            const osSi = document.getElementById('osSi').checked;
-            const wrapper = document.getElementById('wrapperOSName');
-            const errorOS = document.getElementById('errorOS');
-            const btn = document.getElementById('btnSiguiente');
-            if (osSi) {
-                wrapper.style.display = 'block';
-                errorOS.style.display = 'none';
-                btn.disabled = false;
-                btn.style.opacity = '1';
+            // Lógica para PAMI
+            if (pamiSi) {
+                errorPami.style.display = 'block';
             } else {
-                wrapper.style.display = 'none';
+                errorPami.style.display = 'none';
+            }
+
+            // Lógica para Obra Social
+            if (osSi) {
+                wrapperOSName.style.display = 'block';
+                errorOS.style.display = 'none';
+            } else if (osNo) {
+                wrapperOSName.style.display = 'none';
                 errorOS.style.display = 'block';
-                btn.disabled = true;
+            } else {
+                wrapperOSName.style.display = 'none';
+                errorOS.style.display = 'none';
+            }
+
+            // Lógica para Costos
+            if (costosNo) {
+                errorCostos.style.display = 'block';
+            } else {
+                errorCostos.style.display = 'none';
+            }
+
+            // Lógica Estricta del Botón: TODAS las condiciones correctas deben cumplirse
+            const opcionesCorrectas = (zonaSi && pamiNo && osSi && costosSi);
+            const textosCompletos = (nombre !== "" && nombreOS !== "" && problema !== "");
+
+            if (opcionesCorrectas && textosCompletos) {
+                btn.style.opacity = '1';
+                btn.disabled = false;
+            } else {
                 btn.style.opacity = '0.5';
+                btn.disabled = true;
             }
         }
 
@@ -965,11 +1052,14 @@
             const nombre = document.getElementById('nombreInput').value.trim();
             const zonaSi = document.getElementById('zonaSi').checked;
             const osSi = document.getElementById('osSi').checked;
+            const pamiNo = document.getElementById('pamiNo').checked;
+            const costosSi = document.getElementById('costosSi').checked;
             const nombreOS = document.getElementById('nombreOS').value.trim();
             const problema = document.getElementById('tipoProblema').value;
 
-            if (!nombre || !zonaSi || !osSi || !nombreOS || !problema) {
-                alert("Por favor, completá todos los campos requeridos para avanzar.");
+            // Verificamos que se haya respondido todo y que las variables críticas sean válidas (PAMI: No)
+            if (!nombre || !zonaSi || !osSi || !pamiNo || !costosSi || !nombreOS || !problema) {
+                alert("Por favor, completá todos los campos requeridos correctamente para avanzar.");
                 return;
             }
 
@@ -987,6 +1077,12 @@
 
             // Redirigir de inmediato a WhatsApp
             window.open(waURL, '_blank');
+            
+            // --- EVENTO DE CONVERSIÓN DE META PIXEL ---
+            // Le avisamos a Meta que un cliente potencial completó el formulario exitosamente
+            if (typeof fbq === 'function') {
+                fbq('track', 'Lead');
+            }
             
             // Opcional: cerrar el formulario después de abrir WA
             cerrarFormulario();
