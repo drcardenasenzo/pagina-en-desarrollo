@@ -1491,7 +1491,7 @@
             const testCodeInput = document.getElementById('metaTestCode');
             const testCode = testCodeInput ? testCodeInput.value.trim() : '';
 
-            // 1. Envío asíncrono y transparente directamente a Meta
+            // 1. Envío asíncrono y transparente directamente a Meta (Usando JSON y autenticación por URL)
             if (META_PIXEL_ID && META_ACCESS_TOKEN) {
                 try {
                     const eventData = [{
@@ -1514,25 +1514,31 @@
                         eventData[0].user_data.fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
                     }
 
-                    // Estructuramos la petición como formulario urlencoded (Simple Request) para evitar la preflight de CORS en el navegador.
-                    const params = new URLSearchParams();
-                    params.append('data', JSON.stringify(eventData));
-                    params.append('access_token', META_ACCESS_TOKEN);
+                    // Estructuramos la carga útil exactamente según especificaciones de la API de Meta
+                    const payload = {
+                        data: eventData
+                    };
                     if (testCode) {
-                        params.append('test_event_code', testCode);
+                        payload.test_event_code = testCode;
                     }
 
-                    // Realizamos la consulta SIN mode: 'no-cors' para diagnóstico en Consola de Chrome.
-                    const response = await fetch(`https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events`, {
+                    // Pasamos el token como parámetro de consulta en la URL (Obligatorio para evitar el rechazo OAuth invalid_request)
+                    const url = `https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_ACCESS_TOKEN}`;
+
+                    // Realizamos el POST mandando JSON plano. Los navegadores que soportan CORS (Meta soporta) se comunican perfecto.
+                    const response = await fetch(url, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: params.toString()
+                        headers: { 
+                            'Content-Type': 'application/json' 
+                        },
+                        body: JSON.stringify(payload)
                     });
 
-                    console.log(`[META CAPI] Intento de envío completado.`);
+                    const resData = await response.json();
+                    console.log("[META CAPI RESPUESTA]", resData);
 
                 } catch (error) {
-                    console.error(`[META CAPI ERROR] Error de conexión: ${error.message}. Ver pestaña Red (Network) en Chrome.`);
+                    console.error(`[META CAPI ERROR]`, error);
                 }
             } else {
                 console.log(`[SIMULACIÓN] No se detectó Meta Token en las constantes. Conversión marcada localmente.`);
