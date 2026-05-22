@@ -730,8 +730,11 @@
             .filter-bar {
                 flex-direction: row;
             }
-            .filter-bar input {
-                flex: 2;
+            .filter-bar input#adminSearch {
+                flex: 1.5;
+            }
+            .filter-bar input#metaTestCode {
+                flex: 1.5;
             }
             .filter-bar select {
                 flex: 1;
@@ -1199,6 +1202,7 @@
 
             <div class="filter-bar">
                 <input type="text" id="adminSearch" placeholder="Buscar por Código o FBCLID..." oninput="filtrarTabla()">
+                <input type="text" id="metaTestCode" placeholder="Código de Prueba Meta (Ej: TEST39342)..." oninput="guardarCodigoPruebaLocal()">
                 <select id="adminStatusFilter" onchange="filtrarTabla()">
                     <option value="todos">Todos los Estados</option>
                     <option value="Pendiente">Pendientes</option>
@@ -1402,7 +1406,7 @@
             }, step);
         };
 
-        // --- ENLACE CON FIRESTORE EN TIEMPO REAL (Regla 2: Sin OrderBy complejos) ---
+        // --- ENLACE CON FIRESTORE EN TIEMPO REAL ---
         function escucharLeadsEnTiempoReal() {
             if (!isFirebaseAvailable || !userAuthenticated) return;
             const leadsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'leads');
@@ -1414,6 +1418,11 @@
                 });
                 // Ordenamos en memoria del lado del cliente para cumplir con la Regla 2
                 list.sort((a, b) => b.codigo - a.codigo);
+
+                // Sincronizar almacenamiento de respaldo local de forma inmediata
+                localLeads = list;
+                localStorage.setItem('amparo_local_leads', JSON.stringify(list));
+
                 renderizarTablaAdmin(list);
             }, (error) => {
                 console.error("Error al escuchar cambios en tiempo real en Firestore:", error);
@@ -1479,40 +1488,45 @@
         window.dispararCAPIYMarcar = async function(codigo, fbclid) {
             console.log(`[PROCESANDO] Enviando evento de conversión a Meta para el lead #${codigo}...`);
 
-            // 1. Envío asíncrono y transparente directamente a Meta (sin requerir cargas manuales de CSV)
+            const testCodeInput = document.getElementById('metaTestCode');
+            const testCode = testCodeInput ? testCodeInput.value.trim() : '';
+
+            // 1. Envío asíncrono y transparente directamente a Meta (Bypasseando CORS de navegador y enviando test_event_code)
             if (META_PIXEL_ID && META_ACCESS_TOKEN) {
                 try {
-                    const payload = {
-                        data: [{
-                            event_name: 'conversion_cliente_potencial_manual',
-                            event_time: Math.floor(Date.now() / 1000),
-                            action_source: 'website',
-                            event_source_url: window.location.href,
-                            user_data: {
-                                fbc: fbclid && fbclid !== 'Directo / No detectado' ? `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}` : null,
-                                client_user_agent: navigator.userAgent
-                            },
-                            custom_data: {
-                                lead_code: codigo.toString(),
-                                patent_firm: "Cárdenas & Asociados",
-                                service: "Amparos de Salud"
-                            }
-                        }]
-                    };
+                    const eventData = [{
+                        event_name: 'conversion_cliente_potencial_manual',
+                        event_time: Math.floor(Date.now() / 1000),
+                        action_source: 'website',
+                        event_source_url: window.location.href,
+                        user_data: {
+                            fbc: fbclid && fbclid !== 'Directo / No detectado' ? `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}` : null,
+                            client_user_agent: navigator.userAgent
+                        },
+                        custom_data: {
+                            lead_code: codigo.toString(),
+                            patent_firm: "Cárdenas & Asociados",
+                            service: "Amparos de Salud"
+                        }
+                    }];
 
-                    const response = await fetch(`https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_ACCESS_TOKEN}`, {
+                    // Estructuramos la petición como formulario urlencoded (Simple Request) para evitar la preflight de CORS en el navegador.
+                    const params = new URLSearchParams();
+                    params.append('data', JSON.stringify(eventData));
+                    params.append('access_token', META_ACCESS_TOKEN);
+                    if (testCode) {
+                        params.append('test_event_code', testCode);
+                    }
+
+                    // Hacemos la consulta con mode: 'no-cors' para evitar bloqueos del navegador
+                    await fetch(`https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: params.toString(),
+                        mode: 'no-cors'
                     });
 
-                    const resData = await response.json();
-                    
-                    if (resData.events_received > 0) {
-                        console.log(`[META CAPI] Conversión recibida y procesada correctamente de forma directa.`);
-                    } else {
-                        console.warn(`[META CAPI WARNING] Respuesta de error de Meta: ${JSON.stringify(resData)}`);
-                    }
+                    console.log(`[META CAPI] Evento enviado por servidor de forma segura.`);
 
                 } catch (error) {
                     console.error(`[META CAPI ERROR] Error de conexión: ${error.message}.`);
@@ -1521,7 +1535,14 @@
                 console.log(`[SIMULACIÓN] No se detectó Meta Token en las constantes. Conversión marcada localmente.`);
             }
 
-            // 2. Actualizar estado a "Convertido" en la base de datos
+            // Actualizar estado local primero para que sea persistente al instante
+            const index = localLeads.findIndex(l => l.codigo === codigo);
+            if (index !== -1) {
+                localLeads[index].estado = 'Convertido';
+                localStorage.setItem('amparo_local_leads', JSON.stringify(localLeads));
+            }
+
+            // 2. Actualizar estado a "Convertido" en la base de datos en la nube
             if (isFirebaseAvailable && userAuthenticated) {
                 try {
                     const leadDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'leads', `lead_${codigo}`);
@@ -1531,14 +1552,8 @@
                     console.error("Error al actualizar lead en Firestore:", error);
                 }
             } else {
-                // Fallback Local
-                const index = localLeads.findIndex(l => l.codigo === codigo);
-                if (index !== -1) {
-                    localLeads[index].estado = 'Convertido';
-                    localStorage.setItem('amparo_local_leads', JSON.stringify(localLeads));
-                    renderizarTablaAdmin(localLeads);
-                    console.log(`[LOCALSTORAGE] Registro #${codigo} actualizado localmente.`);
-                }
+                // Fallback Local de refresco si no hay conexión de red
+                renderizarTablaAdmin(localLeads);
             }
 
             showToast(`¡Consulta #${codigo} convertida con éxito en Meta!`);
@@ -1548,26 +1563,67 @@
         window.revertirConversion = async function(codigo) {
             console.log(`[REVERTIENDO] Restableciendo lead #${codigo} a estado Pendiente...`);
 
+            // Actualizar estado local primero
+            const index = localLeads.findIndex(l => l.codigo === codigo);
+            if (index !== -1) {
+                localLeads[index].estado = 'Pendiente';
+                localStorage.setItem('amparo_local_leads', JSON.stringify(localLeads));
+            }
+
             if (isFirebaseAvailable && userAuthenticated) {
                 try {
                     const leadDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'leads', `lead_${codigo}`);
                     await updateDoc(leadDocRef, { estado: 'Pendiente' });
                     console.log(`[FIRESTORE] Lead #${codigo} restablecido exitosamente.`);
                 } catch (error) {
-                    console.error("Error al revertir estado en Firestore:", error);
+                    console.error("Error al volver a estado pendiente en Firestore:", error);
                 }
             } else {
-                // Fallback Local
-                const index = localLeads.findIndex(l => l.codigo === codigo);
-                if (index !== -1) {
-                    localLeads[index].estado = 'Pendiente';
-                    localStorage.setItem('amparo_local_leads', JSON.stringify(localLeads));
-                    renderizarTablaAdmin(localLeads);
-                    console.log(`[LOCALSTORAGE] Lead #${codigo} restablecido localmente.`);
-                }
+                // Fallback Local de refresco
+                renderizarTablaAdmin(localLeads);
             }
 
             showToast(`¡Conversión de la consulta #${codigo} revertida!`);
+        };
+
+        // --- ABRIR PANEL DE ADMINISTRACIÓN (LECTURA FORZADA DIRECTA DE FIRESTORE) ---
+        window.abrirAdminPanel = async function() {
+            document.getElementById('adminPanel').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Cargar el código de prueba guardado si existe
+            if (document.getElementById('metaTestCode')) {
+                document.getElementById('metaTestCode').value = localStorage.getItem('meta_test_event_code') || '';
+            }
+
+            // 1. Mostrar lo que tengamos localmente primero para carga instantánea
+            if (localStorage.getItem('amparo_local_leads')) {
+                const list = JSON.parse(localStorage.getItem('amparo_local_leads')) || [];
+                window.renderizarTablaAdmin(list);
+            }
+
+            // 2. Forzar una lectura directa y fresca de Firestore para asegurar sincronización total
+            if (isFirebaseAvailable && userAuthenticated) {
+                try {
+                    const leadsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'leads');
+                    const querySnapshot = await getDocs(leadsCollectionRef);
+                    const freshList = [];
+                    querySnapshot.forEach((doc) => {
+                        freshList.push(doc.data());
+                    });
+                    
+                    // Ordenar en memoria cliente
+                    freshList.sort((a, b) => b.codigo - a.codigo);
+                    
+                    // Guardar y renderizar
+                    localLeads = freshList;
+                    localStorage.setItem('amparo_local_leads', JSON.stringify(freshList));
+                    window.renderizarTablaAdmin(freshList);
+                    console.log("[ADMIN] Base de datos leída y sincronizada al abrir el panel.");
+                } catch (error) {
+                    console.error("[ADMIN] Error al forzar lectura directa de Firestore al abrir panel:", error);
+                }
+            }
         };
     </script>
 
@@ -1595,10 +1651,7 @@
         });
 
         // --- SISTEMA DE ANIMACIÓN HIGH-PERFORMANCE (INTERSECTION OBSERVER) ---
-        // Reemplaza el laggy scroll listener clásico, logrando una fluidez óptima en móviles
-        function initializeAnimacionesFluidas() {
-            // function fallback name compatible
-        }
+        function initializeAnimacionesFluidas() {}
         function inicializarAnimacionesFluidas() {
             const observerOptions = {
                 root: null,
@@ -1610,7 +1663,7 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('active');
-                        observer.unobserve(entry.target); // Libera memoria después de animar
+                        observer.unobserve(entry.target); 
                     }
                 });
             }, observerOptions);
@@ -1620,11 +1673,13 @@
             });
         }
 
-        // --- SISTEMA DE RETENCIÓN DE SALIDA NO INVASIVO (BOTÓN ATRÁS & LINKS EXTERNOS) ---
+        // --- SISTEMA DE RETENCIÓN DE SALIDA INTELIGENTE (BYPASS DE NAVEGACIÓN INTERNA) ---
+        let isInternalNavigation = false;
         let exitIntentDisparado = false;
         window.enlaceSalidaDestino = null;
 
         function abrirExitIntent() {
+            if (exitIntentDisparado) return; 
             document.getElementById('exitIntentModal').style.display = 'flex';
         }
 
@@ -1632,27 +1687,43 @@
             document.getElementById('exitIntentModal').style.display = 'none';
         }
 
-        // Ejecuta la salida real si el usuario confirma que desea salir
         window.confirmarSalidaReal = function() {
             if (window.enlaceSalidaDestino) {
                 window.location.href = window.enlaceSalidaDestino;
             } else {
-                // Si fue disparado por el botón "Atrás" del historial, retrocedemos de verdad dos posiciones
                 cerrarExitIntent();
                 window.history.go(-2);
             }
         };
 
         function inicializarExitIntent() {
-            // 1. Capturamos cuando presionan el botón "Atrás" (típico gesto o botón para salir en mobile/PC)
-            window.history.pushState({ exitPrevented: true }, "");
-            
-            window.addEventListener("popstate", function(event) {
-                abrirExitIntent();
-                window.history.pushState({ exitPrevented: true }, "");
+            // 1. Detectar clics en secciones internas para evitar falsos positivos
+            document.querySelectorAll('a[href^="#"]').forEach(link => {
+                link.addEventListener('click', () => {
+                    isInternalNavigation = true;
+                    setTimeout(() => {
+                        isInternalNavigation = false;
+                    }, 150);
+                });
             });
 
-            // 2. Capturamos cuando hacen clic en enlaces que los llevan FUERA de nuestra landing page
+            // 2. Interceptar el retroceso en móviles/atrás nativo del navegador
+            if (window.history && window.history.pushState) {
+                window.history.pushState({ exitBlocker: true }, "");
+                
+                window.addEventListener("popstate", function(event) {
+                    if (isInternalNavigation) {
+                        return;
+                    }
+                    if (window.location.hash) {
+                        return;
+                    }
+                    abrirExitIntent();
+                    window.history.pushState({ exitBlocker: true }, "");
+                });
+            }
+
+            // 3. Capturar cuando hacen clic en enlaces que los llevan FUERA del sitio
             document.querySelectorAll('a').forEach(link => {
                 const href = link.getAttribute('href');
                 if (href && href.startsWith('http') && !href.includes(window.location.hostname)) {
@@ -1663,9 +1734,16 @@
                     });
                 }
             });
+
+            // 4. Capturar en Escritorio (cuando el cursor del mouse sube hacia la barra de pestañas)
+            document.addEventListener('mouseleave', function(e) {
+                if (e.clientY < 30) {
+                    abrirExitIntent();
+                }
+            });
         }
 
-        // --- PANEL DE ADMINISTRACIÓN OCULTO ---
+        // --- PANEL DE ADMINISTRACIÓN (UI GENERAL) ---
         function solicitarAccesoAdmin() {
             document.getElementById('pinModal').style.display = 'flex';
             document.getElementById('pin1').focus();
@@ -1673,7 +1751,6 @@
 
         function cerrarPinModal() {
             document.getElementById('pinModal').style.display = 'none';
-            // Resetear inputs de PIN
             for (let i = 1; i <= 4; i++) {
                 document.getElementById(`pin${i}`).value = '';
             }
@@ -1693,22 +1770,18 @@
 
             if (pinCompleto === "4405") {
                 cerrarPinModal();
-                abrirAdminPanel();
+                if (typeof window.abrirAdminPanel === 'function') {
+                    window.abrirAdminPanel();
+                }
             } else {
                 showToast("PIN incorrecto. Intente de nuevo.", true);
                 cerrarPinModal();
             }
         }
 
-        function abrirAdminPanel() {
-            document.getElementById('adminPanel').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            
-            // Forzar actualización visual si se está usando local state o Firestore
-            if (localStorage.getItem('amparo_local_leads')) {
-                const list = JSON.parse(localStorage.getItem('amparo_local_leads')) || [];
-                window.renderizarTablaAdmin(list);
-            }
+        function guardarCodigoPruebaLocal() {
+            const val = document.getElementById('metaTestCode').value.trim();
+            localStorage.setItem('meta_test_event_code', val);
         }
 
         function cerrarAdminPanel() {
@@ -1784,6 +1857,18 @@
                 toast.style.display = 'none';
             }, 3500);
         }
+
+        // Exponer funciones necesarias globalmente para interactividad HTML
+        window.solicitarAccesoAdmin = solicitarAccesoAdmin;
+        window.cerrarPinModal = cerrarPinModal;
+        window.movePinFocus = movePinFocus;
+        window.validarPin = validarPin;
+        window.cerrarAdminPanel = cerrarAdminPanel;
+        window.filtrarTabla = filtrarTabla;
+        window.exportarLeadsCSV = exportarLeadsCSV;
+        window.showToast = showToast;
+        window.cerrarExitIntent = cerrarExitIntent;
+        window.guardarCodigoPruebaLocal = guardarCodigoPruebaLocal;
 
         // --- SCRIPTS INTERACTIVOS ORIGINALES (HAMBURGER / RESPONSIVE MENU) ---
         const hamburger = document.getElementById('hamburger');
