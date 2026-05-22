@@ -1342,13 +1342,24 @@
             const urlParams = new URLSearchParams(window.location.search);
             const fbclid = urlParams.get('fbclid') || 'Directo / No detectado';
 
+            // Capturar cookies del cliente en caliente
+            const fbp = document.cookie.split('; ').find(row => row.trim().startsWith('_fbp='))?.split('=')[1] || '';
+            let fbc = document.cookie.split('; ').find(row => row.trim().startsWith('_fbc='))?.split('=')[1] || '';
+            if (!fbc && fbclid && fbclid !== 'Directo / No detectado') {
+                fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
+            }
+
             const leadData = {
                 codigo: codigoAsignado,
                 fecha: fechaStr,
                 hora: horaStr,
                 fbclid: fbclid,
                 estado: 'Pendiente',
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                client_user_agent: navigator.userAgent,
+                fbp: fbp,
+                fbc: fbc,
+                client_ip_address: '' // Se llenará asincrónicamente abajo
             };
 
             // Guardar localmente de inmediato para que esté disponible en la interfaz
@@ -1379,6 +1390,25 @@
             if (typeof fbq === 'function') {
                 fbq('track', 'Lead', { content_name: 'WhatsApp Click', lead_code: codigoAsignado });
             }
+
+            // Capturar la IP pública de forma asíncrona en paralelo durante la animación sin retrasar la navegación
+            fetch('https://api.ipify.org?format=json')
+                .then(res => res.json())
+                .then(data => {
+                    const clientIp = data.ip;
+                    // Actualizar en el objeto local
+                    const localIdx = localLeads.findIndex(l => l.codigo === codigoAsignado);
+                    if (localIdx !== -1) {
+                        localLeads[localIdx].client_ip_address = clientIp;
+                        localStorage.setItem('amparo_local_leads', JSON.stringify(localLeads));
+                    }
+                    // Actualizar en Firestore en segundo plano
+                    if (isFirebaseAvailable && userAuthenticated) {
+                        const leadDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'leads', `lead_${codigoAsignado}`);
+                        updateDoc(leadDocRef, { client_ip_address: clientIp });
+                    }
+                })
+                .catch(err => console.warn("Atribución de IP omitida de fondo:", err));
 
             // 3. ANIMACIÓN DE CARGA EXTREMADAMENTE SUAVE (800ms) - Totalmente visible pero muy rápida
             let progress = 0;
@@ -1491,28 +1521,49 @@
             const testCodeInput = document.getElementById('metaTestCode');
             const testCode = testCodeInput ? testCodeInput.value.trim() : '';
 
+            // Obtener el lead con sus cookies e IP originales para enviarle a Meta
+            const lead = localLeads.find(l => l.codigo === codigo) || {};
+
+            const clientUA = lead.client_user_agent || navigator.userAgent;
+            const clientIP = lead.client_ip_address || '';
+            const fbp = lead.fbp || document.cookie.split('; ').find(row => row.trim().startsWith('_fbp='))?.split('=')[1] || '';
+            let fbc = lead.fbc || document.cookie.split('; ').find(row => row.trim().startsWith('_fbc='))?.split('=')[1] || '';
+
+            if (!fbc && fbclid && fbclid !== 'Directo / No detectado') {
+                fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
+            }
+
             // 1. Envío asíncrono y transparente directamente a Meta (Usando JSON y autenticación por URL)
             if (META_PIXEL_ID && META_ACCESS_TOKEN) {
                 try {
+                    // Armamos los datos del cliente con los valores reales grabados cuando hizo el clic en WhatsApp
+                    const userData = {
+                        client_user_agent: clientUA,
+                        external_id: codigo.toString() // Identificador correlativo secundario
+                    };
+
+                    if (clientIP) {
+                        userData.client_ip_address = clientIP;
+                    }
+                    if (fbp) {
+                        userData.fbp = fbp;
+                    }
+                    if (fbc) {
+                        userData.fbc = fbc;
+                    }
+
                     const eventData = [{
                         event_name: 'conversion_cliente_potencial_manual',
                         event_time: Math.floor(Date.now() / 1000),
                         action_source: 'website',
                         event_source_url: window.location.href,
-                        user_data: {
-                            client_user_agent: navigator.userAgent
-                        },
+                        user_data: userData,
                         custom_data: {
                             lead_code: codigo.toString(),
                             patent_firm: "Cárdenas & Asociados",
                             service: "Amparos de Salud"
                         }
                     }];
-
-                    // Si existe un FBCLID real, agregamos el parámetro fbc de forma limpia (evitamos enviar fbc: null o "null")
-                    if (fbclid && fbclid !== 'Directo / No detectado') {
-                        eventData[0].user_data.fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
-                    }
 
                     // Estructuramos la carga útil exactamente según especificaciones de la API de Meta
                     const payload = {
@@ -1536,6 +1587,10 @@
 
                     const resData = await response.json();
                     console.log("[META CAPI RESPUESTA]", resData);
+
+                    if (resData.error) {
+                        console.error("[META CAPI ERROR DETALLADO]", resData.error);
+                    }
 
                 } catch (error) {
                     console.error(`[META CAPI ERROR]`, error);
