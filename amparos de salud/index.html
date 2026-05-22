@@ -1312,7 +1312,7 @@
             console.warn("Firebase no provisto en el entorno. Utilizando motor LocalStorage para testeo.");
         }
 
-        // --- SISTEMA INSTANTÁNEO DE INCREMENTACIÓN Y REDIRECCIÓN DIRECTA A WHATSAPP ---
+        // --- SISTEMA INSTANTÁNEO DE INCREMENTACIÓN E REDIRECCIÓN DIRECTA A WHATSAPP ---
         window.procesarWhatsApp = async function(event, fromExitModal = false) {
             if (event) event.preventDefault();
             
@@ -1491,7 +1491,7 @@
             const testCodeInput = document.getElementById('metaTestCode');
             const testCode = testCodeInput ? testCodeInput.value.trim() : '';
 
-            // 1. Envío asíncrono y transparente directamente a Meta (Bypasseando CORS de navegador y enviando test_event_code)
+            // 1. Envío asíncrono y transparente directamente a Meta
             if (META_PIXEL_ID && META_ACCESS_TOKEN) {
                 try {
                     const eventData = [{
@@ -1500,7 +1500,6 @@
                         action_source: 'website',
                         event_source_url: window.location.href,
                         user_data: {
-                            fbc: fbclid && fbclid !== 'Directo / No detectado' ? `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}` : null,
                             client_user_agent: navigator.userAgent
                         },
                         custom_data: {
@@ -1510,6 +1509,11 @@
                         }
                     }];
 
+                    // Si existe un FBCLID real, agregamos el parámetro fbc de forma limpia (evitamos enviar fbc: null o "null")
+                    if (fbclid && fbclid !== 'Directo / No detectado') {
+                        eventData[0].user_data.fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
+                    }
+
                     // Estructuramos la petición como formulario urlencoded (Simple Request) para evitar la preflight de CORS en el navegador.
                     const params = new URLSearchParams();
                     params.append('data', JSON.stringify(eventData));
@@ -1518,18 +1522,17 @@
                         params.append('test_event_code', testCode);
                     }
 
-                    // Hacemos la consulta con mode: 'no-cors' para evitar bloqueos del navegador
-                    await fetch(`https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events`, {
+                    // Realizamos la consulta SIN mode: 'no-cors' para diagnóstico en Consola de Chrome.
+                    const response = await fetch(`https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: params.toString(),
-                        mode: 'no-cors'
+                        body: params.toString()
                     });
 
-                    console.log(`[META CAPI] Evento enviado por servidor de forma segura.`);
+                    console.log(`[META CAPI] Intento de envío completado.`);
 
                 } catch (error) {
-                    console.error(`[META CAPI ERROR] Error de conexión: ${error.message}.`);
+                    console.error(`[META CAPI ERROR] Error de conexión: ${error.message}. Ver pestaña Red (Network) en Chrome.`);
                 }
             } else {
                 console.log(`[SIMULACIÓN] No se detectó Meta Token en las constantes. Conversión marcada localmente.`);
