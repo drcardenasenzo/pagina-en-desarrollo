@@ -1324,6 +1324,38 @@
             window.renderizarTablaAdmin(window.localLeads);
         };
 
+        // --- FALLBACK DE ESCRITURA REST CON KEEPALIVE (BLINDAJE ANTE SALIDA DE PÁGINA) ---
+        window.registrarLeadREST = async function(codigo, estadoVal, fecha, hora, fbclid, fbp, fbc) {
+            try {
+                const url = `https://firestore.googleapis.com/v1/projects/amparos-cardenas-tracking/databases/(default)/documents/artifacts/default-amparo-salud/public/data/leads/lead_${codigo}`;
+                const body = {
+                    fields: {
+                        codigo: { integerValue: codigo.toString() },
+                        fecha: { stringValue: fecha },
+                        hora: { stringValue: hora },
+                        fbclid: { stringValue: fbclid },
+                        estado: { stringValue: estadoVal },
+                        timestamp: { integerValue: Date.now().toString() },
+                        client_user_agent: { stringValue: navigator.userAgent },
+                        fbp: { stringValue: fbp || "" },
+                        fbc: { stringValue: fbc || "" },
+                        client_ip_address: { stringValue: "" }
+                    }
+                };
+                
+                // keepalive: true le ordena al navegador completar esta petición HTTP nativa de fondo
+                // aunque la página se cierre o navegue a WhatsApp en 50ms.
+                await fetch(url, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                    keepalive: true
+                });
+            } catch (err) {
+                console.warn("Fallo el registro REST de fondo:", err);
+            }
+        };
+
         // --- SISTEMA DE CAPTURA LOCAL DE WHATSAPP (FALLBACK INMUNE A CAÍDAS DE RED) ---
         window.procesarWhatsApp = async function(event, fromExitModal = false) {
             if (event) event.preventDefault();
@@ -1384,6 +1416,11 @@
             try {
                 localStorage.setItem('amparo_local_leads', JSON.stringify(window.localLeads));
             } catch(e){}
+
+            // Intentamos registrar de fondo via API REST keepalive en Firestore antes de redirigir
+            if (window.registrarLeadREST) {
+                window.registrarLeadREST(codigoAsignado, 'Error', fechaStr, horaStr, fbclid, fbp, fbc);
+            }
 
             // Nueva plantilla de texto para envío inmediato a WhatsApp
             const mensajeWa = `¡Hola, Dr. Cárdenas! Me contacto desde la pagina web bajo el código N° ${codigoAsignado} para una *asesoría jurídica gratuita*. Tengo el siguiente problema de salud con una *Obra Social/Prepaga*: `;
@@ -1930,11 +1967,27 @@
             let codigoAsignado = null;
             let esRegistroExitoso = true;
 
+            const fechaActual = new Date();
+            const fechaStr = fechaActual.toLocaleDateString('es-AR');
+            const horaStr = fechaActual.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const fbclid = urlParams.get('fbclid') || 'Directo / No detectado';
+
+            const fbp = document.cookie.split('; ').find(row => row.trim().startsWith('_fbp='))?.split('=')[1] || '';
+            let fbc = document.cookie.split('; ').find(row => row.trim().startsWith('_fbc='))?.split('=')[1] || '';
+            if (!fbc && fbclid && fbclid !== 'Directo / No detectado') {
+                fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
+            }
+
+            // 1. INTENTAR LA TRANSACCIÓN PARA RESERVAR EL CÓDIGO SECUENCIAL ÚNICO
             try {
                 if (isFirebaseAvailable && userAuthenticated) {
                     const counterDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'counters', 'lead_counter');
                     
-                    codigoAsignado = await runTransaction(db, async (transaction) => {
+                    // Con un timeout explícito de 1000ms para la transacción para evitar colgar al usuario
+                    const transTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout Transaccion")), 1000));
+                    const transPromise = runTransaction(db, async (transaction) => {
                         const counterDoc = await transaction.get(counterDocRef);
                         let currentVal = 919;
                         
@@ -1949,6 +2002,8 @@
                         transaction.set(counterDocRef, { current: nextVal }, { merge: true });
                         return nextVal;
                     });
+
+                    codigoAsignado = await Promise.race([transPromise, transTimeout]);
                 } else {
                     throw new Error("Base de datos remota no disponible en este momento");
                 }
@@ -1968,19 +2023,6 @@
                 localStorage.setItem('amparo_ultimo_codigo', codigoAsignado);
             } catch(e){}
 
-            const fechaActual = new Date();
-            const fechaStr = fechaActual.toLocaleDateString('es-AR');
-            const horaStr = fechaActual.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const fbclid = urlParams.get('fbclid') || 'Directo / No detectado';
-
-            const fbp = document.cookie.split('; ').find(row => row.trim().startsWith('_fbp='))?.split('=')[1] || '';
-            let fbc = document.cookie.split('; ').find(row => row.trim().startsWith('_fbc='))?.split('=')[1] || '';
-            if (!fbc && fbclid && fbclid !== 'Directo / No detectado') {
-                fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
-            }
-
             const leadData = {
                 codigo: codigoAsignado,
                 fecha: fechaStr,
@@ -1999,14 +2041,29 @@
                 localStorage.setItem('amparo_local_leads', JSON.stringify(window.localLeads));
             } catch(e){}
 
-            // Subir lead a la nube si está conectado
+            // 2. SUBIR LEAD A LA NUBE Y ASEGURAR QUE SE GUARDE
             if (isFirebaseAvailable && userAuthenticated) {
                 try {
                     const leadsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'leads');
                     const leadDocRef = doc(leadsCollectionRef, `lead_${codigoAsignado}`);
-                    setDoc(leadDocRef, leadData);
+                    
+                    // Carrera atómica: Esperamos la escritura del SDK (setDoc) contra un timeout estricto de 400ms.
+                    // Si el SDK tarda más (por un microcorte o adblock), disparamos el fallback REST de fondo para que se guarde de todos modos.
+                    const writePromise = setDoc(leadDocRef, leadData);
+                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout Escritura SDK")), 400));
+                    
+                    await Promise.race([writePromise, timeoutPromise]);
                 } catch (error) {
-                    console.warn("Fallo guardado del lead en Firestore:", error);
+                    console.warn("La escritura estándar falló o tardó demasiado, disparando fallback REST keepalive:", error);
+                    // El fallback REST se completa en segundo plano de forma inmune a redirecciones
+                    if (window.registrarLeadREST) {
+                        window.registrarLeadREST(codigoAsignado, leadData.estado, fechaStr, horaStr, fbclid, fbp, fbc);
+                    }
+                }
+            } else {
+                // Si Firebase ni siquiera está disponible, registramos como Error via REST de fondo
+                if (window.registrarLeadREST) {
+                    window.registrarLeadREST(codigoAsignado, 'Error', fechaStr, horaStr, fbclid, fbp, fbc);
                 }
             }
 
@@ -2018,7 +2075,7 @@
                 fbq('track', 'Lead', { content_name: 'WhatsApp Click', lead_code: codigoAsignado });
             }
 
-            // Atribución de IP en paralelo
+            // Atribución de IP en paralelo (no bloqueante)
             fetch('https://api.ipify.org?format=json')
                 .then(res => res.json())
                 .then(data => {
@@ -2037,11 +2094,9 @@
                 })
                 .catch(err => console.warn("Omitiendo geolocalización IP en paralelo:", err));
 
-            // Redirección ultra rápida (retardo técnico imperceptible de 50ms para permitir disparo de scripts de tracking)
-            setTimeout(() => {
-                if (loadingModal) loadingModal.style.display = 'none';
-                window.location.href = waURL; 
-            }, 50);
+            // Redirección instantánea sin demoras artificiales
+            if (loadingModal) loadingModal.style.display = 'none';
+            window.location.href = waURL;
         };
     </script>
 </body>
