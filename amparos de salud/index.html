@@ -1317,7 +1317,7 @@
             });
         };
 
-        // --- ACCESO MANUAL Y DIRECTO EN CASO DE EMERGENCIA / LOCAL ---
+        // --- ACCESO MANUAL Y DIRECTO EN CASO DE ADMINISTRACIÓN LOCAL ---
         window.abrirAdminPanel = function() {
             document.getElementById('adminPanel').style.display = 'block';
             document.body.style.overflow = 'hidden';
@@ -1337,8 +1337,8 @@
             const progressBar = document.getElementById('progressBar');
 
             if (loadingModal) loadingModal.style.display = 'flex';
-            if (loadPercent) loadPercent.innerText = '0%';
-            if (progressBar) progressBar.style.width = '0%';
+            if (loadPercent) loadPercent.innerText = '100%';
+            if (progressBar) progressBar.style.width = '100%';
 
             // Generación incremental local resiliente
             let ultimoCodigoLocal = 919;
@@ -1385,36 +1385,19 @@
                 localStorage.setItem('amparo_local_leads', JSON.stringify(window.localLeads));
             } catch(e){}
 
-            const mensajeWa = `Hola, me contacto desde la página web. Mi código de consulta es ${codigoAsignado}. Necesito asesoría jurídica y mi consulta sobre Amparo de salud es la siguiente:`;
+            // Nueva plantilla de texto para envío inmediato a WhatsApp
+            const mensajeWa = `¡Hola, Dr. Cárdenas! Me contacto desde la pagina web bajo el código N° ${codigoAsignado} para una *asesoría jurídica gratuita*. Tengo el siguiente problema de salud con una *Obra Social/Prepaga*: `;
             const waURL = `https://api.whatsapp.com/send?phone=5491131166233&text=${encodeURIComponent(mensajeWa)}`;
 
             if (typeof fbq === 'function') {
                 fbq('track', 'Lead', { content_name: 'WhatsApp Click', lead_code: codigoAsignado });
             }
 
-            // Animación fluida de redirección
-            let progress = 0;
-            const duration = 800;
-            const step = 20;
-            const increment = 100 / (duration / step);
-
-            const interval = setInterval(() => {
-                progress += increment;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    if (loadPercent) loadPercent.innerText = '100%';
-                    if (progressBar) progressBar.style.width = '100%';
-                    
-                    setTimeout(() => {
-                        if (loadingModal) loadingModal.style.display = 'none';
-                        window.location.href = waURL; 
-                    }, 150);
-                } else {
-                    if (loadPercent) loadPercent.innerText = `${Math.round(progress)}%`;
-                    if (progressBar) progressBar.style.width = `${progress}%`;
-                }
-            }, step);
+            // Redirección ultra rápida (retardo técnico imperceptible de 50ms para permitir disparo de scripts de tracking)
+            setTimeout(() => {
+                if (loadingModal) loadingModal.style.display = 'none';
+                window.location.href = waURL; 
+            }, 50);
         };
 
         // --- DISPARADOR DE CONVERSIÓN DE META CAPI DIRECTA (INDEPENDIENTE DE FIREBASE) ---
@@ -1941,8 +1924,8 @@
             const progressBar = document.getElementById('progressBar');
 
             if (loadingModal) loadingModal.style.display = 'flex';
-            if (loadPercent) loadPercent.innerText = '0%';
-            if (progressBar) progressBar.style.width = '0%';
+            if (loadPercent) loadPercent.innerText = '100%';
+            if (progressBar) progressBar.style.width = '100%';
 
             let codigoAsignado = null;
             let esRegistroExitoso = true;
@@ -2027,7 +2010,8 @@
                 }
             }
 
-            const mensajeWa = `Hola, me contacto desde la página web. Mi código de consulta es ${codigoAsignado}. Necesito asesoría jurídica y mi consulta sobre Amparo de salud es la siguiente:`;
+            // Nueva plantilla de texto para envío inmediato a WhatsApp
+            const mensajeWa = `¡Hola, Dr. Cárdenas! Me contacto desde la pagina web bajo el código N° ${codigoAsignado} para una *asesoría jurídica gratuita*. Tengo el siguiente problema de salud con una *Obra Social/Prepaga*: `;
             const waURL = `https://api.whatsapp.com/send?phone=5491131166233&text=${encodeURIComponent(mensajeWa)}`;
 
             if (typeof fbq === 'function') {
@@ -2053,29 +2037,11 @@
                 })
                 .catch(err => console.warn("Omitiendo geolocalización IP en paralelo:", err));
 
-            // Animación de barra de progreso
-            let progress = 0;
-            const duration = 800;
-            const step = 20;
-            const increment = 100 / (duration / step);
-
-            const interval = setInterval(() => {
-                progress += increment;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    if (loadPercent) loadPercent.innerText = '100%';
-                    if (progressBar) progressBar.style.width = '100%';
-                    
-                    setTimeout(() => {
-                        if (loadingModal) loadingModal.style.display = 'none';
-                        window.location.href = waURL; 
-                    }, 150);
-                } else {
-                    if (loadPercent) loadPercent.innerText = `${Math.round(progress)}%`;
-                    if (progressBar) progressBar.style.width = `${progress}%`;
-                }
-            }, step);
+            // Redirección ultra rápida (retardo técnico imperceptible de 50ms para permitir disparo de scripts de tracking)
+            setTimeout(() => {
+                if (loadingModal) loadingModal.style.display = 'none';
+                window.location.href = waURL; 
+            }, 50);
         };
     </script>
 </body>
