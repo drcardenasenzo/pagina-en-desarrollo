@@ -1031,7 +1031,7 @@
 
             // Armar texto de WhatsApp según la plantilla solicitada
             const codigoTexto = fbclid !== 'Directo' ? `fbclid_${fbclid}` : 'Directo';
-            const mensajeWa = `¡Hola, Dr. Cárdenas! Me contacto desde la página web para una asesoría jurídica gratuita. Mi Código es: [${codigoTexto}].Tengo el siguiente problema de salud con una Obra Social/Prepaga:`;
+            const mensajeWa = `¡Hola, Dr. Cárdenas! Me contacto desde la página web para una *asesoría jurídica gratuita*. Mi Código es: [${codigoTexto}].*Tengo el siguiente problema de salud con una Obra Social/Prepaga*:`;
             
             const waURL = `https://api.whatsapp.com/send?phone=5491131166233&text=${encodeURIComponent(mensajeWa)}`;
 
