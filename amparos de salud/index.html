@@ -499,7 +499,7 @@
             opacity: 1;
         }
 
-        /* --- REVEAL EFFECTS (Optimizado con hardware acceleration) --- */
+        /* --- REVEAL EFFECTS --- */
         .reveal {
             opacity: 0;
             transform: translateY(30px);
@@ -576,7 +576,7 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        /* --- INDICADOR DE REDIRECCIÓN "Abriendo WhatsApp..." (SUAVE Y PROFESIONAL) --- */
+        /* --- INDICADOR DE REDIRECCIÓN "Abriendo WhatsApp..." --- */
         .loading-loader-container {
             background: white;
             border-radius: 16px;
@@ -617,7 +617,7 @@
             transition: width 0.04s linear;
         }
 
-        /* --- GATEWAY DE ACCESO POR PIN (ESTILO FIRMA LEGAL) --- */
+        /* --- GATEWAY DE ACCESO POR PIN --- */
         #pinModal {
             display: none;
             position: fixed;
@@ -660,7 +660,7 @@
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
         }
 
-        /* --- PANEL DE ADMINISTRACIÓN (ESTILO CORPORATIVO PREMIUM 100% RESPONSIVE) --- */
+        /* --- PANEL DE ADMINISTRACIÓN PREMIUM --- */
         #adminPanel {
             display: none;
             position: fixed;
@@ -714,221 +714,9 @@
         }
 
         .admin-container {
-            max-width: 800px; 
+            max-width: 700px; 
             margin: 1.5rem auto;
             padding: 0 16px 3rem 16px;
-        }
-
-        /* Buscador / Filtro */
-        .filter-bar {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-        @media (min-width: 600px) {
-            .filter-bar {
-                flex-direction: row;
-            }
-            .filter-bar input#adminSearch {
-                flex: 2;
-            }
-            .filter-bar select {
-                flex: 1;
-            }
-        }
-
-        .filter-bar input {
-            background: #FFFFFF;
-            border: 1px solid #CBD5E1;
-            color: var(--gris-oscuro);
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: var(--transicion);
-            width: 100%;
-        }
-        .filter-bar input:focus {
-            border-color: var(--azul-claro);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-        }
-        .filter-bar select {
-            background: #FFFFFF;
-            border: 1px solid #CBD5E1;
-            color: var(--gris-oscuro);
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            width: 100%;
-            transition: var(--transicion);
-        }
-
-        /* --- CONTENEDOR DE TARJETAS MÓVILES --- */
-        .leads-list-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .lead-card {
-            background: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            border-left: 6px solid var(--azul-profundo);
-            border-radius: 12px;
-            padding: 1.25rem;
-            box-shadow: var(--sombra-suave);
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            transition: var(--transicion);
-            content-visibility: auto;
-        }
-
-        .lead-card.convertido {
-            border-left-color: var(--whatsapp-color);
-        }
-        
-        .lead-card.error {
-            border-left-color: #EF4444;
-        }
-
-        .lead-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #F1F5F9;
-            padding-bottom: 0.5rem;
-        }
-
-        .lead-card-code {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: var(--azul-profundo);
-        }
-
-        .lead-card-badge {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            padding: 0.25rem 0.75rem;
-            border-radius: 50px;
-        }
-        .lead-card-badge.pendiente {
-            background: #FEF3C7;
-            color: #D97706;
-        }
-        .lead-card-badge.convertido {
-            background: #D1FAE5;
-            color: #059669;
-        }
-        .lead-card-badge.error {
-            background: #FEE2E2;
-            color: #DC2626;
-        }
-
-        .lead-card-body {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-            font-size: 0.9rem;
-        }
-
-        .lead-card-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .lead-card-label {
-            font-weight: 600;
-            color: #64748B;
-        }
-
-        .lead-card-value {
-            color: var(--gris-oscuro);
-            font-weight: 500;
-        }
-
-        .lead-card-fbclid {
-            background: #F1F5F9;
-            padding: 0.15rem 0.4rem;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.8rem;
-            max-width: 150px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .lead-card-action {
-            margin-top: 0.25rem;
-        }
-
-        .lead-card-btn {
-            width: 100%;
-            background: var(--whatsapp-color);
-            color: white;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: var(--transicion);
-        }
-        .lead-card-btn:hover {
-            background: #1eb855;
-        }
-
-        /* Estilo para botón de Deshacer Conversión */
-        .lead-card-btn.revert-btn {
-            background: #EF4444 !important;
-            margin-top: 0.5rem;
-        }
-        .lead-card-btn.revert-btn:hover {
-            background: #DC2626 !important;
-        }
-
-        .lead-card-success-msg {
-            color: #059669;
-            font-size: 0.85rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            background: #F0FDF4;
-            padding: 0.6rem;
-            border-radius: 8px;
-            border: 1px solid #DCFCE7;
-        }
-
-        .toast-notification {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1E293B;
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            box-shadow: var(--sombra-fuerte);
-            z-index: 5000;
-            display: none;
-            align-items: center;
-            gap: 10px;
-            border-left: 5px solid #25D366;
-            animation: slideUpToast 0.25s ease;
-        }
-        @keyframes slideUpToast {
-            from { bottom: -50px; opacity: 0; }
-            to { bottom: 30px; opacity: 1; }
         }
     </style>
     
@@ -1138,7 +926,7 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- INDICADOR DE REDIRECCIÓN ULTRARRÁPIDO "Abriendo WhatsApp" (REDIRECCIÓN DIRECTA SIN CONTINGENCIAS) -->
+    <!-- INDICADOR DE REDIRECCIÓN ULTRARRÁPIDO "Abriendo WhatsApp" -->
     <div id="loadingModal" class="custom-modal">
         <div class="loading-loader-container">
             <div class="loader-text-green">
@@ -1198,166 +986,31 @@
         <div class="admin-header">
             <div class="admin-title">
                 <img src="logo.jpg" alt="Logo" style="height: 35px; border-radius: 4px;">
-                <span>Leads de Consultas</span>
+                <span>Conversiones Manuales (CAPI)</span>
             </div>
             <button class="admin-close" onclick="cerrarAdminPanel()"><i class="fas fa-times"></i> Salir</button>
         </div>
 
         <div class="admin-container">
-            <!-- Filtros e Historial de Leads -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-                <h3 style="color: var(--azul-profundo); margin-bottom: 0; font-family: 'Montserrat'; font-weight: 700; font-size: 1.25rem;"><i class="fas fa-users"></i> Registro de Consultas</h3>
-                <button onclick="exportarLeadsCSV()" class="admin-btn" style="background: var(--dorado-suave); color: var(--azul-profundo); border: none; padding: 0.6rem 1.2rem; font-weight: 700; border-radius: 8px; cursor: pointer; transition: var(--transicion); font-size: 0.85rem;"><i class="fas fa-file-csv"></i> Exportar CSV</button>
-            </div>
-
-            <div class="filter-bar">
-                <input type="text" id="adminSearch" placeholder="Buscar por Código o FBCLID..." oninput="filtrarTabla()">
-                <select id="adminStatusFilter" onchange="filtrarTabla()">
-                    <option value="todos">Todos los Estados</option>
-                    <option value="Pendiente">Pendientes</option>
-                    <option value="Convertido">Convertidos</option>
-                    <option value="Error">Errores</option>
-                </select>
-            </div>
-
-            <!-- Listado de Tarjetas Responsivas (Fácil lectura en móvil y tablet) -->
-            <div id="leadsListContainer" class="leads-list-container">
-                <div style="text-align: center; color: var(--gris-oscuro); padding: 3rem; background: white; border-radius: 12px; border: 1px dashed #CBD5E1;">
-                    <i class="fas fa-spinner fa-spin fa-2x" style="color: var(--azul-profundo); margin-bottom: 1rem;"></i><br>Cargando registros...
-                </div>
+            <div style="background: white; padding: 2rem; border-radius: 16px; box-shadow: var(--sombra-suave); border-top: 5px solid var(--azul-profundo);">
+                <h3 style="font-family: 'Montserrat'; font-weight: 700; color: var(--azul-profundo); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 10px; font-size: 1.25rem;"><i class="fab fa-whatsapp" style="color: var(--whatsapp-color);"></i> Reportar Conversión desde WhatsApp</h3>
+                <p style="font-size: 0.9rem; color: var(--gris-oscuro); margin-bottom: 1.5rem; line-height: 1.5;">
+                    Copia el mensaje de WhatsApp que te envió el cliente, pégalo abajo y presiona el botón. El sistema extraerá de forma automática el <strong>fbclid</strong> único y reportará la conversión en tiempo real.
+                </p>
+                
+                <textarea id="capiPasteInput" placeholder="Pega el mensaje de WhatsApp completo o directamente el fbclid aquí..." style="width: 100%; height: 120px; padding: 1rem; border-radius: 8px; border: 1px solid #CBD5E1; font-family: inherit; font-size: 0.95rem; margin-bottom: 1.5rem; resize: none; color: var(--gris-oscuro); line-height: 1.6;"></textarea>
+                
+                <button type="button" onclick="procesarConversionManual()" class="btn-primario touch-interactive" style="width: 100%; justify-content: center; background: var(--whatsapp-color); color: white; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3); padding: 1rem;">
+                    <i class="fas fa-paper-plane"></i> Enviar Conversión a Meta (CAPI)
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Notificación Toast General -->
-    <div id="toast" class="toast-notification">
-        <i class="fas fa-check-circle" style="color: #25D366; font-size: 1.2rem;"></i>
-        <span id="toastMsg">Cambio registrado con éxito.</span>
-    </div>
-
-    <!-- 1️⃣ SCRIPT ESTÁNDAR: UI, LÓGICA DE LOCAL STORAGE, ACCESO SEGURO, INTERACCIONES Y RESPONSIVENESS -->
+    <!-- SCRIPT UNIFICADO: REDIRECCIÓN INSTANTÁNEA, EXTRACCIÓN INTELIGENTE Y CAPI SIN BASE DE DATOS -->
     <script>
-        // Inicialización y recuperación ultra robusta de Leads en Caché Local (No se interrumpe ante bloqueadores)
-        window.localLeads = [];
-        try {
-            const cached = localStorage.getItem('amparo_local_leads');
-            window.localLeads = cached ? JSON.parse(cached) : [];
-            if (!Array.isArray(window.localLeads)) window.localLeads = [];
-        } catch (e) {
-            console.warn("No se pudo inicializar la caché local de leads:", e);
-            window.localLeads = [];
-        }
-
-        // --- RENDERIZADO VISUAL PREMIUM DEL PANEL DE ADMINISTRACIÓN (MÓVIL / ESCRITORIO) ---
-        window.renderizarTablaAdmin = function(leadsList) {
-            const container = document.getElementById('leadsListContainer');
-            if (!container) return;
-
-            container.innerHTML = '';
-
-            if (!leadsList || leadsList.length === 0) {
-                container.innerHTML = `<div style="text-align: center; color: var(--gris-oscuro); padding: 3rem; background: white; border-radius: 12px; border: 1px dashed #CBD5E1;">No se encontraron registros de leads en el sistema.</div>`;
-                return;
-            }
-
-            leadsList.forEach(lead => {
-                let extraClass = '';
-                if (lead.estado === 'Convertido') {
-                    extraClass = 'convertido';
-                } else if (lead.estado === 'Error') {
-                    extraClass = 'error';
-                }
-
-                const leadCodigo = lead.codigo !== undefined && lead.codigo !== null ? lead.codigo : 'S/N';
-
-                const card = document.createElement('div');
-                card.className = `lead-card ${extraClass}`;
-                card.setAttribute('data-codigo', leadCodigo.toString());
-                card.setAttribute('data-fbclid', lead.fbclid || '');
-                card.setAttribute('data-estado', lead.estado || '');
-
-                let badgeClass = 'pendiente';
-                if (lead.estado === 'Convertido') badgeClass = 'convertido';
-                if (lead.estado === 'Error') badgeClass = 'error';
-                
-                let actionButton = '';
-                if (lead.estado === 'Pendiente') {
-                    actionButton = `<button class="lead-card-btn" onclick="dispararCAPIYMarcar(${leadCodigo}, '${lead.fbclid || ''}')"><i class="fas fa-check"></i> Marcar Conversión</button>`;
-                } else if (lead.estado === 'Convertido') {
-                    actionButton = `<div class="lead-card-success-msg" style="margin-bottom: 0.5rem;"><i class="fas fa-check-double"></i> Reportado a Meta (CAPI)</div>
-                                   <button class="lead-card-btn revert-btn" onclick="revertirConversion(${leadCodigo})"><i class="fas fa-undo"></i> Deshacer Conversión</button>`;
-                } else if (lead.estado === 'Error') {
-                    actionButton = `<button class="lead-card-btn" style="background: #94A3B8; cursor: not-allowed; opacity: 0.7;" disabled title="Registro incompleto o con error de secuencia"><i class="fas fa-exclamation-triangle"></i> Conversión Bloqueada (Error)</button>`;
-                }
-
-                card.innerHTML = `
-                    <div class="lead-card-header">
-                        <span class="lead-card-code">#${leadCodigo}</span>
-                        <span class="lead-card-badge ${badgeClass}">${lead.estado === 'Error' ? 'Error' : lead.estado}</span>
-                    </div>
-                    <div class="lead-card-body">
-                        <div class="lead-card-row">
-                            <span class="lead-card-label">Fecha:</span>
-                            <span class="lead-card-value">${lead.fecha || '-'}</span>
-                        </div>
-                        <div class="lead-card-row">
-                            <span class="lead-card-label">Hora:</span>
-                            <span class="lead-card-value">${lead.hora || '-'}</span>
-                        </div>
-                        <div class="lead-card-row">
-                            <span class="lead-card-label">fbclid:</span>
-                            <span class="lead-card-fbclid" title="${lead.fbclid || '-'}">${lead.fbclid || '-'}</span>
-                        </div>
-                    </div>
-                    <div class="lead-card-action">
-                        ${actionButton}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        };
-
-        // --- ACCESO MANUAL Y DIRECTO EN CASO DE ADMINISTRACIÓN LOCAL ---
-        window.abrirAdminPanel = function() {
-            document.getElementById('adminPanel').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            window.renderizarTablaAdmin(window.localLeads);
-        };
-
-        // --- FALLBACK DE ESCRITURA REST CON KEEPALIVE (BLINDAJE ANTE SALIDA DE PÁGINA) ---
-        window.registrarLeadREST = async function(codigo, estadoVal, fecha, hora, fbclid, fbp, fbc) {
-            try {
-                const url = `https://firestore.googleapis.com/v1/projects/amparos-cardenas-tracking/databases/(default)/documents/artifacts/default-amparo-salud/public/data/leads/lead_${codigo}`;
-                const body = {
-                    fields: {
-                        codigo: { integerValue: codigo.toString() },
-                        fecha: { stringValue: fecha },
-                        hora: { stringValue: hora },
-                        fbclid: { stringValue: fbclid },
-                        estado: { stringValue: estadoVal },
-                        timestamp: { integerValue: Date.now().toString() },
-                        client_user_agent: { stringValue: navigator.userAgent },
-                        fbp: { stringValue: fbp || "" },
-                        fbc: { stringValue: fbc || "" },
-                        client_ip_address: { stringValue: "" }
-                    }
-                };
-                
-                // keepalive: true le ordena al navegador completar esta petición HTTP nativa de fondo
-                // aunque la página se cierre o navegue a WhatsApp en 50ms.
-                await fetch(url, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body),
-                    keepalive: true
-                });
-            } catch (err) {
-                console.warn("Fallo el registro REST de fondo:", err);
-            }
-        };
-
-        // --- SISTEMA DE CAPTURA LOCAL DE WHATSAPP (FALLBACK INMUNE A CAÍDAS DE RED) ---
-        window.procesarWhatsApp = async function(event, fromExitModal = false) {
+        // --- REDIRECCIÓN INSTANTÁNEA (0 ms de espera para evitar deserción) ---
+        window.procesarWhatsApp = function(event, fromExitModal = false) {
             if (event) event.preventDefault();
             
             if (fromExitModal) {
@@ -1372,164 +1025,126 @@
             if (loadPercent) loadPercent.innerText = '100%';
             if (progressBar) progressBar.style.width = '100%';
 
-            // Generación incremental local resiliente
-            let ultimoCodigoLocal = 919;
-            try {
-                ultimoCodigoLocal = parseInt(localStorage.getItem('amparo_ultimo_codigo')) || 919;
-            } catch (e) {}
-            if (ultimoCodigoLocal < 919) {
-                ultimoCodigoLocal = 919;
-            }
-            const codigoAsignado = ultimoCodigoLocal + 1;
-
-            try {
-                localStorage.setItem('amparo_ultimo_codigo', codigoAsignado);
-            } catch(e){}
-
-            const fechaActual = new Date();
-            const fechaStr = fechaActual.toLocaleDateString('es-AR');
-            const horaStr = fechaActual.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            
+            // Capturar fbclid directamente de la URL
             const urlParams = new URLSearchParams(window.location.search);
-            const fbclid = urlParams.get('fbclid') || 'Directo / No detectado';
+            const fbclid = urlParams.get('fbclid') || 'Directo';
 
-            const fbp = document.cookie.split('; ').find(row => row.trim().startsWith('_fbp='))?.split('=')[1] || '';
-            let fbc = document.cookie.split('; ').find(row => row.trim().startsWith('_fbc='))?.split('=')[1] || '';
-            if (!fbc && fbclid && fbclid !== 'Directo / No detectado') {
-                fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
-            }
-
-            const leadData = {
-                codigo: codigoAsignado,
-                fecha: fechaStr,
-                hora: horaStr,
-                fbclid: fbclid,
-                estado: 'Error', // Fallback local de contingencia inicial
-                timestamp: Date.now(),
-                client_user_agent: navigator.userAgent,
-                fbp: fbp,
-                fbc: fbc,
-                client_ip_address: ''
-            };
-
-            window.localLeads.unshift(leadData);
-            try {
-                localStorage.setItem('amparo_local_leads', JSON.stringify(window.localLeads));
-            } catch(e){}
-
-            // Intentamos registrar de fondo via API REST keepalive en Firestore antes de redirigir
-            if (window.registrarLeadREST) {
-                window.registrarLeadREST(codigoAsignado, 'Error', fechaStr, horaStr, fbclid, fbp, fbc);
-            }
-
-            // Nueva plantilla de texto para envío inmediato a WhatsApp
-            const mensajeWa = `¡Hola, Dr. Cárdenas! Me contacto desde la pagina web bajo el código N° ${codigoAsignado} para una *asesoría jurídica gratuita*. Tengo el siguiente problema de salud con una *Obra Social/Prepaga*: `;
+            // Armar texto de WhatsApp según la plantilla solicitada
+            const codigoTexto = fbclid !== 'Directo' ? `fbclid_${fbclid}` : 'Directo';
+            const mensajeWa = `¡Hola, Dr. Cárdenas! Me contacto desde la página web para una asesoría jurídica gratuita. Mi Código es: [${codigoTexto}].Tengo el siguiente problema de salud con una Obra Social/Prepaga:`;
+            
             const waURL = `https://api.whatsapp.com/send?phone=5491131166233&text=${encodeURIComponent(mensajeWa)}`;
 
             if (typeof fbq === 'function') {
-                fbq('track', 'Lead', { content_name: 'WhatsApp Click', lead_code: codigoAsignado });
+                fbq('track', 'Lead', { content_name: 'WhatsApp Click', fbclid_id: fbclid });
             }
 
-            // Redirección ultra rápida (retardo técnico imperceptible de 50ms para permitir disparo de scripts de tracking)
+            // Redirección directa en 50 milisegundos (el respiro técnico justo para que el Pixel de Meta y GTM registren el clic)
             setTimeout(() => {
                 if (loadingModal) loadingModal.style.display = 'none';
                 window.location.href = waURL; 
             }, 50);
         };
 
-        // --- DISPARADOR DE CONVERSIÓN DE META CAPI DIRECTA (INDEPENDIENTE DE FIREBASE) ---
-        const META_PIXEL_ID = "1536814911346613"; 
-        const META_ACCESS_TOKEN = "EAAL3pyplZA34BRlSzKrlcm7QXbnydZBpZBUkamK2hIAZAxkOyUo0xEjzo8uyzYH0JLsYduvxrgzURXZALS89KPDrwFgbbNGrXaneW4DtDdWkfBSzKZCQxTZB4zSgfrvkxgxbZCikkFrsyqmUFKWyHzsuj6vZBmurZBup6EWIPSZBZAzsAne1Xl0es4SjJwbgTdkZBAwZDZD";
+        // --- SISTEMA EXTRACTOR INTELIGENTE DE FBCLID (ROBUSTO ANTE CUALQUIER FORMATO) ---
+        function extraerFbclid(texto) {
+            if (!texto) return null;
+            texto = texto.trim();
 
-        window.dispararCAPIYMarcar = async function(codigo, fbclid) {
-            console.log(`[PROCESANDO] Enviando conversión manual directa a servidores de Meta (Lead #${codigo})...`);
+            // 1. Regex para capturar fbclid_ seguido de la cadena alfanumérica
+            let match = texto.match(/fbclid_([a-zA-Z0-9\-_]{15,})/i);
+            if (match) return match[1];
 
-            const lead = window.localLeads.find(l => l.codigo === codigo) || {};
-            const clientUA = lead.client_user_agent || navigator.userAgent;
-            const clientIP = lead.client_ip_address || '';
-            const fbp = lead.fbp || document.cookie.split('; ').find(row => row.trim().startsWith('_fbp='))?.split('=')[1] || '';
-            let fbc = lead.fbc || document.cookie.split('; ').find(row => row.trim().startsWith('_fbc='))?.split('=')[1] || '';
+            // 2. Regex para capturar fbclid dentro de corchetes [fbclid_xxx] o [xxx]
+            match = texto.match(/\[(?:fbclid_)?([a-zA-Z0-9\-_]{15,})\]/i);
+            if (match) return match[1];
 
-            if (!fbc && fbclid && fbclid !== 'Directo / No detectado') {
-                fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
+            // 3. Fallback: si es una cadena de texto larga sin espacios, asumimos que es el fbclid directamente
+            if (/^[a-zA-Z0-9\-_]{15,}$/.test(texto)) {
+                return texto;
             }
 
-            if (META_PIXEL_ID && META_ACCESS_TOKEN) {
-                try {
-                    const userData = {
-                        client_user_agent: clientUA,
-                        external_id: codigo.toString()
-                    };
+            return null;
+        }
 
-                    if (clientIP) userData.client_ip_address = clientIP;
-                    if (fbp) userData.fbp = fbp;
-                    if (fbc) userData.fbc = fbc;
+        // --- ENVIAR CONVERSIÓN A META (CAPI OFFLINE DIRECTO) ---
+        window.procesarConversionManual = async function() {
+            const rawInput = document.getElementById('capiPasteInput').value.trim();
+            if (!rawInput) {
+                window.showToast("Por favor, pega el mensaje de WhatsApp o el fbclid antes de reportar.", true);
+                return;
+            }
 
-                    const eventData = [{
-                        event_name: 'conversion_cliente_potencial_manual',
-                        event_time: Math.floor(Date.now() / 1000),
-                        action_source: 'website',
-                        event_source_url: window.location.href,
-                        user_data: userData,
-                        custom_data: {
-                            lead_code: codigo.toString(),
-                            patent_firm: "Cárdenas & Asociados",
-                            service: "Amparos de Salud"
-                        }
-                    }];
+            const fbclid = extraerFbclid(rawInput);
+            if (!fbclid) {
+                window.showToast("No se detectó ningún código fbclid válido en el texto pegado.", true);
+                return;
+            }
 
-                    const response = await fetch(`https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_ACCESS_TOKEN}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ data: eventData })
-                    });
+            console.log(`[CAPI MANUAL] Enviando conversión directa para el fbclid: ${fbclid}`);
 
-                    const resData = await response.json();
-                    console.log("[META CAPI RESPUESTA DIRECTA]", resData);
-                } catch (error) {
-                    console.error("[META CAPI ERROR DIRECTO]", error);
+            // Credenciales de Meta
+            const META_PIXEL_ID = "1536814911346613"; 
+            const META_ACCESS_TOKEN = "EAAL3pyplZA34BRlSzKrlcm7QXbnydZBpZBUkamK2hIAZAxkOyUo0xEjzo8uyzYH0JLsYduvxrgzURXZALS89KPDrwFgbbNGrXaneW4DtDdWkfBSzKZCQxTZB4zSgfrvkxgxbZCikkFrsyqmUFKWyHzsuj6vZBmurZBup6EWIPSZBZAzsAne1Xl0es4SjJwbgTdkZBAwZDZD";
+
+            const fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
+            const externalId = 'manual_' + Math.floor(Math.random() * 1000000);
+
+            // Intentamos obtener cookies _fbp para enriquecer atribución si están presentes en la máquina del admin
+            const fbp = document.cookie.split('; ').find(row => row.trim().startsWith('_fbp='))?.split('=')[1] || '';
+
+            try {
+                const userData = {
+                    client_user_agent: navigator.userAgent,
+                    fbc: fbc,
+                    external_id: externalId
+                };
+                if (fbp) userData.fbp = fbp;
+
+                const eventData = [{
+                    event_name: 'conversion_cliente_potencial_manual',
+                    event_time: Math.floor(Date.now() / 1000),
+                    action_source: 'website',
+                    event_source_url: window.location.href,
+                    user_data: userData,
+                    custom_data: {
+                        fbclid: fbclid,
+                        patent_firm: "Cárdenas & Asociados",
+                        service: "Amparos de Salud",
+                        source: "CAPI Manual Panel"
+                    }
+                }];
+
+                const payload = { data: eventData };
+                const url = `https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_ACCESS_TOKEN}`;
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const resData = await response.json();
+                console.log("[META CAPI RESPUESTA]", resData);
+
+                if (resData.error) {
+                    window.showToast("Error de Meta: " + resData.error.message, true);
+                } else {
+                    window.showToast("¡Conversión reportada con éxito a Meta!", false);
+                    document.getElementById('capiPasteInput').value = '';
                 }
+            } catch (error) {
+                console.error("[CAPI MANUAL ERROR]", error);
+                window.showToast("Error de red al conectar con Meta.", true);
             }
-
-            // Actualizar localmente al instante
-            const index = window.localLeads.findIndex(l => l.codigo === codigo);
-            if (index !== -1) {
-                window.localLeads[index].estado = 'Convertido';
-                try {
-                    localStorage.setItem('amparo_local_leads', JSON.stringify(window.localLeads));
-                } catch(e){}
-            }
-            window.renderizarTablaAdmin(window.localLeads);
-
-            // Reportar a Firebase de fondo si el modulo está activo
-            if (window.firebaseUpdateLeadEstado) {
-                window.firebaseUpdateLeadEstado(codigo, 'Convertido');
-            }
-
-            window.showToast(`¡Consulta #${codigo} convertida con éxito en Meta!`);
         };
 
-        // --- SISTEMA DE REVERTIR CONVERSIÓN ---
-        window.revertirConversion = async function(codigo) {
-            console.log(`[REVERTIENDO] Restableciendo lead #${codigo}...`);
-
-            const index = window.localLeads.findIndex(l => l.codigo === codigo);
-            if (index !== -1) {
-                window.localLeads[index].estado = 'Pendiente';
-                try {
-                    localStorage.setItem('amparo_local_leads', JSON.stringify(window.localLeads));
-                } catch(e){}
-            }
-            window.renderizarTablaAdmin(window.localLeads);
-
-            if (window.firebaseUpdateLeadEstado) {
-                window.firebaseUpdateLeadEstado(codigo, 'Pendiente');
-            }
-
-            window.showToast(`¡Conversión de la consulta #${codigo} revertida!`);
+        // --- ACCESO Y SEGURIDAD DEL PANEL ---
+        window.abrirAdminPanel = function() {
+            document.getElementById('adminPanel').style.display = 'block';
+            document.body.style.overflow = 'hidden';
         };
 
-        // --- LÓGICA DE GATEWAY DEL PIN E INTERFAZ DEL PANEL ---
         window.solicitarAccesoAdmin = function(event) {
             if (event) {
                 event.preventDefault();
@@ -1614,50 +1229,6 @@
             document.body.style.overflow = 'auto';
         };
 
-        window.filtrarTabla = function() {
-            const query = document.getElementById('adminSearch').value.toLowerCase();
-            const filter = document.getElementById('adminStatusFilter').value;
-            const cards = document.querySelectorAll('.lead-card');
-
-            cards.forEach(card => {
-                const codigo = card.getAttribute('data-codigo') || '';
-                const fbclid = card.getAttribute('data-fbclid') || '';
-                const estado = card.getAttribute('data-estado') || '';
-
-                const matchesSearch = codigo.toLowerCase().includes(query) || fbclid.toLowerCase().includes(query);
-                const matchesFilter = filter === 'todos' || estado === filter;
-
-                if (matchesSearch && matchesFilter) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        };
-
-        window.exportarLeadsCSV = function() {
-            const cards = document.querySelectorAll('.lead-card');
-            let csvContent = "data:text/csv;charset=utf-8,Codigo,Fecha,Hora,fbclid,Estado\n";
-
-            cards.forEach(card => {
-                const codigo = card.querySelector('.lead-card-code')?.innerText.replace('#', '') || '';
-                const fecha = card.querySelectorAll('.lead-card-value')[0]?.innerText || '';
-                const hora = card.querySelectorAll('.lead-card-value')[1]?.innerText || '';
-                const fbclid = card.getAttribute('data-fbclid') || '';
-                const estado = card.getAttribute('data-estado') || '';
-                
-                csvContent += `"${codigo}","${fecha}","${hora}","${fbclid}","${estado}"\n`;
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Leads_Cardenas_Asociados_${new Date().toLocaleDateString()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        };
-
         window.showToast = function(msg, isError = false) {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMsg');
@@ -1680,7 +1251,7 @@
             }, 3500);
         };
 
-        // Inicialización de efectos y eventos nativos al cargar el DOM
+        // --- SISTEMAS TÁCTILES Y ANIMACIONES NATIVAS ---
         document.addEventListener("DOMContentLoaded", () => {
             const touchElements = document.querySelectorAll('.touch-interactive');
             touchElements.forEach(el => {
@@ -1700,7 +1271,6 @@
             inicializarExitIntent();
             inicializarAnimacionesFluidas();
 
-            // Auto-focus de retroceso nativo de PIN en móviles
             for (let i = 1; i <= 4; i++) {
                 const input = document.getElementById(`pin${i}`);
                 if (input) {
@@ -1711,11 +1281,6 @@
                         }
                     });
                 }
-            }
-
-            // Renderizado inicial instantáneo con lo que se tenga en cache local
-            if (window.localLeads.length > 0) {
-                window.renderizarTablaAdmin(window.localLeads);
             }
         });
 
@@ -1744,7 +1309,7 @@
             });
         });
 
-        // --- SISTEMA DE ANIMACIÓN (INTERSECTION OBSERVER) ---
+        // Intersection Observer
         function inicializarAnimacionesFluidas() {
             const revealObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
@@ -1758,7 +1323,7 @@
             document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
         }
 
-        // --- SISTEMA DE RETENCIÓN DE SALIDA (EXIT INTENT) ---
+        // Exit Intent
         let isInternalNavigation = false;
         let exitIntentDisparado = false;
         window.enlaceSalidaDestino = null;
@@ -1813,291 +1378,6 @@
                 if (e.clientY < 30) abrirExitIntent();
             });
         }
-    </script>
-
-    <!-- 2️⃣ SCRIPT DE MÓDULO: INTEGRACIÓN OPACIONAL CON GOOGLE FIREBASE (UPGRADE SILENCIOSO) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, runTransaction, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Configuración de Entorno Firebase
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyCAUrgMpkPHYrmjy0GR9m6i-2heaZkiEZU",
-            authDomain: "amparos-cardenas-tracking.firebaseapp.com",
-            projectId: "amparos-cardenas-tracking",
-            storageBucket: "amparos-cardenas-tracking.firebasestorage.app",
-            messagingSenderId: "722287666948",
-            appId: "1:722287666948:web:d652ef5c8e11da49ec1251"
-        };
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-amparo-salud';
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let db = null;
-        let auth = null;
-        let isFirebaseAvailable = false;
-        let userAuthenticated = null;
-
-        // Intentar inicialización silenciosa de base de datos en nube
-        try {
-            const app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            isFirebaseAvailable = true;
-
-            const initAuth = async () => {
-                try {
-                    if (initialAuthToken) {
-                        await signInWithCustomToken(auth, initialAuthToken);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                } catch (error) {
-                    console.warn("Autenticación Firebase no completada:", error);
-                }
-            };
-            initAuth();
-
-            onAuthStateChanged(auth, async (user) => {
-                userAuthenticated = user;
-                if (user) {
-                    console.log("Sincronización en la nube activada de fondo.");
-                    
-                    // Sincronizar secuencia del contador global
-                    try {
-                        const counterDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'counters', 'lead_counter');
-                        const counterSnap = await getDoc(counterDocRef);
-                        if (counterSnap.exists()) {
-                            const serverCode = counterSnap.data().current;
-                            const localCode = parseInt(localStorage.getItem('amparo_ultimo_codigo')) || 919;
-                            if (serverCode && serverCode > localCode) {
-                                localStorage.setItem('amparo_ultimo_codigo', serverCode);
-                            }
-                        }
-                    } catch (e) {
-                        console.warn("Fallo sincronización silenciosa del contador:", e);
-                    }
-
-                    // Suscribirse a leads en tiempo real
-                    escucharLeadsEnTiempoReal();
-                }
-            });
-        } catch (err) {
-            console.warn("El motor de base de datos remota no está disponible (Bloqueado o sin red). Ejecutando de forma puramente local.");
-        }
-
-        // --- SISTEMA EN TIEMPO REAL FIRESTORE ---
-        function escucharLeadsEnTiempoReal() {
-            if (!isFirebaseAvailable || !userAuthenticated) return;
-            const leadsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'leads');
-
-            onSnapshot(leadsCollectionRef, (querySnapshot) => {
-                const list = [];
-                querySnapshot.forEach((doc) => {
-                    list.push(doc.data());
-                });
-                list.sort((a, b) => b.codigo - a.codigo);
-
-                window.localLeads = list;
-                try {
-                    localStorage.setItem('amparo_local_leads', JSON.stringify(list));
-                } catch(e){}
-
-                window.renderizarTablaAdmin(list);
-            }, (error) => {
-                console.warn("Omitiendo escucha en la nube:", error);
-            });
-        }
-
-        // --- EXPOSICIÓN DE ACTUALIZACIONES REMOTAS ---
-        window.firebaseUpdateLeadEstado = async function(codigo, nuevoEstado) {
-            if (!isFirebaseAvailable || !userAuthenticated) return;
-            try {
-                const leadDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'leads', `lead_${codigo}`);
-                await updateDoc(leadDocRef, { estado: nuevoEstado });
-            } catch (error) {
-                console.warn("Imposible actualizar lead en la nube:", error);
-            }
-        };
-
-        // --- MEJORA GRADUAL: SOBREESCRIBIR APERTURA PARA DESCARGAR ÚLTIMAS ACTUALIZACIONES ---
-        const originalAbrirAdminPanel = window.abrirAdminPanel;
-        window.abrirAdminPanel = async function() {
-            if (typeof originalAbrirAdminPanel === 'function') {
-                originalAbrirAdminPanel();
-            }
-
-            if (isFirebaseAvailable && userAuthenticated) {
-                try {
-                    const leadsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'leads');
-                    const querySnapshot = await getDocs(leadsCollectionRef);
-                    const freshList = [];
-                    querySnapshot.forEach((doc) => {
-                        freshList.push(doc.data());
-                    });
-                    freshList.sort((a, b) => b.codigo - a.codigo);
-
-                    window.localLeads = freshList;
-                    try {
-                        localStorage.setItem('amparo_local_leads', JSON.stringify(freshList));
-                    } catch(e){}
-                    window.renderizarTablaAdmin(freshList);
-                } catch (error) {
-                    console.warn("Fallo lectura forzada de actualización remota:", error);
-                }
-            }
-        };
-
-        // --- MEJORA GRADUAL: RESERVAS DE NÚMERO TRANSACCIONAL GLOBAL ---
-        window.procesarWhatsApp = async function(event, fromExitModal = false) {
-            if (event) event.preventDefault();
-            
-            if (fromExitModal) {
-                cerrarExitIntent();
-            }
-
-            const loadingModal = document.getElementById('loadingModal');
-            const loadPercent = document.getElementById('loadPercent');
-            const progressBar = document.getElementById('progressBar');
-
-            if (loadingModal) loadingModal.style.display = 'flex';
-            if (loadPercent) loadPercent.innerText = '100%';
-            if (progressBar) progressBar.style.width = '100%';
-
-            let codigoAsignado = null;
-            let esRegistroExitoso = true;
-
-            const fechaActual = new Date();
-            const fechaStr = fechaActual.toLocaleDateString('es-AR');
-            const horaStr = fechaActual.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const fbclid = urlParams.get('fbclid') || 'Directo / No detectado';
-
-            const fbp = document.cookie.split('; ').find(row => row.trim().startsWith('_fbp='))?.split('=')[1] || '';
-            let fbc = document.cookie.split('; ').find(row => row.trim().startsWith('_fbc='))?.split('=')[1] || '';
-            if (!fbc && fbclid && fbclid !== 'Directo / No detectado') {
-                fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
-            }
-
-            // 1. INTENTAR LA TRANSACCIÓN PARA RESERVAR EL CÓDIGO SECUENCIAL ÚNICO
-            try {
-                if (isFirebaseAvailable && userAuthenticated) {
-                    const counterDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'counters', 'lead_counter');
-                    
-                    // Con un timeout explícito de 1000ms para la transacción para evitar colgar al usuario
-                    const transTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout Transaccion")), 1000));
-                    const transPromise = runTransaction(db, async (transaction) => {
-                        const counterDoc = await transaction.get(counterDocRef);
-                        let currentVal = 919;
-                        
-                        if (counterDoc.exists()) {
-                            const dbVal = counterDoc.data().current;
-                            if (typeof dbVal === 'number') {
-                                currentVal = Math.max(dbVal, 919);
-                            }
-                        }
-                        
-                        const nextVal = currentVal + 1;
-                        transaction.set(counterDocRef, { current: nextVal }, { merge: true });
-                        return nextVal;
-                    });
-
-                    codigoAsignado = await Promise.race([transPromise, transTimeout]);
-                } else {
-                    throw new Error("Base de datos remota no disponible en este momento");
-                }
-            } catch (error) {
-                console.warn("Transacción en nube omitida, usando generador local seguro:", error);
-                esRegistroExitoso = false;
-                
-                let ultimoCodigoLocal = 919;
-                try {
-                    ultimoCodigoLocal = parseInt(localStorage.getItem('amparo_ultimo_codigo')) || 919;
-                } catch (e) {}
-                if (ultimoCodigoLocal < 919) ultimoCodigoLocal = 919;
-                codigoAsignado = ultimoCodigoLocal + 1;
-            }
-
-            try {
-                localStorage.setItem('amparo_ultimo_codigo', codigoAsignado);
-            } catch(e){}
-
-            const leadData = {
-                codigo: codigoAsignado,
-                fecha: fechaStr,
-                hora: horaStr,
-                fbclid: fbclid,
-                estado: esRegistroExitoso ? 'Pendiente' : 'Error',
-                timestamp: Date.now(),
-                client_user_agent: navigator.userAgent,
-                fbp: fbp,
-                fbc: fbc,
-                client_ip_address: ''
-            };
-
-            window.localLeads.unshift(leadData);
-            try {
-                localStorage.setItem('amparo_local_leads', JSON.stringify(window.localLeads));
-            } catch(e){}
-
-            // 2. SUBIR LEAD A LA NUBE Y ASEGURAR QUE SE GUARDE
-            if (isFirebaseAvailable && userAuthenticated) {
-                try {
-                    const leadsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'leads');
-                    const leadDocRef = doc(leadsCollectionRef, `lead_${codigoAsignado}`);
-                    
-                    // Carrera atómica: Esperamos la escritura del SDK (setDoc) contra un timeout estricto de 400ms.
-                    // Si el SDK tarda más (por un microcorte o adblock), disparamos el fallback REST de fondo para que se guarde de todos modos.
-                    const writePromise = setDoc(leadDocRef, leadData);
-                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout Escritura SDK")), 400));
-                    
-                    await Promise.race([writePromise, timeoutPromise]);
-                } catch (error) {
-                    console.warn("La escritura estándar falló o tardó demasiado, disparando fallback REST keepalive:", error);
-                    // El fallback REST se completa en segundo plano de forma inmune a redirecciones
-                    if (window.registrarLeadREST) {
-                        window.registrarLeadREST(codigoAsignado, leadData.estado, fechaStr, horaStr, fbclid, fbp, fbc);
-                    }
-                }
-            } else {
-                // Si Firebase ni siquiera está disponible, registramos como Error via REST de fondo
-                if (window.registrarLeadREST) {
-                    window.registrarLeadREST(codigoAsignado, 'Error', fechaStr, horaStr, fbclid, fbp, fbc);
-                }
-            }
-
-            // Nueva plantilla de texto para envío inmediato a WhatsApp
-            const mensajeWa = `¡Hola, Dr. Cárdenas! Me contacto desde la pagina web bajo el código N° ${codigoAsignado} para una *asesoría jurídica gratuita*. Tengo el siguiente problema de salud con una *Obra Social/Prepaga*: `;
-            const waURL = `https://api.whatsapp.com/send?phone=5491131166233&text=${encodeURIComponent(mensajeWa)}`;
-
-            if (typeof fbq === 'function') {
-                fbq('track', 'Lead', { content_name: 'WhatsApp Click', lead_code: codigoAsignado });
-            }
-
-            // Atribución de IP en paralelo (no bloqueante)
-            fetch('https://api.ipify.org?format=json')
-                .then(res => res.json())
-                .then(data => {
-                    const clientIp = data.ip;
-                    const localIdx = window.localLeads.findIndex(l => l.codigo === codigoAsignado);
-                    if (localIdx !== -1) {
-                        window.localLeads[localIdx].client_ip_address = clientIp;
-                        try {
-                            localStorage.setItem('amparo_local_leads', JSON.stringify(window.localLeads));
-                        } catch(e){}
-                    }
-                    if (isFirebaseAvailable && userAuthenticated) {
-                        const leadDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'leads', `lead_${codigoAsignado}`);
-                        updateDoc(leadDocRef, { client_ip_address: clientIp }).catch(()=>{});
-                    }
-                })
-                .catch(err => console.warn("Omitiendo geolocalización IP en paralelo:", err));
-
-            // Redirección instantánea sin demoras artificiales
-            if (loadingModal) loadingModal.style.display = 'none';
-            window.location.href = waURL;
-        };
     </script>
 </body>
 </html>
