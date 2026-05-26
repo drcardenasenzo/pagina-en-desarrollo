@@ -17,14 +17,9 @@
     <!-- FAVICON: El logo de la pestaña -->
     <link rel="icon" href="logo.jpg" type="image/jpeg">
 
-    <!-- Optimización de carga de recursos externos (Preconnect) -->
+    <!-- Fuentes Google: Montserrat (Títulos) y Open Sans (Cuerpo) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-
-    <!-- Fuentes Google: Montserrat (Títulos) y Open Sans (Cuerpo) -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     
     <!-- Iconos (FontAwesome CDN) -->
@@ -43,7 +38,7 @@
             --whatsapp-color: #25D366;
             --sombra-suave: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --sombra-fuerte: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            --transicion: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transicion: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* --- ESTILOS BASE --- */
@@ -51,14 +46,13 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            /* ELIMINAR RECUADRO AZUL Y RESALTADO */
             outline: none !important;
             -webkit-tap-highlight-color: transparent;
         }
 
         html {
             scroll-behavior: smooth;
-            /* 🚀 FIX DE CONTROL DE POSICIÓN: Evita que el header sticky solape los títulos al navegar por secciones */
-            scroll-padding-top: 90px;
         }
 
         body {
@@ -67,8 +61,6 @@
             font-family: 'Open Sans', sans-serif;
             line-height: 1.7;
             overflow-x: hidden;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
         }
 
         h1, h2, h3, h4 {
@@ -94,7 +86,7 @@
         .text-white { color: var(--blanco); }
         .bg-light { background-color: var(--gris-claro); }
 
-        /* --- HEADER & NAV --- */
+        /* --- HEADER & NAV (HAMBURGUESA) --- */
         header {
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
@@ -247,7 +239,7 @@
         .hero-content {
             max-width: 900px;
             margin: 0 auto;
-            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: fadeInUp 1s ease-out;
         }
 
         .hero h1 {
@@ -268,7 +260,7 @@
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -298,7 +290,6 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            content-visibility: auto; /* Optimiza rendimiento de renderizado en móvil */
         }
 
         .card::after {
@@ -306,14 +297,14 @@
             position: absolute;
             bottom: 0; left: 0; width: 100%; height: 0;
             background: var(--azul-profundo);
-            transition: 0.3s ease;
+            transition: 0.4s ease;
             z-index: -1;
             opacity: 0.05;
         }
 
         .card:hover,
         .card.touch-active {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
             box-shadow: var(--sombra-fuerte);
             border-color: var(--dorado-suave);
         }
@@ -354,13 +345,11 @@
             gap: 15px;
             transition: var(--transicion);
             border-left: 5px solid transparent;
-            cursor: pointer;
-            content-visibility: auto;
         }
 
         .problem-list li:hover,
         .problem-list li.touch-active {
-            transform: translateX(5px);
+            transform: translateX(10px);
             border-left-color: #EF4444; 
         }
 
@@ -391,7 +380,6 @@
             border-radius: 10px;
             box-shadow: var(--sombra-suave);
             overflow: hidden;
-            content-visibility: auto;
         }
         
         summary {
@@ -413,7 +401,7 @@
             content: '\f078'; 
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
-            transition: transform 0.2s;
+            transition: transform 0.3s;
         }
         
         details[open] summary::after { transform: rotate(180deg); }
@@ -423,7 +411,7 @@
             color: var(--gris-oscuro);
             border-top: 1px solid #eee;
             margin-top: 1rem;
-            animation: slideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: slideDown 0.3s ease-out;
             font-size: 1.05rem;
             line-height: 1.8;
             letter-spacing: 0.2px;
@@ -435,7 +423,7 @@
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-5px); }
+            from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -460,11 +448,11 @@
         }
 
         .wa-float:hover,
-        .wa-float.touch-active { transform: scale(1.05) rotate(5deg); }
+        .wa-float.touch-active { transform: scale(1.1) rotate(10deg); }
 
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            70% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); }
             100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
         }
 
@@ -485,26 +473,11 @@
             clip-path: polygon(50% 100%, 0 0, 100% 0);
         }
 
-        .footer-secret-btn {
-            background: none;
-            border: none;
-            color: inherit;
-            font: inherit;
-            cursor: pointer;
-            text-decoration: none;
-            opacity: 0.8;
-            transition: opacity 0.2s;
-        }
-        .footer-secret-btn:hover {
-            opacity: 1;
-        }
-
-        /* --- REVEAL EFFECTS (Optimizado con hardware acceleration) --- */
+        /* --- EFECTO SCROLL REVEAL (JS) --- */
         .reveal {
             opacity: 0;
-            transform: translateY(30px);
-            will-change: transform, opacity;
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
         }
         .reveal.active {
             opacity: 1;
@@ -518,412 +491,124 @@
             .hero { padding: 6rem 0 4rem; }
         }
 
-        /* --- MODAL COMÚN BASE --- */
-        .custom-modal {
+        /* --- ESTILOS DEL FORMULARIO MODAL (TAMAÑOS REDUCIDOS) --- */
+        #modalFormulario {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(8px);
-            z-index: 3000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        /* --- EL MODAL ORIGINAL ADAPTADO COMO SALIDA (Exit Intent) --- */
-        .original-modal-container {
             background: var(--blanco);
-            border-radius: 20px;
-            padding: 2.5rem 2rem;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: var(--sombra-fuerte);
-            border-top: 6px solid var(--dorado-suave);
-            position: relative;
-            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            text-align: center;
-        }
-
-        .close-original {
-            position: absolute;
-            top: 15px; right: 20px;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: var(--gris-oscuro);
-            transition: var(--transicion);
-        }
-        .close-original:hover {
-            color: #EF4444;
-        }
-
-        .original-modal-header img {
-            height: 55px;
-            margin-bottom: 1rem;
-            object-fit: contain;
-        }
-
-        .original-modal-header h2 {
-            font-size: 1.5rem;
-            color: var(--azul-profundo);
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        @keyframes modalPop {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        /* --- INDICADOR DE REDIRECCIÓN "Abriendo WhatsApp..." (SUAVE Y PROFESIONAL) --- */
-        .loading-loader-container {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem 2rem;
-            max-width: 340px;
-            width: 100%;
-            text-align: center;
-            box-shadow: var(--sombra-fuerte);
-            border-left: 6px solid var(--whatsapp-color);
-            animation: modalPop 0.2s ease-out;
-        }
-
-        .loader-text-green {
-            color: var(--whatsapp-color);
-            font-weight: 800;
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        .loader-progress-bar-bg {
-            width: 100%;
-            height: 8px;
-            background: #E2E8F0;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .loader-progress-bar-fill {
-            width: 0%;
-            height: 100%;
-            background: var(--whatsapp-color);
-            border-radius: 4px;
-            transition: width 0.04s linear;
-        }
-
-        /* --- GATEWAY DE ACCESO POR PIN (ESTILO FIRMA LEGAL) --- */
-        #pinModal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(30, 58, 138, 0.6); 
-            backdrop-filter: blur(8px);
-            z-index: 3999;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .pin-box {
-            background: #FFFFFF;
-            border-top: 5px solid var(--dorado-suave);
-            border-radius: 16px;
-            padding: 2.5rem;
-            text-align: center;
-            max-width: 380px;
-            width: 90%;
-            color: var(--azul-profundo);
-            box-shadow: var(--sombra-fuerte);
-        }
-
-        .pin-digit {
-            width: 50px;
-            height: 50px;
-            background: #F1F5F9;
-            border: 2px solid #CBD5E1;
-            color: var(--azul-profundo);
-            font-size: 1.5rem;
-            text-align: center;
-            border-radius: 10px;
-            font-weight: 700;
-            transition: var(--transicion);
-        }
-        .pin-digit:focus {
-            border-color: var(--azul-claro);
-            background: #FFFFFF;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-        }
-
-        /* --- PANEL DE ADMINISTRACIÓN (ESTILO CORPORATIVO PREMIUM 100% RESPONSIVE) --- */
-        #adminPanel {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #F8FAFC; 
-            color: var(--gris-oscuro);
-            z-index: 4000;
+            z-index: 2000;
+            padding: 1.5rem 1rem;
             overflow-y: auto;
-            font-family: 'Open Sans', sans-serif;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.4s ease;
         }
 
-        .admin-header {
-            background: var(--azul-profundo);
-            padding: 1rem 1.25rem;
-            border-bottom: 4px solid var(--dorado-suave);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .admin-title {
+        .modal-container {
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .form-header img { height: 45px; margin-bottom: 0.5rem; }
+        
+        .form-header h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .form-header p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        .form-group { margin-bottom: 1rem; }
+        
+        .form-group label {
+            display: block;
             font-family: 'Montserrat', sans-serif;
-            color: #FFFFFF;
             font-weight: 700;
-            font-size: 1.15rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .admin-close {
-            background: transparent;
-            border: 2px solid var(--dorado-suave);
-            color: var(--dorado-suave);
-            padding: 0.4rem 1rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            transition: var(--transicion);
-        }
-        .admin-close:hover {
-            background: var(--dorado-suave);
             color: var(--azul-profundo);
+            margin-bottom: 0.3rem;
+            font-size: 0.95rem;
         }
 
-        .admin-container {
-            max-width: 800px; 
-            margin: 1.5rem auto;
-            padding: 0 16px 3rem 16px;
-        }
-
-        /* Buscador / Filtro */
-        .filter-bar {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-        @media (min-width: 600px) {
-            .filter-bar {
-                flex-direction: row;
-            }
-            .filter-bar input#adminSearch {
-                flex: 1.5;
-            }
-            .filter-bar input#metaTestCode {
-                flex: 1.5;
-            }
-            .filter-bar select {
-                flex: 1;
-            }
-        }
-
-        .filter-bar input {
-            background: #FFFFFF;
-            border: 1px solid #CBD5E1;
-            color: var(--gris-oscuro);
-            padding: 0.75rem 1rem;
+        .input-text, select {
+            width: 100%;
+            padding: 0.7rem;
+            border: 2px solid var(--gris-claro);
             border-radius: 8px;
             font-size: 0.95rem;
+            font-family: inherit;
             transition: var(--transicion);
-            width: 100%;
         }
-        .filter-bar input:focus {
+
+        .input-text:focus, select:focus {
             border-color: var(--azul-claro);
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
-        .filter-bar select {
-            background: #FFFFFF;
-            border: 1px solid #CBD5E1;
-            color: var(--gris-oscuro);
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            width: 100%;
-            transition: var(--transicion);
-        }
 
-        /* --- CONTENEDOR DE TARJETAS MÓVILES --- */
-        .leads-list-container {
+        .radio-group {
             display: flex;
-            flex-direction: column;
-            gap: 1rem;
+            gap: 0.5rem;
+            margin-top: 0.2rem;
         }
 
-        .lead-card {
-            background: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            border-left: 6px solid var(--azul-profundo);
-            border-radius: 12px;
-            padding: 1.25rem;
-            box-shadow: var(--sombra-suave);
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            transition: var(--transicion);
-            content-visibility: auto;
+        .radio-option {
+            flex: 1;
+            position: relative;
         }
 
-        .lead-card.convertido {
-            border-left-color: var(--whatsapp-color);
-        }
-
-        .lead-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #F1F5F9;
-            padding-bottom: 0.5rem;
-        }
-
-        .lead-card-code {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: var(--azul-profundo);
-        }
-
-        .lead-card-badge {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            padding: 0.25rem 0.75rem;
-            border-radius: 50px;
-        }
-        .lead-card-badge.pendiente {
-            background: #FEF3C7;
-            color: #D97706;
-        }
-        .lead-card-badge.convertido {
-            background: #D1FAE5;
-            color: #059669;
-        }
-
-        .lead-card-body {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-            font-size: 0.9rem;
-        }
-
-        .lead-card-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .lead-card-label {
-            font-weight: 600;
-            color: #64748B;
-        }
-
-        .lead-card-value {
-            color: var(--gris-oscuro);
-            font-weight: 500;
-        }
-
-        .lead-card-fbclid {
-            background: #F1F5F9;
-            padding: 0.15rem 0.4rem;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.8rem;
-            max-width: 150px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .lead-card-action {
-            margin-top: 0.25rem;
-        }
-
-        .lead-card-btn {
-            width: 100%;
-            background: var(--whatsapp-color);
-            color: white;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.9rem;
+        .radio-option input {
+            position: absolute;
+            opacity: 0;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+        }
+
+        .radio-label {
+            display: block;
+            padding: 0.6rem;
+            text-align: center;
+            background: var(--gris-claro);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
             transition: var(--transicion);
         }
-        .lead-card-btn:hover {
-            background: #1eb855;
-        }
 
-        /* Estilo para botón de Deshacer Conversión */
-        .lead-card-btn.revert-btn {
-            background: #EF4444 !important;
-            margin-top: 0.5rem;
-        }
-        .lead-card-btn.revert-btn:hover {
-            background: #DC2626 !important;
-        }
-
-        .lead-card-success-msg {
-            color: #059669;
-            font-size: 0.85rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            background: #F0FDF4;
-            padding: 0.6rem;
-            border-radius: 8px;
-            border: 1px solid #DCFCE7;
-        }
-
-        .toast-notification {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1E293B;
+        .radio-option input:checked + .radio-label {
+            background: var(--azul-profundo);
             color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            box-shadow: var(--sombra-fuerte);
-            z-index: 5000;
-            display: none;
-            align-items: center;
-            gap: 10px;
-            border-left: 5px solid #25D366;
-            animation: slideUpToast 0.25s ease;
         }
-        @keyframes slideUpToast {
-            from { bottom: -50px; opacity: 0; }
-            to { bottom: 30px; opacity: 1; }
+
+        .error-msg {
+            color: #EF4444;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+            display: none;
+            padding: 0.6rem;
+            background: #FEF2F2;
+            border-radius: 8px;
+            border-left: 4px solid #EF4444;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--gris-oscuro);
         }
     </style>
     
@@ -966,8 +651,8 @@
                     <li><a href="#coberturas" class="touch-interactive">Coberturas</a></li>
                     <li><a href="#faq" class="touch-interactive">Preguntas</a></li>
                     <li>
-                        <a href="#" class="touch-interactive" onclick="procesarWhatsApp(event)" style="color: var(--azul-profundo); border: 2px solid var(--dorado-suave); padding: 0.5rem 1rem; border-radius: 20px;">
-                            <i class="fab fa-whatsapp"></i> Contacto Directo
+                        <a href="#" class="touch-interactive" onclick="abrirFormulario(event)" style="color: var(--azul-profundo); border: 2px solid var(--dorado-suave); padding: 0.5rem 1rem; border-radius: 20px;">
+                            <i class="fab fa-whatsapp"></i> Contacto
                         </a>
                     </li>
                 </ul>
@@ -985,7 +670,7 @@
             <h1>AMPAROS DE SALUD</h1>
             <h2>Contra Obras Sociales y Prepagas</h2>
             
-            <a href="#" onclick="procesarWhatsApp(event)" class="btn-primario touch-interactive">
+            <a href="#" onclick="abrirFormulario(event)" class="btn-primario touch-interactive">
                 Consultar mi Caso Gratis <i class="fas fa-arrow-right"></i>
             </a>
         </div>
@@ -998,11 +683,11 @@
             <div class="grid-2">
                 <div>
                     <ul class="problem-list">
-                        <li class="touch-interactive" onclick="procesarWhatsApp(event)"><i class="fas fa-ban"></i> <span>Negativa de cobertura o afiliación.</span></li>
-                        <li class="touch-interactive" onclick="procesarWhatsApp(event)"><i class="fas fa-pills"></i> <span>Medicación rechazada o entrega interrumpida.</span></li>
-                        <li class="touch-interactive" onclick="procesarWhatsApp(event)"><i class="fas fa-clock"></i> <span>Demoras administrativas eternas.</span></li>
-                        <li class="touch-interactive" onclick="procesarWhatsApp(event)"><i class="fas fa-wheelchair"></i> <span>Tratamientos para discapacidad no autorizados.</span></li>
-                        <li class="touch-interactive" onclick="procesarWhatsApp(event)"><i class="fas fa-hospital"></i> <span>Rechazo de internaciones o cirugías.</span></li>
+                        <li class="touch-interactive"><i class="fas fa-ban"></i> <span>Negativa de cobertura o afiliación.</span></li>
+                        <li class="touch-interactive"><i class="fas fa-pills"></i> <span>Medicación rechazada o entrega interrumpida.</span></li>
+                        <li class="touch-interactive"><i class="fas fa-clock"></i> <span>Demoras administrativas eternas.</span></li>
+                        <li class="touch-interactive"><i class="fas fa-wheelchair"></i> <span>Tratamientos para discapacidad no autorizados.</span></li>
+                        <li class="touch-interactive"><i class="fas fa-hospital"></i> <span>Rechazo de internaciones o cirugías.</span></li>
                     </ul>
                 </div>
                 <div style="display: flex; flex-direction: column; justify-content: center;">
@@ -1012,7 +697,7 @@
                         </p>
                     </div>
                     <div class="text-center" style="margin-top: 2rem;">
-                        <a href="#" onclick="procesarWhatsApp(event)" class="btn-primario touch-interactive">
+                        <a href="#" onclick="abrirFormulario(event)" class="btn-primario touch-interactive">
                             <i class="fab fa-whatsapp"></i> Evaluar Caso Gratis
                         </a>
                     </div>
@@ -1042,29 +727,29 @@
         <div class="container">
             <h2 class="text-center mb-4 reveal">Cobertura 100% Garantizada por Ley</h2>
             <div class="grid-4 reveal">
-                <div class="card touch-interactive" onclick="procesarWhatsApp(event)">
+                <div class="card touch-interactive">
                     <div class="icon-box"><i class="fas fa-puzzle-piece"></i></div>
                     <h3>Discapacidad</h3>
                     <p style="font-size: 0.9rem;">Ley 24.901: Cobertura total en terapias, acompañantes, transporte y educación.</p>
                 </div>
-                <div class="card touch-interactive" onclick="procesarWhatsApp(event)">
+                <div class="card touch-interactive">
                     <div class="icon-box"><i class="fas fa-ribbon"></i></div>
                     <h3>Oncología</h3>
                     <p style="font-size: 0.9rem;">Acceso inmediato a medicación oncológica, quimioterapia y estudios complejos (PET).</p>
                 </div>
-                <div class="card touch-interactive" onclick="procesarWhatsApp(event)">
+                <div class="card touch-interactive">
                     <div class="icon-box"><i class="fas fa-prescription-bottle-alt"></i></div>
                     <h3>Medicación</h3>
                     <p style="font-size: 0.9rem;">Cobertura de medicamentos del PMO, patologías crónicas y enfermedades poco frecuentes.</p>
                 </div>
-                <div class="card touch-interactive" onclick="procesarWhatsApp(event)">
+                <div class="card touch-interactive">
                     <div class="icon-box"><i class="fas fa-procedures"></i></div>
                     <h3>Internación</h3>
                     <p style="font-size: 0.9rem;">Cirugías, prótesis e internaciones sin topes ni copagos sorpresa.</p>
                 </div>
             </div>
             <div class="text-center" style="margin-top: 3rem;">
-                <a href="#" onclick="procesarWhatsApp(event)" class="btn-primario touch-interactive">
+                <a href="#" onclick="abrirFormulario(event)" class="btn-primario touch-interactive">
                     ¡Reclamá lo tuyo ahora!
                 </a>
             </div>
@@ -1076,9 +761,9 @@
         <div class="container reveal">
             <h2 class="text-white" style="font-size: 2.5rem;"><i class="fas fa-hourglass-half"></i> El tiempo es salud</h2>
             <p style="font-size: 1.2rem; max-width: 700px; margin: 0 auto 2rem;">
-                Las demoras agravan el daño. No esperes a que sea tarde. Iniciamos las acciones legales de forma inmediata.
+                Las demoras agravan el daño. No esperes a que sea tarde. Iniciamos las acciones legales en menos de 24hs.
             </p>
-            <a href="#" onclick="procesarWhatsApp(event)" class="btn-primario touch-interactive" style="background: white; color: var(--azul-profundo);">
+            <a href="#" onclick="abrirFormulario(event)" class="btn-primario touch-interactive" style="background: white; color: var(--azul-profundo);">
                 Contactar Urgente Gratis
             </a>
         </div>
@@ -1092,7 +777,7 @@
             <div class="reveal">
                 <details class="faq-item">
                     <summary class="touch-interactive">¿Cuánto tarda en salir la cobertura?</summary>
-                    <p>La <strong>Medida Cautelar</strong> suele dictarse en <strong>muy pocos días o semanas</strong>, obligando a la entidad de salud a cubrir la prestación <strong>inmediatamente</strong>. El juicio continúa hasta llegar a la sentencia definitiva. <strong>Nosotros nos encargamos de todo</strong>.</p>
+                    <p>La <strong>Medida Cautelar</strong> suele dictarse en <strong>muy pocos días o semanas</strong>, obligando a la entidad de salud a cubrir la prestación <strong>inmediatamente</strong>. El juicio continúa hasta llegar a la sentencia definitiva, generalmente tarda entre 12 y 18 meses. <strong>Nosotros nos encargamos de todo</strong> y de reclamar tus derechos.</p>
                 </details>
 
                 <details class="faq-item">
@@ -1101,13 +786,13 @@
                 </details>
 
                 <details class="faq-item">
-                    <summary class="touch-interactive">¿Cuánto debo gastar para realizar un amparo de salud?</summary>
-                    <p>Para tu tranquilidad, <strong>NO DEBÉS ABONAR HONORARIOS A NUESTRO ESTUDIO</strong>; en el 99% de los casos es condenada a pagar la entidad de salud. Al ser la obra social o prepaga quién incumple con sus obligaciones legales, los jueces suelen ordenar que sea la entidad de salud quien abone la <strong>totalidad de los honorarios</strong>. Tus únicos gastos son los costos administrativos del proceso judicial (aranceles y envío de cartas documento).</p>
+                    <summary class="touch-interactive">¿Cuánto debo gastar para relizar un amparo de salud?</summary>
+                    <p>Para tu tranquilidad, <strong>NO DEBÉS ABONAR HONORARIOS A NUESTRO ESTUDIO</strong>; en el 99% de los casos es condenada a pagar la entidad de salud. Al ser la obra social o prepaga quién incumple con sus obligaciones legales, los jueces suelen ordenar que sea la entidad de salud quien abone la <strong>totalidad del pago de nuestra intervención profesional</strong>. Tus únicos gastos son los costos del proceso judicial que, en la mayoría de los casos, son el arancel que cobra el Correo Argentino para enviar una carta documento ($22.500 al 23/04/26) y el Bono Ley ($27.700 al 23/04/26).</p>
                 </details>
 
                 <details class="faq-item">
                     <summary class="touch-interactive">¿Qué necesito para que puedan tomar mi caso?</summary>
-                    <p>En primer lugar, debés <strong>contactarte por WhatsApp</strong> así evaluamos tu caso y te asesoramos <strong>sin costo</strong>. Recordá que <strong>solo trabajamos con obras sociales/prepagas y únicamente en CABA o PBA</strong>. La documentación recomendada es: <strong>Orden médica original y constancia de la negativa</strong> (si la tenés).</p>
+                    <p>En primer lugar, debés <strong>contactarte por WhatsApp</strong> así evaluamos tu caso y te asesoramos <strong>sin costo</strong>. Recordá que <strong>solo trabajamos con obras sociales/prepagas y únicamente en CABA o PBA</strong>. La documentación que recomendamos enviar es la siguiente: <strong>Orden médica original y constancia de la negativa</strong> de la entidad de salud (solo si la tenés).</p>
                 </details>
             </div>
         </div>
@@ -1122,577 +807,125 @@
                 <p style="color: var(--dorado-suave); font-weight: bold;">Atención Personalizada</p>
             </div>
             <p style="font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
-                © 2026 
-                <button onclick="solicitarAccesoAdmin()" class="footer-secret-btn">Todos los derechos reservados.</button>
+                © 2026 Todos los derechos reservados.
             </p>
         </div>
     </footer>
 
     <!-- Botón Flotante WhatsApp -->
-    <a href="#" onclick="procesarWhatsApp(event)" class="wa-float touch-interactive">
+    <a href="#" onclick="abrirFormulario(event)" class="wa-float touch-interactive">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- INDICADOR DE REDIRECCIÓN ULTRARRÁPIDO "Abriendo WhatsApp" (REDIRECCIÓN DIRECTA SIN CONTINGENCIAS) -->
-    <div id="loadingModal" class="custom-modal">
-        <div class="loading-loader-container">
-            <div class="loader-text-green">
-                <i class="fab fa-whatsapp"></i> Abriendo WhatsApp... <span id="loadPercent">0%</span>
-            </div>
-            <div class="loader-progress-bar-bg">
-                <div id="progressBar" class="loader-progress-bar-fill"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- EL MODAL ORIGINAL ADAPTADO COMO SALIDA (Exit Intent - CONFIRMACIÓN NO INVASIVA) -->
-    <div id="exitIntentModal" class="custom-modal">
-        <div class="original-modal-container">
-            <span class="close-original" onclick="cerrarExitIntent()">&times;</span>
-            <div class="original-modal-header">
-                <img src="logo.jpg" alt="Logo Cárdenas & Asociados">
-                <h2>¿Necesitás un Amparo de Salud?</h2>
-            </div>
-
-            <button onclick="procesarWhatsApp(event, true)" class="btn-primario touch-interactive" style="width: 100%; justify-content: center; background: var(--whatsapp-color); color: white; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3); margin-top: 1.5rem;">
-                <i class="fab fa-whatsapp"></i> Iniciar Consulta Gratis
-            </button>
-
-            <!-- BOTÓN SECUNDARIO DE CONFIRMACIÓN DE SALIDA JURÍDICA -->
-            <button onclick="confirmarSalidaReal()" class="touch-interactive" style="background: none; border: none; color: #94A3B8; font-size: 0.85rem; margin-top: 1.2rem; cursor: pointer; text-decoration: underline; font-family: 'Open Sans', sans-serif;">
-                Salir de la página
-            </button>
-        </div>
-    </div>
-
-    <!-- GATEWAY DE ACCESO POR PIN -->
-    <div id="pinModal">
-        <div class="pin-box">
-            <i class="fas fa-shield-halved fa-3x" style="color: var(--dorado-suave); margin-bottom: 1.2rem;"></i>
-            <h3 style="font-family: 'Montserrat'; font-size: 1.4rem; margin-bottom: 0.5rem; color: var(--azul-profundo);">Acceso Restringido</h3>
-            <p style="font-size: 0.9rem; color: var(--gris-oscuro); margin-bottom: 1.5rem;">Ingrese el PIN de administración de Cárdenas & Asociados.</p>
-            
-            <div class="pin-input-group">
-                <input type="password" maxlength="1" class="pin-digit" id="pin1" onkeyup="movePinFocus(this, 'pin2')">
-                <input type="password" maxlength="1" class="pin-digit" id="pin2" onkeyup="movePinFocus(this, 'pin3')">
-                <input type="password" maxlength="1" class="pin-digit" id="pin3" onkeyup="movePinFocus(this, 'pin4')">
-                <input type="password" maxlength="1" class="pin-digit" id="pin4" onkeyup="validarPin(this)">
-            </div>
-            
-            <button onclick="cerrarPinModal()" class="admin-close" style="background: transparent; border: 1px solid #CBD5E1; color: var(--gris-oscuro); width: 100%;">Cancelar</button>
-        </div>
-    </div>
-
-    <!-- PANEL DE ADMINISTRADOR OCULTO (MOBILE-FIRST) -->
-    <div id="adminPanel">
-        <div class="admin-header">
-            <div class="admin-title">
-                <img src="logo.jpg" alt="Logo" style="height: 35px; border-radius: 4px;">
-                <span>Leads de Consultas</span>
-            </div>
-            <button class="admin-close" onclick="cerrarAdminPanel()"><i class="fas fa-times"></i> Salir</button>
-        </div>
-
-        <div class="admin-container">
-            <!-- Filtros e Historial de Leads -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-                <h3 style="color: var(--azul-profundo); margin-bottom: 0; font-family: 'Montserrat'; font-weight: 700; font-size: 1.25rem;"><i class="fas fa-users"></i> Registro de Consultas</h3>
-                <button onclick="exportarLeadsCSV()" class="admin-btn" style="background: var(--dorado-suave); color: var(--azul-profundo); border: none; padding: 0.6rem 1.2rem; font-weight: 700; border-radius: 8px; cursor: pointer; transition: var(--transicion); font-size: 0.85rem;"><i class="fas fa-file-csv"></i> Exportar CSV</button>
-            </div>
-
-            <div class="filter-bar">
-                <input type="text" id="adminSearch" placeholder="Buscar por Código o FBCLID..." oninput="filtrarTabla()">
-                <input type="text" id="metaTestCode" placeholder="Código de Prueba Meta (Ej: TEST39342)..." oninput="guardarCodigoPruebaLocal()">
-                <select id="adminStatusFilter" onchange="filtrarTabla()">
-                    <option value="todos">Todos los Estados</option>
-                    <option value="Pendiente">Pendientes</option>
-                    <option value="Convertido">Convertidos</option>
-                </select>
-            </div>
-
-            <!-- Listado de Tarjetas Responsivas (Fácil lectura en móvil y tablet) -->
-            <div id="leadsListContainer" class="leads-list-container">
-                <div style="text-align: center; color: var(--gris-oscuro); padding: 3rem; background: white; border-radius: 12px; border: 1px dashed #CBD5E1;">
-                    <i class="fas fa-spinner fa-spin fa-2x" style="color: var(--azul-profundo); margin-bottom: 1rem;"></i><br>Cargando registros...
+    <!-- FORMULARIO MODAL -->
+    <div id="modalFormulario">
+        <span class="close-modal" onclick="cerrarFormulario()">&times;</span>
+        <div class="modal-container">
+            <div class="form-header">
+                <img src="logo.jpg" alt="Cárdenas & Asociados">
+                
+                <div id="formHeaderText">
+                    <h2>Para ser redirigido a WhatsApp</h2>
+                    <p>Completá estos breves datos para iniciar tu consulta.</p>
                 </div>
             </div>
+
+            <form id="amparoForm">
+                <div class="form-group">
+                    <label>Nombre y Apellido</label>
+                    <input type="text" id="nombreInput" class="input-text" placeholder="Ej: Juan Pérez" oninput="validarCampos()" required>
+                </div>
+
+                <div class="form-group">
+                    <label>¿Vive o recibe cobertura médica en CABA o PBA?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="zona" id="zonaSi" value="si" onchange="validarCampos()">
+                            <label for="zonaSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="zona" id="zonaNo" value="no" onchange="validarCampos()">
+                            <label for="zonaNo" class="radio-label">NO</label>
+                        </div>
+                    </div>
+                    <div id="errorZona" class="error-msg">Nosotros solo trabajamos para casos en CABA o PBA.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>¿Tiene obra social o prepaga?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="tieneOS" id="osSi" value="si" onchange="validarCampos()">
+                            <label for="osSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="tieneOS" id="osNo" value="no" onchange="validarCampos()">
+                            <label for="osNo" class="radio-label">NO</label>
+                        </div>
+                    </div>
+                    <div id="wrapperOSName" style="display: none; margin-top: 1rem;">
+                        <input type="text" id="nombreOS" class="input-text" placeholder="Nombre de su Obra Social o Prepaga" oninput="validarCampos()">
+                    </div>
+                    <div id="errorOS" class="error-msg">Nosotros trabajamos únicamente con reclamos a prepagas y obras sociales.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>¿Tiene PAMI?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="tienePami" id="pamiSi" value="si" onchange="validarCampos()">
+                            <label for="pamiSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="tienePami" id="pamiNo" value="no" onchange="validarCampos()">
+                            <label for="pamiNo" class="radio-label">NO</label>
+                        </div>
+                    </div>
+                    <div id="errorPami" class="error-msg">No trabajamos con reclamos contra PAMI.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>¿Estás en condiciones de abonar los costos del proceso? (aprox. $85.000 a lo largo del juicio; honorarios $0)</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="costos" id="costosSi" value="si" onchange="validarCampos()">
+                            <label for="costosSi" class="radio-label">SÍ</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="costos" id="costosNo" value="no" onchange="validarCampos()">
+                            <label for="costosNo" class="radio-label">NO</label>
+                        </div>
+                    </div>
+                    <div id="errorCostos" class="error-msg">Para iniciar el reclamo es necesario poder cubrir los gastos administrativos del proceso judicial.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Elegir la opción en la que encuadra su necesidad médica:</label>
+                    <select id="tipoProblema" class="input-text" onchange="validarCampos()">
+                        <option value="" disabled selected>Seleccione una opción...</option>
+                        <option value="cobertura por discapacidad">Cobertura por discapacidad</option>
+                        <option value="oncología">Oncología</option>
+                        <option value="internación">Internación</option>
+                        <option value="prótesis">Prótesis</option>
+                        <option value="negativa de afiliación">Negativa de afiliación</option>
+                        <option value="baja sin consentimiento">Baja sin consentimiento</option>
+                        <option value="enfermedad crónica">Enfermedad crónica</option>
+                        <option value="cirugías">Cirugías</option>
+                        <option value="aumentos en la cuota">Aumentos en la cuota</option>
+                        <option value="otro problema">Otro problema</option>
+                    </select>
+                </div>
+
+                <!-- Botón de Envío Cambiado a WhatsApp Directo -->
+                <button type="button" id="btnSiguiente" class="btn-primario touch-interactive" style="width: 100%; justify-content: center; margin-top: 0.5rem; background: var(--whatsapp-color); opacity: 0.5;" onclick="procesarFormulario()" disabled>
+                    <i class="fab fa-whatsapp"></i> Ir a WhatsApp
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- Notificación Toast General -->
-    <div id="toast" class="toast-notification">
-        <i class="fas fa-check-circle" style="color: #25D366; font-size: 1.2rem;"></i>
-        <span id="toastMsg">Cambio registrado con éxito.</span>
-    </div>
-
-    <!-- SDK de Firebase & Lógica de Integración -->
-    <script type="module">
-        // Importación de módulos oficiales v11
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, getDocs, runTransaction, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // =========================================================================
-        // CONFIGURACIÓN DE META (API DE CONVERSIONES - CAPI)
-        // Coloca tus credenciales fijas aquí para disparar la conversión directo desde el panel
-        // =========================================================================
-        const META_PIXEL_ID = "1536814911346613"; 
-        const META_ACCESS_TOKEN = "EAAL3pyplZA34BRlSzKrlcm7QXbnydZBpZBUkamK2hIAZAxkOyUo0xEjzo8uyzYH0JLsYduvxrgzURXZALS89KPDrwFgbbNGrXaneW4DtDdWkfBSzKZCQxTZB4zSgfrvkxgxbZCikkFrsyqmUFKWyHzsuj6vZBmurZBup6EWIPSZBZAzsAne1Xl0es4SjJwbgTdkZBAwZDZD"; // 👈 PEGA AQUÍ TU ACCESS TOKEN GENERADO EN EL BUSINESS MANAGER DE META
-        
-        // Variables de entorno de Firebase
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyCAUrgMpkPHYrmjy0GR9m6i-2heaZkiEZU",
-            authDomain: "amparos-cardenas-tracking.firebaseapp.com",
-            projectId: "amparos-cardenas-tracking",
-            storageBucket: "amparos-cardenas-tracking.firebasestorage.app",
-            messagingSenderId: "722287666948",
-            appId: "1:722287666948:web:d652ef5c8e11da49ec1251"
-        };
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-amparo-salud';
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let db = null;
-        let auth = null;
-        let isFirebaseAvailable = false;
-        let userAuthenticated = null;
-
-        // Fallback local en caso de que Firestore tenga problemas temporales de conexión
-        let localLeads = JSON.parse(localStorage.getItem('amparo_local_leads')) || [];
-
-        // Inicialización de Firebase
-        if (firebaseConfig) {
-            try {
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-                isFirebaseAvailable = true;
-                
-                // Autenticación según especificación Canvas (Regra 3)
-                const initAuth = async () => {
-                    try {
-                        if (initialAuthToken) {
-                            await signInWithCustomToken(auth, initialAuthToken);
-                        } else {
-                            await signInAnonymously(auth);
-                        }
-                    } catch (error) {
-                        console.error("Error de autenticación Firebase:", error);
-                    }
-                };
-                initAuth();
-
-                onAuthStateChanged(auth, async (user) => {
-                    userAuthenticated = user;
-                    if (user) {
-                        console.log("Firebase autenticado correctamente. ID:", user.uid);
-                        escucharLeadsEnTiempoReal();
-                        
-                        // Sincronizar secuencia en segundo plano silenciosamente
-                        try {
-                            const counterDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'counters', 'lead_counter');
-                            const counterSnap = await getDoc(counterDocRef);
-                            if (counterSnap.exists()) {
-                                const serverCode = counterSnap.data().current;
-                                const localCode = parseInt(localStorage.getItem('amparo_ultimo_codigo')) || 819;
-                                if (serverCode && serverCode > localCode) {
-                                    localStorage.setItem('amparo_ultimo_codigo', serverCode);
-                                }
-                            }
-                        } catch (e) {
-                            console.warn("Error al sincronizar secuencia con la base de datos:", e);
-                        }
-                    }
-                });
-
-            } catch (err) {
-                console.error("Error al inicializar Firebase SDK:", err);
-                isFirebaseAvailable = false;
-            }
-        } else {
-            console.warn("Firebase no provisto en el entorno. Utilizando motor LocalStorage para testeo.");
-        }
-
-        // --- SISTEMA INSTANTÁNEO DE INCREMENTACIÓN E REDIRECCIÓN DIRECTA A WHATSAPP ---
-        window.procesarWhatsApp = async function(event, fromExitModal = false) {
-            if (event) event.preventDefault();
-            
-            if (fromExitModal) {
-                cerrarExitIntent();
-            }
-
-            // Mostrar el modal de carga rápido para animación visual fluida
-            const loadingModal = document.getElementById('loadingModal');
-            const loadPercent = document.getElementById('loadPercent');
-            const progressBar = document.getElementById('progressBar');
-
-            loadingModal.style.display = 'flex';
-            loadPercent.innerText = '0%';
-            progressBar.style.width = '0%';
-
-            // 1. ASIGNACIÓN SINCRÓNICA E INSTANTÁNEA DEL CÓDIGO (0 ms de espera para el usuario)
-            let ultimoCodigo = parseInt(localStorage.getItem('amparo_ultimo_codigo')) || 819;
-            let codigoAsignado = ultimoCodigo + 1;
-            localStorage.setItem('amparo_ultimo_codigo', codigoAsignado);
-
-            const fechaActual = new Date();
-            const fechaStr = fechaActual.toLocaleDateString('es-AR');
-            const horaStr = fechaActual.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            
-            // Capturar FBCLID si existe en la URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const fbclid = urlParams.get('fbclid') || 'Directo / No detectado';
-
-            // Capturar cookies del cliente en caliente
-            const fbp = document.cookie.split('; ').find(row => row.trim().startsWith('_fbp='))?.split('=')[1] || '';
-            let fbc = document.cookie.split('; ').find(row => row.trim().startsWith('_fbc='))?.split('=')[1] || '';
-            if (!fbc && fbclid && fbclid !== 'Directo / No detectado') {
-                fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
-            }
-
-            const leadData = {
-                codigo: codigoAsignado,
-                fecha: fechaStr,
-                hora: horaStr,
-                fbclid: fbclid,
-                estado: 'Pendiente',
-                timestamp: Date.now(),
-                client_user_agent: navigator.userAgent,
-                fbp: fbp,
-                fbc: fbc,
-                client_ip_address: '' // Se llenará asincrónicamente abajo
-            };
-
-            // Guardar localmente de inmediato para que esté disponible en la interfaz
-            localLeads.unshift(leadData);
-            localStorage.setItem('amparo_local_leads', JSON.stringify(localLeads));
-
-            // 2. DISPARAR ESCRITURA EN FIRESTORE EN SEGUNDO PLANO (SIN ESPERAR LA RESPUESTA DE LA RED)
-            if (isFirebaseAvailable && userAuthenticated) {
-                try {
-                    // Actualizar el contador global secuencialmente (asíncrono)
-                    const counterDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'counters', 'lead_counter');
-                    setDoc(counterDocRef, { current: codigoAsignado }, { merge: true });
-
-                    // Registrar el lead en la base de datos (asíncrono)
-                    const leadsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'leads');
-                    const leadDocRef = doc(leadsCollectionRef, `lead_${codigoAsignado}`);
-                    setDoc(leadDocRef, leadData);
-
-                } catch (error) {
-                    console.error("Fallo de escritura en segundo plano Firebase:", error);
-                }
-            }
-
-            // Preparar redirección y disparar pixel
-            const mensajeWa = `Hola, me contacto desde la página web. Mi código de consulta es ${codigoAsignado}. Necesito asesoría jurídica y mi consulta sobre Amparo de salud es la siguiente:`;
-            const waURL = `https://api.whatsapp.com/send?phone=5491131166233&text=${encodeURIComponent(mensajeWa)}`;
-
-            if (typeof fbq === 'function') {
-                fbq('track', 'Lead', { content_name: 'WhatsApp Click', lead_code: codigoAsignado });
-            }
-
-            // Capturar la IP pública de forma asíncrona en paralelo durante la animación sin retrasar la navegación
-            fetch('https://api.ipify.org?format=json')
-                .then(res => res.json())
-                .then(data => {
-                    const clientIp = data.ip;
-                    // Actualizar en el objeto local
-                    const localIdx = localLeads.findIndex(l => l.codigo === codigoAsignado);
-                    if (localIdx !== -1) {
-                        localLeads[localIdx].client_ip_address = clientIp;
-                        localStorage.setItem('amparo_local_leads', JSON.stringify(localLeads));
-                    }
-                    // Actualizar en Firestore en segundo plano
-                    if (isFirebaseAvailable && userAuthenticated) {
-                        const leadDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'leads', `lead_${codigoAsignado}`);
-                        updateDoc(leadDocRef, { client_ip_address: clientIp });
-                    }
-                })
-                .catch(err => console.warn("Atribución de IP omitida de fondo:", err));
-
-            // 3. ANIMACIÓN DE CARGA EXTREMADAMENTE SUAVE (800ms) - Totalmente visible pero muy rápida
-            let progress = 0;
-            const duration = 800; // milisegundos totales
-            const step = 20; // tick cada 20ms
-            const increment = 100 / (duration / step);
-
-            const interval = setInterval(() => {
-                progress += increment;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    loadPercent.innerText = '100%';
-                    progressBar.style.width = '100%';
-                    
-                    // Redirección inmediata directa a la app nativa de WhatsApp sin demoras
-                    setTimeout(() => {
-                        loadingModal.style.display = 'none';
-                        window.location.href = waURL; 
-                    }, 150);
-                } else {
-                    loadPercent.innerText = `${Math.round(progress)}%`;
-                    progressBar.style.width = `${progress}%`;
-                }
-            }, step);
-        };
-
-        // --- ENLACE CON FIRESTORE EN TIEMPO REAL ---
-        function escucharLeadsEnTiempoReal() {
-            if (!isFirebaseAvailable || !userAuthenticated) return;
-            const leadsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'leads');
-
-            onSnapshot(leadsCollectionRef, (querySnapshot) => {
-                const list = [];
-                querySnapshot.forEach((doc) => {
-                    list.push(doc.data());
-                });
-                // Ordenamos en memoria del lado del cliente para cumplir con la Regla 2
-                list.sort((a, b) => b.codigo - a.codigo);
-
-                // Sincronizar almacenamiento de respaldo local de forma inmediata
-                localLeads = list;
-                localStorage.setItem('amparo_local_leads', JSON.stringify(list));
-
-                renderizarTablaAdmin(list);
-            }, (error) => {
-                console.error("Error al escuchar cambios en tiempo real en Firestore:", error);
-            });
-        }
-
-        // --- RENDERIZADO DEL DASHBOARD DE ADMINISTRACIÓN POR TARJETAS ---
-        window.renderizarTablaAdmin = function(leadsList) {
-            const container = document.getElementById('leadsListContainer');
-            if (!container) return;
-
-            container.innerHTML = '';
-
-            if (leadsList.length === 0) {
-                container.innerHTML = `<div style="text-align: center; color: var(--gris-oscuro); padding: 3rem; background: white; border-radius: 12px; border: 1px dashed #CBD5E1;">No se encontraron registros de leads en el sistema.</div>`;
-                return;
-            }
-
-            leadsList.forEach(lead => {
-                const card = document.createElement('div');
-                card.className = `lead-card ${lead.estado === 'Convertido' ? 'convertido' : ''}`;
-                card.setAttribute('data-codigo', lead.codigo);
-                card.setAttribute('data-fbclid', lead.fbclid);
-                card.setAttribute('data-estado', lead.estado);
-
-                const isPendiente = lead.estado === 'Pendiente';
-                const badgeClass = isPendiente ? 'pendiente' : 'convertido';
-                
-                // Botón de acción dinámico para marcar y deshacer directamente la conversión offline en Meta
-                const actionButton = isPendiente 
-                    ? `<button class="lead-card-btn" onclick="dispararCAPIYMarcar(${lead.codigo}, '${lead.fbclid}')"><i class="fas fa-check"></i> Marcar Conversión</button>`
-                    : `<div class="lead-card-success-msg" style="margin-bottom: 0.5rem;"><i class="fas fa-check-double"></i> Reportado a Meta (CAPI)</div>
-                       <button class="lead-card-btn revert-btn" onclick="revertirConversion(${lead.codigo})"><i class="fas fa-undo"></i> Deshacer Conversión</button>`;
-
-                card.innerHTML = `
-                    <div class="lead-card-header">
-                        <span class="lead-card-code">#${lead.codigo}</span>
-                        <span class="lead-card-badge ${badgeClass}">${lead.estado}</span>
-                    </div>
-                    <div class="lead-card-body">
-                        <div class="lead-card-row">
-                            <span class="lead-card-label">Fecha:</span>
-                            <span class="lead-card-value">${lead.fecha}</span>
-                        </div>
-                        <div class="lead-card-row">
-                            <span class="lead-card-label">Hora:</span>
-                            <span class="lead-card-value">${lead.hora}</span>
-                        </div>
-                        <div class="lead-card-row">
-                            <span class="lead-card-label">fbclid:</span>
-                            <span class="lead-card-fbclid" title="${lead.fbclid}">${lead.fbclid}</span>
-                        </div>
-                    </div>
-                    <div class="lead-card-action">
-                        ${actionButton}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        };
-
-        // --- DISPARADOR DE CONVERSIÓN OFFLINE DIRECTO A LOS SERVIDORES DE META (CAPI) ---
-        window.dispararCAPIYMarcar = async function(codigo, fbclid) {
-            console.log(`[PROCESANDO] Enviando evento de conversión a Meta para el lead #${codigo}...`);
-
-            const testCodeInput = document.getElementById('metaTestCode');
-            const testCode = testCodeInput ? testCodeInput.value.trim() : '';
-
-            // Obtener el lead con sus cookies e IP originales para enviarle a Meta
-            const lead = localLeads.find(l => l.codigo === codigo) || {};
-
-            const clientUA = lead.client_user_agent || navigator.userAgent;
-            const clientIP = lead.client_ip_address || '';
-            const fbp = lead.fbp || document.cookie.split('; ').find(row => row.trim().startsWith('_fbp='))?.split('=')[1] || '';
-            let fbc = lead.fbc || document.cookie.split('; ').find(row => row.trim().startsWith('_fbc='))?.split('=')[1] || '';
-
-            if (!fbc && fbclid && fbclid !== 'Directo / No detectado') {
-                fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
-            }
-
-            // 1. Envío asíncrono y transparente directamente a Meta (Usando JSON y autenticación por URL)
-            if (META_PIXEL_ID && META_ACCESS_TOKEN) {
-                try {
-                    // Armamos los datos del cliente con los valores reales grabados cuando hizo el clic en WhatsApp
-                    const userData = {
-                        client_user_agent: clientUA,
-                        external_id: codigo.toString() // Identificador correlativo secundario
-                    };
-
-                    if (clientIP) {
-                        userData.client_ip_address = clientIP;
-                    }
-                    if (fbp) {
-                        userData.fbp = fbp;
-                    }
-                    if (fbc) {
-                        userData.fbc = fbc;
-                    }
-
-                    const eventData = [{
-                        event_name: 'conversion_cliente_potencial_manual',
-                        event_time: Math.floor(Date.now() / 1000),
-                        action_source: 'website',
-                        event_source_url: window.location.href,
-                        user_data: userData,
-                        custom_data: {
-                            lead_code: codigo.toString(),
-                            patent_firm: "Cárdenas & Asociados",
-                            service: "Amparos de Salud"
-                        }
-                    }];
-
-                    // Estructuramos la carga útil exactamente según especificaciones de la API de Meta
-                    const payload = {
-                        data: eventData
-                    };
-                    if (testCode) {
-                        payload.test_event_code = testCode;
-                    }
-
-                    // Pasamos el token como parámetro de consulta en la URL (Obligatorio para evitar el rechazo OAuth invalid_request)
-                    const url = `https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_ACCESS_TOKEN}`;
-
-                    // Realizamos el POST mandando JSON plano. Los navegadores que soportan CORS (Meta soporta) se comunican perfecto.
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 
-                            'Content-Type': 'application/json' 
-                        },
-                        body: JSON.stringify(payload)
-                    });
-
-                    const resData = await response.json();
-                    console.log("[META CAPI RESPUESTA]", resData);
-
-                    if (resData.error) {
-                        console.error("[META CAPI ERROR DETALLADO]", resData.error);
-                    }
-
-                } catch (error) {
-                    console.error(`[META CAPI ERROR]`, error);
-                }
-            } else {
-                console.log(`[SIMULACIÓN] No se detectó Meta Token en las constantes. Conversión marcada localmente.`);
-            }
-
-            // Actualizar estado local primero para que sea persistente al instante
-            const index = localLeads.findIndex(l => l.codigo === codigo);
-            if (index !== -1) {
-                localLeads[index].estado = 'Convertido';
-                localStorage.setItem('amparo_local_leads', JSON.stringify(localLeads));
-            }
-
-            // 2. Actualizar estado a "Convertido" en la base de datos en la nube
-            if (isFirebaseAvailable && userAuthenticated) {
-                try {
-                    const leadDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'leads', `lead_${codigo}`);
-                    await updateDoc(leadDocRef, { estado: 'Convertido' });
-                    console.log(`[FIRESTORE] Registro #${codigo} actualizado a 'Convertido' en la nube.`);
-                } catch (error) {
-                    console.error("Error al actualizar lead en Firestore:", error);
-                }
-            } else {
-                // Fallback Local de refresco si no hay conexión de red
-                renderizarTablaAdmin(localLeads);
-            }
-
-            showToast(`¡Consulta #${codigo} convertida con éxito en Meta!`);
-        };
-
-        // --- SISTEMA DE REVERTIR CONVERSIÓN (DESHACER SELECCIÓN ERRÓNEA) ---
-        window.revertirConversion = async function(codigo) {
-            console.log(`[REVERTIENDO] Restableciendo lead #${codigo} a estado Pendiente...`);
-
-            // Actualizar estado local primero
-            const index = localLeads.findIndex(l => l.codigo === codigo);
-            if (index !== -1) {
-                localLeads[index].estado = 'Pendiente';
-                localStorage.setItem('amparo_local_leads', JSON.stringify(localLeads));
-            }
-
-            if (isFirebaseAvailable && userAuthenticated) {
-                try {
-                    const leadDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'leads', `lead_${codigo}`);
-                    await updateDoc(leadDocRef, { estado: 'Pendiente' });
-                    console.log(`[FIRESTORE] Lead #${codigo} restablecido exitosamente.`);
-                } catch (error) {
-                    console.error("Error al volver a estado pendiente en Firestore:", error);
-                }
-            } else {
-                // Fallback Local de refresco
-                renderizarTablaAdmin(localLeads);
-            }
-
-            showToast(`¡Conversión de la consulta #${codigo} revertida!`);
-        };
-
-        // --- ABRIR PANEL DE ADMINISTRACIÓN (LECTURA FORZADA DIRECTA DE FIRESTORE) ---
-        window.abrirAdminPanel = async function() {
-            document.getElementById('adminPanel').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            
-            // Cargar el código de prueba guardado si existe
-            if (document.getElementById('metaTestCode')) {
-                document.getElementById('metaTestCode').value = localStorage.getItem('meta_test_event_code') || '';
-            }
-
-            // 1. Mostrar lo que tengamos localmente primero para carga instantánea
-            if (localStorage.getItem('amparo_local_leads')) {
-                const list = JSON.parse(localStorage.getItem('amparo_local_leads')) || [];
-                window.renderizarTablaAdmin(list);
-            }
-
-            // 2. Forzar una lectura directa y fresca de Firestore para asegurar sincronización total
-            if (isFirebaseAvailable && userAuthenticated) {
-                try {
-                    const leadsCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'leads');
-                    const querySnapshot = await getDocs(leadsCollectionRef);
-                    const freshList = [];
-                    querySnapshot.forEach((doc) => {
-                        freshList.push(doc.data());
-                    });
-                    
-                    // Ordenar en memoria cliente
-                    freshList.sort((a, b) => b.codigo - a.codigo);
-                    
-                    // Guardar y renderizar
-                    localLeads = freshList;
-                    localStorage.setItem('amparo_local_leads', JSON.stringify(freshList));
-                    window.renderizarTablaAdmin(freshList);
-                    console.log("[ADMIN] Base de datos leída y sincronizada al abrir el panel.");
-                } catch (error) {
-                    console.error("[ADMIN] Error al forzar lectura directa de Firestore al abrir panel:", error);
-                }
-            }
-        };
-    </script>
-
     <script>
-        // --- CONTROL DE EFECTOS TÁCTILES MÓVILES INMEDIATOS ---
+        // --- LOGICA PARA EFECTOS TÁCTILES INMEDIATOS ---
         document.addEventListener("DOMContentLoaded", () => {
             const touchElements = document.querySelectorAll('.touch-interactive');
             touchElements.forEach(el => {
@@ -1708,233 +941,154 @@
                     el.classList.remove('touch-active');
                 });
             });
-            
-            // Inicializar disparador Exit Intent e IntersectionObserver de alto rendimiento
-            inicializarExitIntent();
-            inicializarAnimacionesFluidas();
         });
 
-        // --- SISTEMA DE ANIMACIÓN HIGH-PERFORMANCE (INTERSECTION OBSERVER) ---
-        function initializeAnimacionesFluidas() {}
-        function inicializarAnimacionesFluidas() {
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
+        // --- CONTADOR DE LEGAJO ---
+        let nroLegajo = parseInt(localStorage.getItem('legajoActual')) || 456;
 
-            const revealObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                        observer.unobserve(entry.target); 
-                    }
-                });
-            }, observerOptions);
-
-            document.querySelectorAll('.reveal').forEach(el => {
-                revealObserver.observe(el);
-            });
-        }
-
-        // --- SISTEMA DE RETENCIÓN DE SALIDA INTELIGENTE (BYPASS DE NAVEGACIÓN INTERNA) ---
-        let isInternalNavigation = false;
-        let exitIntentDisparado = false;
-        window.enlaceSalidaDestino = null;
-
-        function abrirExitIntent() {
-            if (exitIntentDisparado) return; 
-            document.getElementById('exitIntentModal').style.display = 'flex';
-        }
-
-        function cerrarExitIntent() {
-            document.getElementById('exitIntentModal').style.display = 'none';
-        }
-
-        window.confirmarSalidaReal = function() {
-            if (window.enlaceSalidaDestino) {
-                window.location.href = window.enlaceSalidaDestino;
-            } else {
-                cerrarExitIntent();
-                window.history.go(-2);
-            }
-        };
-
-        function inicializarExitIntent() {
-            // 1. Detectar clics en secciones internas para evitar falsos positivos
-            document.querySelectorAll('a[href^="#"]').forEach(link => {
-                link.addEventListener('click', () => {
-                    isInternalNavigation = true;
-                    setTimeout(() => {
-                        isInternalNavigation = false;
-                    }, 150);
-                });
-            });
-
-            // 2. Interceptar el retroceso en móviles/atrás nativo del navegador
-            if (window.history && window.history.pushState) {
-                window.history.pushState({ exitBlocker: true }, "");
-                
-                window.addEventListener("popstate", function(event) {
-                    if (isInternalNavigation) {
-                        return;
-                    }
-                    if (window.location.hash) {
-                        return;
-                    }
-                    abrirExitIntent();
-                    window.history.pushState({ exitBlocker: true }, "");
-                });
+        // --- FUNCIONES DEL FORMULARIO ---
+        function abrirFormulario(event) {
+            // Evita que el enlace salte hacia arriba
+            if (event) {
+                event.preventDefault();
             }
 
-            // 3. Capturar cuando hacen clic en enlaces que los llevan FUERA del sitio
-            document.querySelectorAll('a').forEach(link => {
-                const href = link.getAttribute('href');
-                if (href && href.startsWith('http') && !href.includes(window.location.hostname)) {
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        window.enlaceSalidaDestino = href;
-                        abrirExitIntent();
-                    });
-                }
-            });
-
-            // 4. Capturar en Escritorio (cuando el cursor del mouse sube hacia la barra de pestañas)
-            document.addEventListener('mouseleave', function(e) {
-                if (e.clientY < 30) {
-                    abrirExitIntent();
-                }
-            });
+            document.getElementById('modalFormulario').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Reseteo total del formulario cada vez que se abre
+            const form = document.getElementById('amparoForm');
+            form.reset(); 
+            
+            // Ocultar mensajes de error/opciones dinámicas para arrancar en limpio
+            document.getElementById('wrapperOSName').style.display = 'none';
+            document.getElementById('errorZona').style.display = 'none';
+            document.getElementById('errorPami').style.display = 'none';
+            document.getElementById('errorOS').style.display = 'none';
+            document.getElementById('errorCostos').style.display = 'none';
+            
+            // Deshabilitar botón por defecto hasta que se llene todo
+            const btn = document.getElementById('btnSiguiente');
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
         }
 
-        // --- PANEL DE ADMINISTRACIÓN (UI GENERAL) ---
-        function solicitarAccesoAdmin() {
-            document.getElementById('pinModal').style.display = 'flex';
-            document.getElementById('pin1').focus();
-        }
-
-        function cerrarPinModal() {
-            document.getElementById('pinModal').style.display = 'none';
-            for (let i = 1; i <= 4; i++) {
-                document.getElementById(`pin${i}`).value = '';
-            }
-        }
-
-        function movePinFocus(current, nextId) {
-            if (current.value.length >= 1) {
-                document.getElementById(nextId).focus();
-            }
-        }
-
-        function validarPin(current) {
-            let pinCompleto = "";
-            for (let i = 1; i <= 4; i++) {
-                pinCompleto += document.getElementById(`pin${i}`).value;
-            }
-
-            if (pinCompleto === "4405") {
-                cerrarPinModal();
-                if (typeof window.abrirAdminPanel === 'function') {
-                    window.abrirAdminPanel();
-                }
-            } else {
-                showToast("PIN incorrecto. Intente de nuevo.", true);
-                cerrarPinModal();
-            }
-        }
-
-        function guardarCodigoPruebaLocal() {
-            const val = document.getElementById('metaTestCode').value.trim();
-            localStorage.setItem('meta_test_event_code', val);
-        }
-
-        function cerrarAdminPanel() {
-            document.getElementById('adminPanel').style.display = 'none';
+        function cerrarFormulario() {
+            document.getElementById('modalFormulario').style.display = 'none';
             document.body.style.overflow = 'auto';
         }
 
-        // Buscador y Filtrado en tiempo real en la tabla admin por tarjetas
-        function filtrarTabla() {
-            const query = document.getElementById('adminSearch').value.toLowerCase();
-            const filter = document.getElementById('adminStatusFilter').value;
-            const cards = document.querySelectorAll('.lead-card');
+        // --- VALIDADOR CENTRAL DE TODOS LOS CAMPOS QUE BLOQUEAN ---
+        function validarCampos() {
+            // Checkboxes
+            const zonaSi = document.getElementById('zonaSi').checked;
+            const zonaNo = document.getElementById('zonaNo').checked;
+            const pamiSi = document.getElementById('pamiSi').checked;
+            const pamiNo = document.getElementById('pamiNo').checked;
+            const osSi = document.getElementById('osSi').checked;
+            const osNo = document.getElementById('osNo').checked;
+            const costosSi = document.getElementById('costosSi').checked;
+            const costosNo = document.getElementById('costosNo').checked;
+            
+            // Textos y Select (Para obligar a que estén llenos)
+            const nombre = document.getElementById('nombreInput').value.trim();
+            const nombreOS = document.getElementById('nombreOS').value.trim();
+            const problema = document.getElementById('tipoProblema').value;
+            
+            const errorZona = document.getElementById('errorZona');
+            const errorPami = document.getElementById('errorPami');
+            const errorOS = document.getElementById('errorOS');
+            const wrapperOSName = document.getElementById('wrapperOSName');
+            const errorCostos = document.getElementById('errorCostos');
+            const btn = document.getElementById('btnSiguiente');
 
-            cards.forEach(card => {
-                const codigo = card.getAttribute('data-codigo') || '';
-                const fbclid = card.getAttribute('data-fbclid') || '';
-                const estado = card.getAttribute('data-estado') || '';
-
-                const matchesSearch = codigo.toLowerCase().includes(query) || fbclid.toLowerCase().includes(query);
-                const matchesFilter = filter === 'todos' || estado === filter;
-
-                if (matchesSearch && matchesFilter) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        // Exportador a CSV adaptado a las tarjetas
-        function exportarLeadsCSV() {
-            const cards = document.querySelectorAll('.lead-card');
-            let csvContent = "data:text/csv;charset=utf-8,Codigo,Fecha,Hora,fbclid,Estado\n";
-
-            cards.forEach(card => {
-                const codigo = card.querySelector('.lead-card-code')?.innerText.replace('#', '') || '';
-                const fecha = card.querySelectorAll('.lead-card-value')[0]?.innerText || '';
-                const hora = card.querySelectorAll('.lead-card-value')[1]?.innerText || '';
-                const fbclid = card.getAttribute('data-fbclid') || '';
-                const estado = card.getAttribute('data-estado') || '';
-                
-                csvContent += `"${codigo}","${fecha}","${hora}","${fbclid}","${estado}"\n`;
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Leads_Cardenas_Asociados_${new Date().toLocaleDateString()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Toasts Modales No Bloqueantes
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            const icon = toast.querySelector('i');
-
-            toastMsg.innerText = msg;
-            if (isError) {
-                toast.style.borderLeftColor = "#EF4444";
-                icon.className = "fas fa-times-circle";
-                icon.style.color = "#EF4444";
+            // Lógica para Zona
+            if (zonaNo) {
+                errorZona.style.display = 'block';
             } else {
-                toast.style.borderLeftColor = "#25D366";
-                icon.className = "fas fa-check-circle";
-                icon.style.color = "#25D366";
+                errorZona.style.display = 'none';
             }
 
-            toast.style.display = 'flex';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3500);
+            // Lógica para PAMI
+            if (pamiSi) {
+                errorPami.style.display = 'block';
+            } else {
+                errorPami.style.display = 'none';
+            }
+
+            // Lógica para Obra Social
+            if (osSi) {
+                wrapperOSName.style.display = 'block';
+                errorOS.style.display = 'none';
+            } else if (osNo) {
+                wrapperOSName.style.display = 'none';
+                errorOS.style.display = 'block';
+            } else {
+                wrapperOSName.style.display = 'none';
+                errorOS.style.display = 'none';
+            }
+
+            // Lógica para Costos
+            if (costosNo) {
+                errorCostos.style.display = 'block';
+            } else {
+                errorCostos.style.display = 'none';
+            }
+
+            // Lógica Estricta del Botón: TODAS las condiciones correctas deben cumplirse
+            const opcionesCorrectas = (zonaSi && pamiNo && osSi && costosSi);
+            const textosCompletos = (nombre !== "" && nombreOS !== "" && problema !== "");
+
+            if (opcionesCorrectas && textosCompletos) {
+                btn.style.opacity = '1';
+                btn.disabled = false;
+            } else {
+                btn.style.opacity = '0.5';
+                btn.disabled = true;
+            }
         }
 
-        // Exponer funciones necesarias globalmente para interactividad HTML
-        window.solicitarAccesoAdmin = solicitarAccesoAdmin;
-        window.cerrarPinModal = cerrarPinModal;
-        window.movePinFocus = movePinFocus;
-        window.validarPin = validarPin;
-        window.cerrarAdminPanel = cerrarAdminPanel;
-        window.filtrarTabla = filtrarTabla;
-        window.exportarLeadsCSV = exportarLeadsCSV;
-        window.showToast = showToast;
-        window.cerrarExitIntent = cerrarExitIntent;
-        window.guardarCodigoPruebaLocal = guardarCodigoPruebaLocal;
+        function procesarFormulario() {
+            const nombre = document.getElementById('nombreInput').value.trim();
+            const zonaSi = document.getElementById('zonaSi').checked;
+            const osSi = document.getElementById('osSi').checked;
+            const pamiNo = document.getElementById('pamiNo').checked;
+            const costosSi = document.getElementById('costosSi').checked;
+            const nombreOS = document.getElementById('nombreOS').value.trim();
+            const problema = document.getElementById('tipoProblema').value;
 
-        // --- SCRIPTS INTERACTIVOS ORIGINALES (HAMBURGER / RESPONSIVE MENU) ---
+            // Verificamos que se haya respondido todo y que las variables críticas sean válidas (PAMI: No)
+            if (!nombre || !zonaSi || !osSi || !pamiNo || !costosSi || !nombreOS || !problema) {
+                alert("Por favor, completá todos los campos requeridos correctamente para avanzar.");
+                return;
+            }
+
+            // Preparar Mensaje
+            const legajoTexto = `L ${nroLegajo}-26`;
+            const headerMsg = `[${nombre.toUpperCase()} c/ ${nombreOS.toUpperCase()} s/ amparo por ${problema.toUpperCase()}]; legajo de cliente N° ${legajoTexto}.`;
+            const bodyMsg = `Hola, mi nombre es ${nombre}, tengo un problema con ${nombreOS} sobre ${problema} y necesito asesoramiento jurídico urgente. Mi problema concreto consiste en: `;
+            
+            const fullMsg = `${headerMsg}\n\n${bodyMsg}`;
+            const waURL = `https://wa.me/5491131166233?text=${encodeURIComponent(fullMsg)}`;
+
+            // Actualizar Legajo localmente
+            nroLegajo++;
+            localStorage.setItem('legajoActual', nroLegajo);
+
+            // Redirigir de inmediato a WhatsApp
+            window.open(waURL, '_blank');
+            
+            // --- EVENTO DE CONVERSIÓN DE META PIXEL ---
+            // Le avisamos a Meta que un cliente potencial completó el formulario exitosamente
+            if (typeof fbq === 'function') {
+                fbq('track', 'Lead');
+            }
+            
+            // Opcional: cerrar el formulario después de abrir WA
+            cerrarFormulario();
+        }
+
+        // --- SCRIPTS ORIGINALES ---
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('navLinks');
         const links = document.querySelectorAll('.nav-links li');
@@ -1958,6 +1112,20 @@
                 hamburger.querySelector('i').classList.add('fa-bars');
             });
         });
+
+        window.addEventListener('scroll', reveal);
+        function reveal() {
+            var reveals = document.querySelectorAll('.reveal');
+            for (var i = 0; i < reveals.length; i++) {
+                var windowheight = window.innerHeight;
+                var revealtop = reveals[i].getBoundingClientRect().top;
+                var revealpoint = 150;
+                if (revealtop < windowheight - revealpoint) {
+                    reveals[i].classList.add('active');
+                }
+            }
+        }
+        reveal();
     </script>
 </body>
 </html>
