@@ -1007,6 +1007,12 @@
         </div>
     </div>
 
+    <!-- 🟢 TOAST NOTIFICACIÓN GLOBAL (FEEDBACK VISUAL POLIDO) -->
+    <div id="toast" style="display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #FFFFFF; border-left: 5px solid #25D366; padding: 1rem 1.5rem; border-radius: 12px; box-shadow: var(--sombra-fuerte); z-index: 5000; align-items: center; gap: 12px; min-width: 320px; max-width: 90%; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+        <i class="fas fa-check-circle" style="color: #25D366; font-size: 1.3rem;"></i>
+        <span id="toastMsg" style="font-family: 'Open Sans', sans-serif; font-size: 0.95rem; color: #334155; font-weight: 600; line-height: 1.4;"></span>
+    </div>
+
     <!-- SCRIPT UNIFICADO: REDIRECCIÓN INSTANTÁNEA, EXTRACCIÓN INTELIGENTE Y CAPI SIN BASE DE DATOS -->
     <script>
         // --- REDIRECCIÓN INSTANTÁNEA (0 ms de espera para evitar deserción) ---
@@ -1046,22 +1052,36 @@
             }, 50);
         };
 
-        // --- SISTEMA EXTRACTOR INTELIGENTE DE FBCLID (ROBUSTO ANTE CUALQUIER FORMATO) ---
+        // --- SISTEMA EXTRACTOR INTELIGENTE DE FBCLID (ULTRA ROBUSTO) ---
         function extraerFbclid(texto) {
             if (!texto) return null;
             texto = texto.trim();
 
-            // 1. Regex para capturar fbclid_ seguido de la cadena alfanumérica
-            let match = texto.match(/fbclid_([a-zA-Z0-9\-_]{15,})/i);
+            // 1. Detectar fbclid= o fbclid_ en el texto
+            let match = texto.match(/fbclid[=_]([a-zA-Z0-9\-_]{15,})/i);
             if (match) return match[1];
 
-            // 2. Regex para capturar fbclid dentro de corchetes [fbclid_xxx] o [xxx]
-            match = texto.match(/\[(?:fbclid_)?([a-zA-Z0-9\-_]{15,})\]/i);
+            // 2. Buscar dentro de corchetes [fbclid_xxx] o [xxx]
+            match = texto.match(/\[(?:fbclid[=_])?([a-zA-Z0-9\-_]{15,})\]/i);
             if (match) return match[1];
 
-            // 3. Fallback: si es una cadena de texto larga sin espacios, asumimos que es el fbclid directamente
-            if (/^[a-zA-Z0-9\-_]{15,}$/.test(texto)) {
+            // 3. Buscar si pegaron un link completo que tiene fbclid en query string (?fbclid=...)
+            match = texto.match(/[\?&]fbclid=([a-zA-Z0-9\-_]{15,})/i);
+            if (match) return match[1];
+
+            // 4. Si pegaron únicamente la cadena limpia de entre 15 y 100 caracteres
+            if (/^[a-zA-Z0-9\-_]{15,100}$/.test(texto)) {
                 return texto;
+            }
+
+            // 5. Análisis predictivo palabra por palabra de textos largos pegados por error
+            let words = texto.split(/[\s\s,;()[\]{}|<>'"\n\r*]+/);
+            for (let word of words) {
+                // Limpiar prefijo fbclid_
+                word = word.replace(/^(fbclid_)/i, '');
+                if (/^[a-zA-Z0-9\-_]{20,100}$/.test(word)) {
+                    return word;
+                }
             }
 
             return null;
@@ -1101,8 +1121,10 @@
                 };
                 if (fbp) userData.fbp = fbp;
 
+                // 🚀 CAMBIO ESTRATÉGICO CLAVE: Usamos 'Lead' como nombre de evento estándar.
+                // Meta optimiza de forma automática las campañas orientadas a Clientes Potenciales/Leads sin necesidad de crear conversiones personalizadas.
                 const eventData = [{
-                    event_name: 'conversion_cliente_potencial_manual',
+                    event_name: 'Lead',
                     event_time: Math.floor(Date.now() / 1000),
                     action_source: 'website',
                     event_source_url: window.location.href,
@@ -1129,8 +1151,11 @@
 
                 if (resData.error) {
                     window.showToast("Error de Meta: " + resData.error.message, true);
+                } else if (resData.fb_trace_id) {
+                    window.showToast("¡Conversión 'Lead' reportada con éxito a Meta!", false);
+                    document.getElementById('capiPasteInput').value = '';
                 } else {
-                    window.showToast("¡Conversión reportada con éxito a Meta!", false);
+                    window.showToast("Reportado. Verifique en su Administrador de Eventos.", false);
                     document.getElementById('capiPasteInput').value = '';
                 }
             } catch (error) {
@@ -1233,6 +1258,11 @@
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMsg');
             const icon = toast.querySelector('i');
+
+            if (!toast || !toastMsg || !icon) {
+                console.error("[TOAST ERROR] Faltan elementos de interfaz.");
+                return;
+            }
 
             toastMsg.innerText = msg;
             if (isError) {
