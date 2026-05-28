@@ -1041,9 +1041,8 @@
             
             const waURL = `https://api.whatsapp.com/send?phone=5491131166233&text=${encodeURIComponent(mensajeWa)}`;
 
-            if (typeof fbq === 'function') {
-                fbq('track', 'Lead', { content_name: 'WhatsApp Click', fbclid_id: fbclid });
-            }
+            // 🚀 SE ELIMINÓ EL ENVÍO AUTOMÁTICO DE 'Lead' DESDE EL FRONTEND PARA EVITAR DUPLICADOS.
+            // Solo medimos las visitas normales (PageView) y vos decidís qué consultas se reportan como Lead desde tu panel.
 
             // Redirección directa en 50 milisegundos (el respiro técnico justo para que el Pixel de Meta y GTM registren el clic)
             setTimeout(() => {
@@ -1121,8 +1120,7 @@
                 };
                 if (fbp) userData.fbp = fbp;
 
-                // 🚀 CAMBIO ESTRATÉGICO CLAVE: Usamos 'Lead' como nombre de evento estándar.
-                // Meta optimiza de forma automática las campañas orientadas a Clientes Potenciales/Leads sin necesidad de crear conversiones personalizadas.
+                // 🚀 ÚNICA FUENTE DE CONVERSIÓN DE LEADS: Ahora es este panel.
                 const eventData = [{
                     event_name: 'Lead',
                     event_time: Math.floor(Date.now() / 1000),
