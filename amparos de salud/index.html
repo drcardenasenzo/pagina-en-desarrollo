@@ -895,7 +895,7 @@
 
                 <details class="faq-item">
                     <summary class="touch-interactive">¿Cuánto debo gastar para realizar un amparo de salud?</summary>
-                    <p>Para tu tranquilidad, <strong>NO DEBÉS ABONAR HONORARIOS A NUESTRO ESTUDIO</strong>; en el 99% de los casos es condenada a pagar la entidad de salud. Al ser la obra social o prepaga quién incumple con sus obligaciones legales, los jueces suelen ordenar que sea la entidad de salud quien abone la <strong>totalidad de los honorarios</strong>. Tus únicos gastos son los costos administrativos del proceso judicial (aranceles y envío de cartas documento).</p>
+                    <p>Para tu tranquilidad, <strong>NO DEBÉS ABONAR HONORARIOS A NUESTRO ESTUDIO</strong>; en el 99% de los casos es condenada a pagar la entidad de salud. Al ser la obra social o prepaga quién incumple con sus obligaciones legales, los jueces suelen ordenar que sea la entidad de salud quien abone la <strong>totalidad de los honorarios</strong>. Tus únicos gastos son los costos administrativos del proceso judicial (aranceles y envío de la carta documento, aproximadamente $67.500 en total durante todo el juicio).</p>
                 </details>
 
                 <details class="faq-item">
@@ -993,12 +993,13 @@
 
         <div class="admin-container">
             <div style="background: white; padding: 2rem; border-radius: 16px; box-shadow: var(--sombra-suave); border-top: 5px solid var(--azul-profundo);">
-                <h3 style="font-family: 'Montserrat'; font-weight: 700; color: var(--azul-profundo); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 10px; font-size: 1.25rem;"><i class="fab fa-whatsapp" style="color: var(--whatsapp-color);"></i> Reportar Conversión desde WhatsApp</h3>
+                <h3 style="font-family: 'Montserrat'; font-weight: 700; color: var(--azul-profundo); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 10px; font-size: 1.25rem;"><i class="fab fa-whatsapp" style="color: var(--whatsapp-color);"></i> Reportar Conversión Manual</h3>
                 <p style="font-size: 0.9rem; color: var(--gris-oscuro); margin-bottom: 1.5rem; line-height: 1.5;">
-                    Copia el mensaje de WhatsApp que te envió el cliente, pégalo abajo y presiona el botón. El sistema extraerá de forma automática el <strong>fbclid</strong> único y reportará la conversión en tiempo real.
+                    Pega el mensaje de WhatsApp que te envió el cliente, el código <strong>fbclid</strong> único o directamente su <strong>número de teléfono</strong> (ej: +54 9 11 ...). 
+                    El sistema extraerá los datos, los codificará de forma segura y reportará la conversión en tiempo real.
                 </p>
                 
-                <textarea id="capiPasteInput" placeholder="Pega el mensaje de WhatsApp completo o directamente el fbclid aquí..." style="width: 100%; height: 120px; padding: 1rem; border-radius: 8px; border: 1px solid #CBD5E1; font-family: inherit; font-size: 0.95rem; margin-bottom: 1.5rem; resize: none; color: var(--gris-oscuro); line-height: 1.6;"></textarea>
+                <textarea id="capiPasteInput" placeholder="Pega el mensaje, fbclid o el número de teléfono aquí..." style="width: 100%; height: 120px; padding: 1rem; border-radius: 8px; border: 1px solid #CBD5E1; font-family: inherit; font-size: 0.95rem; margin-bottom: 1.5rem; resize: none; color: var(--gris-oscuro); line-height: 1.6;"></textarea>
                 
                 <button type="button" onclick="procesarConversionManual()" class="btn-primario touch-interactive" style="width: 100%; justify-content: center; background: var(--whatsapp-color); color: white; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3); padding: 1rem;">
                     <i class="fas fa-paper-plane"></i> Enviar Conversión a Meta (CAPI)
@@ -1041,10 +1042,7 @@
             
             const waURL = `https://api.whatsapp.com/send?phone=5491131166233&text=${encodeURIComponent(mensajeWa)}`;
 
-            // 🚀 SE ELIMINÓ EL ENVÍO AUTOMÁTICO DE 'Lead' DESDE EL FRONTEND PARA EVITAR DUPLICADOS.
-            // Solo medimos las visitas normales (PageView) y vos decidís qué consultas se reportan como Lead desde tu panel.
-
-            // Redirección directa en 50 milisegundos (el respiro técnico justo para que el Pixel de Meta y GTM registren el clic)
+            // Redirección directa en 50 milisegundos
             setTimeout(() => {
                 if (loadingModal) loadingModal.style.display = 'none';
                 window.location.href = waURL; 
@@ -1076,7 +1074,6 @@
             // 5. Análisis predictivo palabra por palabra de textos largos pegados por error
             let words = texto.split(/[\s\s,;()[\]{}|<>'"\n\r*]+/);
             for (let word of words) {
-                // Limpiar prefijo fbclid_
                 word = word.replace(/^(fbclid_)/i, '');
                 if (/^[a-zA-Z0-9\-_]{20,100}$/.test(word)) {
                     return word;
@@ -1086,52 +1083,121 @@
             return null;
         }
 
-        // --- ENVIAR CONVERSIÓN A META (CAPI OFFLINE DIRECTO) ---
+        // --- SISTEMA EXTRACTOR INTELIGENTE DE TELÉFONOS (HASTA 15 DÍGITOS) ---
+        function extraerTelefono(texto) {
+            if (!texto) return null;
+            texto = texto.trim();
+
+            // Quitar caracteres de texto pero mantener dígitos
+            let soloDigitos = texto.replace(/\D/g, '');
+
+            // Si es un texto largo (ej: un mensaje de chat), intentamos extraer el bloque de números
+            if (texto.length > 25) {
+                // Busca bloques de números que parezcan un teléfono (entre 8 y 18 caracteres de largo con espacios/guiones)
+                let match = texto.match(/\+?[0-9\s\-]{8,18}/g);
+                if (match) {
+                    for (let chunk of match) {
+                        let cleanedChunk = chunk.replace(/\D/g, '');
+                        if (cleanedChunk.length >= 8 && cleanedChunk.length <= 15) {
+                            soloDigitos = cleanedChunk;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Quitar cero inicial interurbano de Argentina si existe (ej: 011 -> 11)
+            if (soloDigitos.startsWith('0')) {
+                soloDigitos = soloDigitos.substring(1);
+            }
+
+            // Normalización para Argentina y formato internacional requerido por Meta (E.164 sin +)
+            if (soloDigitos.length === 10) {
+                // Ej: 1131166233 -> 5491131166233 (Móvil Argentina)
+                soloDigitos = '549' + soloDigitos;
+            } else if (soloDigitos.length === 12 && soloDigitos.startsWith('54') && !soloDigitos.startsWith('549')) {
+                // Ej: 541131166233 -> 5491131166233 (Agregamos el 9 de móvil argentino para Meta)
+                soloDigitos = '549' + soloDigitos.substring(2);
+            }
+
+            // Meta acepta números telefónicos internacionales de entre 10 y 15 dígitos
+            if (soloDigitos.length >= 10 && soloDigitos.length <= 15) {
+                return soloDigitos;
+            }
+
+            return null;
+        }
+
+        // --- ENCRIPTACIÓN SHA-256 PARA CUMPLIR CON LAS NORMAS DE SEGURIDAD DE META ---
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        // --- ENVIAR CONVERSIÓN A META (CAPI OFFLINE DIRECTO CON SOPORTE FBCLID Y TELÉFONO) ---
         window.procesarConversionManual = async function() {
             const rawInput = document.getElementById('capiPasteInput').value.trim();
             if (!rawInput) {
-                window.showToast("Por favor, pega el mensaje de WhatsApp o el fbclid antes de reportar.", true);
+                window.showToast("Por favor, pega el mensaje de WhatsApp, el fbclid o el número de teléfono.", true);
                 return;
             }
-
-            const fbclid = extraerFbclid(rawInput);
-            if (!fbclid) {
-                window.showToast("No se detectó ningún código fbclid válido en el texto pegado.", true);
-                return;
-            }
-
-            console.log(`[CAPI MANUAL] Enviando conversión directa para el fbclid: ${fbclid}`);
 
             // Credenciales de Meta
             const META_PIXEL_ID = "1536814911346613"; 
             const META_ACCESS_TOKEN = "EAAL3pyplZA34BRlSzKrlcm7QXbnydZBpZBUkamK2hIAZAxkOyUo0xEjzo8uyzYH0JLsYduvxrgzURXZALS89KPDrwFgbbNGrXaneW4DtDdWkfBSzKZCQxTZB4zSgfrvkxgxbZCikkFrsyqmUFKWyHzsuj6vZBmurZBup6EWIPSZBZAzsAne1Xl0es4SjJwbgTdkZBAwZDZD";
 
-            const fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
             const externalId = 'manual_' + Math.floor(Math.random() * 1000000);
+            const userData = {
+                client_user_agent: navigator.userAgent,
+                external_id: externalId
+            };
+
+            let conversionType = "";
+            let conversionValue = "";
+
+            // 1. Intentamos extraer FBCLID
+            const fbclid = extraerFbclid(rawInput);
+            if (fbclid) {
+                console.log(`[CAPI MANUAL] Detectado fbclid: ${fbclid}`);
+                userData.fbc = `fb.1.${Math.floor(Date.now() / 1000)}.${fbclid}`;
+                conversionType = "fbclid";
+                conversionValue = fbclid;
+            } else {
+                // 2. Si no hay FBCLID, buscamos número de teléfono interurbano o internacional
+                const telefono = extraerTelefono(rawInput);
+                if (telefono) {
+                    console.log(`[CAPI MANUAL] Detectado teléfono: ${telefono}`);
+                    const hashedPhone = await sha256(telefono);
+                    userData.ph = hashedPhone; // Se envía el hash SHA-256 para resguardar la privacidad
+                    conversionType = "telefono";
+                    conversionValue = telefono;
+                }
+            }
 
             // Intentamos obtener cookies _fbp para enriquecer atribución si están presentes en la máquina del admin
             const fbp = document.cookie.split('; ').find(row => row.trim().startsWith('_fbp='))?.split('=')[1] || '';
+            if (fbp) userData.fbp = fbp;
+
+            if (!conversionType) {
+                window.showToast("No se detectó un fbclid ni un número de teléfono válido.", true);
+                return;
+            }
 
             try {
-                const userData = {
-                    client_user_agent: navigator.userAgent,
-                    fbc: fbc,
-                    external_id: externalId
-                };
-                if (fbp) userData.fbp = fbp;
-
-                // 🚀 ÚNICA FUENTE DE CONVERSIÓN DE LEADS: Ahora es este panel.
+                // Usamos 'Lead' como nombre de evento estándar
                 const eventData = [{
                     event_name: 'Lead',
-                    event_time: Math.floor(Date.now() / 1000),
+                    event_time: Math.floor(Date.now() / 1000), // Meta CAPI exige que la fecha de reporte sea menor a 7 días.
                     action_source: 'website',
                     event_source_url: window.location.href,
                     user_data: userData,
                     custom_data: {
-                        fbclid: fbclid,
                         patent_firm: "Cárdenas & Asociados",
                         service: "Amparos de Salud",
-                        source: "CAPI Manual Panel"
+                        source: `CAPI Manual (${conversionType === 'fbclid' ? 'FBCLID' : 'Teléfono'})`
                     }
                 }];
 
@@ -1150,7 +1216,10 @@
                 if (resData.error) {
                     window.showToast("Error de Meta: " + resData.error.message, true);
                 } else if (resData.fb_trace_id) {
-                    window.showToast("¡Conversión 'Lead' reportada con éxito a Meta!", false);
+                    const msgConfirmacion = conversionType === "fbclid" 
+                        ? "¡Conversión reportada con éxito mediante FBCLID!"
+                        : `¡Conversión reportada con éxito mediante Teléfono (+${conversionValue})!`;
+                    window.showToast(msgConfirmacion, false);
                     document.getElementById('capiPasteInput').value = '';
                 } else {
                     window.showToast("Reportado. Verifique en su Administrador de Eventos.", false);
