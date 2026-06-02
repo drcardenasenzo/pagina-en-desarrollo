@@ -456,13 +456,13 @@
             right: 30px;
             background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
             color: white;
-            width: 65px; 
-            height: 65px;
+            width: 75px; 
+            height: 75px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 35px;
+            font-size: 40px;
             box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
             z-index: 2100; /* Mayor que el modal (2000) para que se muestre en los artículos también */
             text-decoration: none;
@@ -497,6 +497,10 @@
             cursor: pointer;
             transition: color 0.3s ease;
             -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         .faq-item h3:hover {
@@ -654,12 +658,13 @@
             transform: translateX(-50%);
         }
 
+        /* Estilos para PC: Imagen completa, sin recortar y levemente más chica */
         .article-page img {
             width: 100%;
-            max-width: 650px;
+            max-width: 500px;
             height: auto;
             max-height: 350px;
-            object-fit: cover;
+            object-fit: contain;
             margin: 2rem auto;
             display: block;
             border-radius: 8px;
@@ -757,6 +762,10 @@
             cursor: pointer;
             transition: color 0.3s ease;
             -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         .faq-client-item h3:hover {
@@ -1261,6 +1270,14 @@
                 padding: 0.6rem 1.2rem;
                 font-size: 0.9rem;
             }
+            /* Fuerza la correcta visualización de las imágenes en modales en tablets sobrepasando especificidades */
+            .modal-body .article-page img {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: auto !important;
+                max-height: 350px !important;
+                object-fit: cover !important;
+            }
         }
 
         @media (max-width: 767px) {
@@ -1444,13 +1461,21 @@
                 padding: 0.6rem 1.2rem;
                 font-size: 0.9rem;
             }
-            /* Adaptación del botón flotante en móviles */
+            /* Adaptación del botón flotante en móviles (ligeramente agrandado de 55px a 65px) */
             .wa-float {
-                width: 55px;
-                height: 55px;
-                font-size: 28px;
+                width: 65px;
+                height: 65px;
+                font-size: 33px;
                 bottom: 20px;
                 right: 20px;
+            }
+            /* Fuerza la correcta visualización de las imágenes en modales en móviles sobrepasando especificidades */
+            .modal-body .article-page img {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: auto !important;
+                max-height: 350px !important;
+                object-fit: cover !important;
             }
         }
     </style>
@@ -1478,7 +1503,7 @@
     <section id="inicio" class="parallax">
         <div class="inicio-content">
             <h1>Estudio Jurídico Cárdenas y Asociados</h1>
-            <p>Compromiso y excelencia en defensa de tus derechos</p>
+            <p>Compromiso y excelencia en defense de tus derechos</p>
             <a href="https://api.whatsapp.com/send?phone=5491131166233&text=Hola,%20me%20contacto%20desde%20la%20página%20web..." class="inicio-cta">Contáctanos</a>
         </div>
     </section>
@@ -2013,7 +2038,7 @@
             </div>
             <div class="faq-client-item">
                 <h3>¿Cuánto tiempo tarda en resolverse un caso judicial?</h3>
-                <div class="faq-client-answer">Eso va a depender del tipo de proceso, de la velocidad del juzgado y la complejidad del caso. Asesorate con nosotros gratis para evaluar que tanto tiempo podría llegar a tardar tu caso.</div>
+                <div class="faq-client-answer">Eso va a depender del tipo de proceso, de la velocidad del juzgado y la complejidad del caso. Asesorate con nosotros para evaluar que tanto tiempo podría llegar a tardar tu caso.</div>
             </div>
             <div class="faq-client-item">
                 <h3>¿Ofrecen pagar honorarios en cuotas?</h3>
@@ -2221,7 +2246,10 @@
             });
 
             if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
-                shuffleRecommendations();
+                // Validación de tipo segura para evitar excepciones si shuffleRecommendations no se ha declarado
+                if (typeof shuffleRecommendations === 'function') {
+                    shuffleRecommendations();
+                }
             }
 
             // Lógica unificada para el comportamiento de "Ver más" / "Ver menos" en cualquier pantalla
@@ -2335,6 +2363,11 @@
                     modalContainer.classList.remove('scrollable');
                     modalContainer.style.height = `${contentHeight}px`;
                 }
+
+                // RESTABLECER POSICIÓN DE SCROLL: Asegura que el modal siempre se abra al inicio
+                modalContainer.scrollTop = 0;
+                modalContent.scrollTop = 0;
+                modal.scrollTop = 0;
             });
 
             const currentUrl = window.location.href.split('#')[0];
@@ -2348,6 +2381,12 @@
             document.body.style.overflow = 'auto';
             const nav = document.querySelector('nav');
             if (nav) nav.style.display = 'flex';
+
+            // Asegura limpiar el desplazamiento del contenedor al cerrar
+            const modalContainer = modal.querySelector('.modal-content');
+            if (modalContainer) {
+                modalContainer.scrollTop = 0;
+            }
         }
 
         function toggleAnswer(element, allItems) {
@@ -2521,7 +2560,7 @@
         }
         
         function updateWhatsAppLinks(gclid, time) {
-            // El formato visible exacto de tu estrategia infalible
+            // El formato de mensaje de tu estrategia de conversión
             const rawMessage = `¡Hola! Me contacto desde la web de Cárdenas & Asociados para realizar una consulta legal. Mi código automático de consulta es: GCLID ${gclid}; TIME ${time}. [Por favor, no borrar]. Necesito asesoramiento sobre lo siguiente: `;
             const encodedMessage = encodeURIComponent(rawMessage);
             
