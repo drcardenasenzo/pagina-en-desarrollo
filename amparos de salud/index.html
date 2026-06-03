@@ -934,7 +934,7 @@
             </div>
 
             <button onclick="procesarWhatsApp(event, true)" class="btn-primario touch-interactive" style="width: 100%; justify-content: center; background: var(--whatsapp-color); color: white; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3); margin-top: 1.5rem;">
-                <i class="fab fa-whatsapp"></i> Iniciar Consulta Gratis
+                <i class="fab fa-whatsapp"></i> Iniciar Consulta Ahora
             </button>
 
             <!-- BOTÓN SECUNDARIO DE CONFIRMACIÓN DE SALIDA JURÍDICA -->
@@ -1001,6 +1001,17 @@
 
     <!-- SCRIPT UNIFICADO: REDIRECCIÓN INSTANTÁNEA, EXTRACCIÓN INTELIGENTE Y CAPI SIN BASE DE DATOS -->
     <script>
+        // Obtener la zona horaria dinámica en formato [+-]HHMM (Ej: Argentina -0300)
+        function getTimezoneOffsetString() {
+            const now = new Date();
+            const offsetMinutes = now.getTimezoneOffset();
+            const offsetSign = offsetMinutes <= 0 ? '+' : '-';
+            const absOffsetMinutes = Math.abs(offsetMinutes);
+            const offsetHours = String(Math.floor(absOffsetMinutes / 60)).padStart(2, '0');
+            const offsetMinPart = String(absOffsetMinutes % 60).padStart(2, '0');
+            return `${offsetSign}${offsetHours}${offsetMinPart}`;
+        }
+
         // --- REDIRECCIÓN INSTANTÁNEA ---
         window.procesarWhatsApp = function(event, fromExitModal = false) {
             if (event) event.preventDefault();
@@ -1046,7 +1057,7 @@
             if (gclid) {
                 localStorage.setItem('cya_gclid', gclid);
                 
-                // Formato exigido por el panel: YYYY-MM-DD HH:MM:SS
+                // Formato exigido por el panel: YYYY-MM-DD HH:MM:SS junto a la zona horaria del cliente
                 const now = new Date();
                 const year = now.getFullYear();
                 const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -1054,7 +1065,10 @@
                 const hours = String(now.getHours()).padStart(2, '0');
                 const minutes = String(now.getMinutes()).padStart(2, '0');
                 const seconds = String(now.getSeconds()).padStart(2, '0');
-                const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                
+                // Calculamos y añadimos la zona horaria de forma interactiva
+                const tz = getTimezoneOffsetString();
+                const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${tz}`;
                 
                 localStorage.setItem('cya_gclid_time', formattedTime);
             }
@@ -1070,8 +1084,15 @@
 
         function extraerTimeRegex(texto) {
             if (!texto) return null;
-            const match = texto.match(/TIME\s*[:=\s_\*]*([0-9]{4}-[0-9]{2}-[0-9]{2}\s+[0-9]{2}:[0-9]{2}:[0-9]{2})/i);
+            // 1. Expresión regular principal: busca fecha, hora y zona horaria (Ej: 2026-06-03 15:23:00 -0300)
+            const match = texto.match(/TIME\s*[:=\s_\*]*([0-9]{4}-[0-9]{2}-[0-9]{2}\s+[0-9]{2}:[0-9]{2}:[0-9]{2}\s+[\+\-][0-9]{4})/i);
             if (match) return match[1];
+            
+            // 2. Expresión regular de respaldo: si por algún motivo no tiene zona horaria, se extrae la hora y se le anexa la local actual
+            const fallbackMatch = texto.match(/TIME\s*[:=\s_\*]*([0-9]{4}-[0-9]{2}-[0-9]{2}\s+[0-9]{2}:[0-9]{2}:[0-9]{2})/i);
+            if (fallbackMatch) {
+                return fallbackMatch[1] + " " + getTimezoneOffsetString();
+            }
             return null;
         }
 
@@ -1091,7 +1112,7 @@
                 return;
             }
 
-            // Endpoint Web App de Google Apps Script suministrado con la nueva URL provista por el usuario
+            // Endpoint Web App de Google Apps Script suministrado con la nueva URL de tu implementación activa
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQSzhAa2Y0pSVTlHavzp9qA3rNYZCIPiNsTX75PN116YoyMjbHc1UdyYPdpCCuvbpF9A/exec";
 
             try {
@@ -1104,7 +1125,7 @@
                     body: JSON.stringify({
                         gclid: gclid,
                         time: clickTime,
-                        conversion_name: "Conversión Manual Amparos" // 🚀 Nombre exacto de la conversión
+                        conversion_name: "Conversión Manual Amparos" // 🚀 Nombre exacto de tu conversión
                     })
                 });
 
