@@ -1,0 +1,2060 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1E3A8A">
+  
+  <!-- Configuración de icono para instalación en pantalla de inicio (Android / iOS) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Gestor CyA">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <link rel="shortcut icon" href="logo.jpg">
+  <link rel="apple-touch-icon" href="logo.jpg">
+  <link rel="apple-touch-icon-precomposed" href="logo.jpg">
+  <link rel="manifest" href='data:application/manifest+json,{"name":"Gestor Cárdenas y Asociados","short_name":"Gestor CyA","start_url":".","display":"standalone","background_color":"#f0f4f8","theme_color":"#1E3A8A","icons":[{"src":"logo.jpg","sizes":"192x192 512x512","type":"image/jpeg","purpose":"any maskable"}]}'>
+
+  <title>Gestor | Cárdenas y Asociados</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    :root { 
+      --primary-color: #1E3A8A; 
+      --secondary-color: #D4AF37; 
+      --background-color: #f0f4f8; 
+      --text-color: #4B5E6A; 
+    }
+    
+    * { 
+      -webkit-tap-highlight-color: transparent; 
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      box-sizing: border-box;
+    }
+
+    /* Permitir selección de texto en campos de entrada */
+    input, textarea, select {
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+    }
+    
+    body { 
+      font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+      background-color: var(--background-color); 
+      color: var(--text-color); 
+      overflow-x: hidden; 
+    }
+    
+    button, input, select { font: inherit; }
+    
+    input:focus, select:focus { 
+      border-color: var(--secondary-color) !important; 
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25); 
+      outline: none; 
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    
+    .card { 
+      background: #ffffff; 
+      border: 1px solid #e2e8f0; 
+      border-radius: 1.25rem; 
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05); 
+      transition: all 0.2s ease;
+    }
+    
+    .screen-panel { 
+      position: fixed; 
+      inset: 0; 
+      z-index: 100; 
+      display: none; 
+      overflow-y: auto; 
+      background: rgba(15, 23, 42, 0.4); 
+      backdrop-filter: blur(4px);
+    }
+    
+    .screen-panel.active { 
+      display: flex; 
+      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .panel-drawer {
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .toggle-dot { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    input:checked + .toggle-track .toggle-dot { transform: translateX(1.25rem); }
+    input:checked + .toggle-track { background-color: var(--primary-color); }
+    
+    @keyframes fadeInUp { 
+      from { opacity: 0; transform: translateY(16px); } 
+      to { opacity: 1; transform: translateY(0); } 
+    }
+    
+    .login-card-animation { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    
+    #login-screen { 
+      position: fixed; 
+      inset: 0; 
+      z-index: 200; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      background: linear-gradient(135deg, #e2e8f0 0%, #f0f4f8 100%);
+    }
+    
+    #login-screen.hidden-force { display: none !important; }
+
+    /* Custom Glass Badge */
+    .glass-badge {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased selection:bg-[var(--secondary-color)] selection:text-slate-900">
+
+  <!-- Pantalla de acceso -->
+  <div id="login-screen">
+    <div class="login-card-animation relative mx-4 w-full max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white/95 p-8 shadow-2xl backdrop-blur-md sm:p-10">
+      <div class="absolute left-0 top-0 h-2 w-full bg-[var(--primary-color)]"></div>
+      
+      <div class="mb-8 mt-2 text-center">
+        <div class="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-slate-50 p-2 ring-1 ring-slate-100 shadow-inner">
+          <img src="logo.jpg" onerror="this.onerror=null;this.src='https://placehold.co/100x100/1E3A8A/D4AF37?text=CyA'" alt="Logo Cárdenas y Asociados" class="h-full w-full rounded-xl object-contain">
+        </div>
+        <h1 class="flex flex-wrap items-center justify-center gap-2 text-2xl font-black text-slate-800 tracking-tight sm:text-3xl">
+          <span class="text-[var(--primary-color)]">Gestor</span>
+          <span class="text-[var(--secondary-color)]">CyA</span>
+        </h1>
+        <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Control Financiero Interno</p>
+      </div>
+
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label class="mb-1.5 ml-1 block text-xs font-bold uppercase tracking-wider text-slate-500" for="login-username">Usuario</label>
+          <div class="relative">
+            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            </span>
+            <input id="login-username" type="text" autocomplete="username" required placeholder="Ingrese su usuario" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 pl-11 text-sm font-medium text-slate-800 transition-all focus:bg-white focus:ring-2 focus:ring-[var(--secondary-color)]">
+          </div>
+        </div>
+
+        <div>
+          <label class="mb-1.5 ml-1 block text-xs font-bold uppercase tracking-wider text-slate-500" for="login-password">Contraseña</label>
+          <div class="relative">
+            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </span>
+            <input id="login-password" type="password" autocomplete="current-password" required placeholder="••••••••" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 pl-11 text-sm font-medium text-slate-800 transition-all focus:bg-white focus:ring-2 focus:ring-[var(--secondary-color)]">
+          </div>
+        </div>
+
+        <button type="submit" class="group relative flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--primary-color)] py-3.5 text-sm font-extrabold text-white shadow-lg shadow-blue-950/20 transition-all hover:bg-blue-900 active:scale-[.98]">
+          <span>INGRESAR AL SISTEMA</span>
+          <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </button>
+
+        <div id="login-error" class="hidden rounded-xl border border-red-200 bg-red-50 p-3.5 text-center text-xs font-semibold text-red-600">
+          <span>Usuario o contraseña incorrectos</span>
+        </div>
+      </form>
+
+      <div class="mt-8 border-t border-slate-100 pt-5 text-center">
+        <p class="text-[11px] font-medium text-slate-400">© 2026 Cárdenas & Asociados. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aplicación Principal -->
+  <div id="app-container" class="hidden min-h-screen pb-12 pt-[118px]">
+    <header class="fixed inset-x-0 top-0 z-40 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-md">
+      <div class="mx-auto flex max-w-5xl flex-col gap-2.5 px-4 py-3 sm:px-6">
+        <!-- Fila superior: Logo e Identidad + Botón Cerrar Sesión -->
+        <div class="flex items-center justify-between">
+          <div class="flex min-w-0 items-center gap-3">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 ring-1 ring-slate-200 shadow-sm">
+              <img src="logo.jpg" onerror="this.onerror=null;this.src='https://placehold.co/44x44/1E3A8A/D4AF37?text=CyA'" alt="" class="h-full w-full rounded-xl object-contain p-1">
+            </div>
+            <div class="min-w-0">
+              <p class="truncate text-base font-black text-[var(--primary-color)] leading-tight">Gestor</p>
+              <p class="truncate text-[10px] font-bold uppercase tracking-wider text-[var(--secondary-color)]">Cárdenas y Asociados</p>
+            </div>
+          </div>
+
+          <button id="logout-button" aria-label="Cerrar sesión" title="Cerrar sesión" class="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-red-50 hover:border-red-200 hover:text-red-600">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          </button>
+        </div>
+
+        <!-- Fila inferior: Barra de Navegación Principal -->
+        <div class="flex items-center justify-center sm:justify-start">
+          <nav aria-label="Navegación principal" class="flex w-full sm:w-auto items-center justify-center gap-1 rounded-2xl bg-slate-100/80 p-1.5 ring-1 ring-slate-200/60 overflow-x-auto">
+            <button id="nav-home" data-view="home" title="Inicio" class="flex flex-1 sm:flex-initial items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-xs font-extrabold transition whitespace-nowrap">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+              <span>Inicio</span>
+            </button>
+            <button id="nav-register" data-view="register" title="Registro" class="flex flex-1 sm:flex-initial items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-xs font-extrabold transition whitespace-nowrap">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+              <span>Registro</span>
+            </button>
+            <button id="nav-metrics" data-view="metrics" title="Métricas" class="flex flex-1 sm:flex-initial items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-xs font-extrabold transition whitespace-nowrap">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19V5m0 14h16M8 16v-5m4 5V7m4 9v-3"/></svg>
+              <span>Métricas</span>
+            </button>
+            <button id="nav-calculator" data-view="calculator" title="Calculadora" class="flex flex-1 sm:flex-initial items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-xs font-extrabold transition whitespace-nowrap">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+              <span>Calculadora</span>
+            </button>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-5xl px-4 pt-6 sm:px-6">
+      <!-- VISTA INICIO / DASHBOARD -->
+      <section id="home-view" class="view-content space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-slate-200/60 pb-4">
+          <div>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-[11px] font-bold tracking-wide text-amber-700 ring-1 ring-amber-200/60">
+              <span class="h-2 w-2 rounded-full bg-amber-500"></span> RESUMEN
+            </span>
+            <h2 id="current-title" class="mt-2 text-2xl font-black tracking-tight text-[var(--primary-color)] sm:text-3xl">Flujo de Caja</h2>
+          </div>
+          <p class="text-xs font-semibold text-slate-400">Valores expresados en ARS</p>
+        </div>
+
+        <!-- Cards KPi -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <article class="card relative overflow-hidden p-5 border-l-4 border-l-emerald-500 hover:shadow-md">
+            <div class="flex items-center justify-between text-slate-500">
+              <span class="text-xs font-extrabold uppercase tracking-wider">Ingresos del mes</span>
+              <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
+              </span>
+            </div>
+            <p id="month-income" class="mt-3 text-2xl sm:text-3xl font-black text-emerald-600">$ 0</p>
+            <p class="mt-1 text-xs font-medium text-slate-400">Exclusivo flujo operativo libre</p>
+          </article>
+
+          <article class="card relative overflow-hidden p-5 border-l-4 border-l-red-500 hover:shadow-md">
+            <div class="flex items-center justify-between text-slate-500">
+              <span class="text-xs font-extrabold uppercase tracking-wider">Egresos del mes</span>
+              <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-600">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
+              </span>
+            </div>
+            <p id="month-expense" class="mt-3 text-2xl sm:text-3xl font-black text-red-600">$ 0</p>
+            <p class="mt-1 text-xs font-medium text-slate-400">Compromisos devengados este mes</p>
+          </article>
+
+          <article class="card relative overflow-hidden p-5 border-l-4 border-l-[var(--secondary-color)] hover:shadow-md">
+            <div class="flex items-center justify-between text-slate-500">
+              <span class="text-xs font-extrabold uppercase tracking-wider">Resultado neto</span>
+              <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </span>
+            </div>
+            <p id="month-net" class="mt-3 text-2xl sm:text-3xl font-black text-slate-800">$ 0</p>
+            <p class="mt-1 text-xs font-medium text-slate-400">Balance neto (Ingresos − Egresos)</p>
+          </article>
+        </div>
+
+        <!-- Desglose de ingresos y egresos rápidos -->
+        <div class="grid gap-6 lg:grid-cols-2">
+          <section class="card overflow-hidden">
+            <div class="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-5 py-4">
+              <div class="flex items-center gap-2">
+                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                <h3 class="font-extrabold text-[var(--primary-color)]">Ingresos en Flujo</h3>
+              </div>
+              <span class="rounded-full bg-emerald-100/80 px-2.5 py-0.5 text-xs font-extrabold text-emerald-800">Mes Actual</span>
+            </div>
+            <div id="quick-income-list" class="divide-y divide-slate-100 max-h-[320px] overflow-y-auto"></div>
+          </section>
+
+          <section class="card overflow-hidden">
+            <div class="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-5 py-4">
+              <div class="flex items-center gap-2">
+                <span class="h-2 w-2 rounded-full bg-red-500"></span>
+                <h3 class="font-extrabold text-[var(--primary-color)]">Egresos Devengados</h3>
+              </div>
+              <span class="rounded-full bg-red-100/80 px-2.5 py-0.5 text-xs font-extrabold text-red-800">Mes Actual</span>
+            </div>
+            <div id="quick-expense-list" class="divide-y divide-slate-100 max-h-[320px] overflow-y-auto"></div>
+          </section>
+        </div>
+
+        <!-- Proyección a 6 meses con columna Neto Calculado -->
+        <section class="card overflow-hidden">
+          <div class="border-b border-slate-100 bg-slate-50/50 px-5 py-4">
+            <p class="text-[11px] font-extrabold uppercase tracking-wider text-[var(--secondary-color)]">Liquidez Prevista</p>
+            <h3 class="text-lg font-black text-[var(--primary-color)]">Proyección a 6 Meses</h3>
+            <p class="mt-0.5 text-xs text-slate-500">Excluye ingresos etiquetados como ahorro futuro.</p>
+          </div>
+          <div class="overflow-x-auto">
+            <div class="min-w-[480px]">
+              <div class="grid grid-cols-4 gap-2 bg-slate-100/70 px-5 py-3 text-xs uppercase font-extrabold tracking-wider text-slate-500 border-b border-slate-200">
+                <div>Mes</div>
+                <div class="text-right">Ingresos</div>
+                <div class="text-right">Egresos</div>
+                <div class="text-right">Neto</div>
+              </div>
+              <div id="projection-list" class="divide-y divide-slate-100"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Historial Anual -->
+        <section class="card overflow-hidden">
+          <div class="border-b border-slate-100 bg-slate-50/50 px-5 py-4">
+            <p class="text-[11px] font-extrabold uppercase tracking-wider text-[var(--secondary-color)]">Historial Mensual</p>
+            <h3 class="text-lg font-black text-[var(--primary-color)]">Últimos 12 Meses</h3>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[640px] text-left text-sm">
+              <thead class="bg-slate-100/70 text-xs uppercase font-extrabold tracking-wider text-slate-500 border-b border-slate-200">
+                <tr>
+                  <th class="px-5 py-3.5">Mes</th>
+                  <th class="px-5 py-3.5">Ingresos</th>
+                  <th class="px-5 py-3.5">Egresos</th>
+                  <th class="px-5 py-3.5">Neto</th>
+                  <th class="px-5 py-3.5">Ahorro del Mes</th>
+                </tr>
+              </thead>
+              <tbody id="history-table" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- VISTA REGISTRO / COMPROMISOS -->
+      <section id="register-view" class="view-content hidden space-y-6">
+        <div class="border-b border-slate-200/60 pb-4">
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-[11px] font-bold tracking-wide text-blue-700 ring-1 ring-blue-200/60">
+            REGISTRO Y CONTROL
+          </span>
+          <h2 class="mt-2 text-2xl font-black tracking-tight text-[var(--primary-color)] sm:text-3xl">Tus Compromisos Mensuales</h2>
+          <p class="mt-1 text-sm font-medium text-slate-500">Administrá ingresos, ahorro y egresos proyectados en un solo lugar.</p>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="grid gap-4 sm:grid-cols-2">
+          <button id="add-income-button" class="group relative flex min-h-[96px] items-center justify-between rounded-2xl bg-[var(--primary-color)] p-6 text-left text-white shadow-lg shadow-blue-950/10 transition hover:bg-blue-900 active:scale-[.99]">
+            <div>
+              <span class="block text-xs font-extrabold uppercase tracking-widest text-amber-300">Nuevo registro</span>
+              <span class="mt-1 block text-xl font-black">Agregar Ingreso</span>
+            </div>
+            <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 text-2xl font-bold backdrop-blur-sm transition-transform group-hover:scale-110">＋</span>
+          </button>
+
+          <button id="add-expense-button" class="group relative flex min-h-[96px] items-center justify-between rounded-2xl border-2 border-[var(--secondary-color)] bg-white p-6 text-left text-[var(--primary-color)] shadow-sm transition hover:bg-amber-50/50 active:scale-[.99]">
+            <div>
+              <span class="block text-xs font-extrabold uppercase tracking-widest text-[var(--secondary-color)]">Nuevo registro</span>
+              <span class="mt-1 block text-xl font-black">Agregar Egreso</span>
+            </div>
+            <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100/60 text-2xl font-bold text-[var(--secondary-color)] transition-transform group-hover:scale-110">−</span>
+          </button>
+        </div>
+
+        <!-- Contenedor con Pestañas y Buscador -->
+        <div class="card overflow-hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 bg-slate-50/50 px-5 pt-4 gap-4">
+            <div class="flex gap-6">
+              <button id="records-active-tab" class="border-b-2 border-[var(--primary-color)] pb-3.5 text-sm font-black text-[var(--primary-color)] transition">Activos</button>
+              <button id="records-archived-tab" class="border-b-2 border-transparent pb-3.5 text-sm font-black text-slate-400 hover:text-slate-600 transition">Archivados</button>
+            </div>
+            <!-- Buscador -->
+            <div class="relative pb-3 sm:pb-2 w-full sm:w-64">
+              <input id="records-search" type="text" placeholder="Buscar concepto..." class="w-full rounded-xl border border-slate-200 bg-white py-1.5 pl-8 pr-3 text-xs font-medium focus:ring-1 focus:ring-[var(--secondary-color)]">
+              <svg class="absolute left-2.5 top-3 sm:top-3.5 h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+          </div>
+
+          <div id="records-list" class="divide-y divide-slate-100"></div>
+        </div>
+      </section>
+
+      <!-- VISTA MÉTRICAS / RENTABILIDAD COMERCIAL -->
+      <section id="metrics-view" class="view-content hidden space-y-6">
+        <div class="flex flex-col gap-4 border-b border-slate-200/60 pb-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-[11px] font-bold tracking-wide text-amber-700 ring-1 ring-amber-200/60">
+              <span class="h-2 w-2 rounded-full bg-amber-500"></span> INTELIGENCIA COMERCIAL
+            </span>
+            <h2 class="mt-2 text-2xl font-black tracking-tight text-[var(--primary-color)] sm:text-3xl">Métricas</h2>
+            <p id="metrics-period-label" class="mt-1 text-sm font-medium text-slate-500">Rentabilidad y recupero de la inversión publicitaria.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="metrics-export-pdf" type="button" class="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-extrabold text-slate-600 shadow-sm transition hover:bg-slate-50 sm:flex-none">
+              <svg class="h-4 w-4 text-[var(--primary-color)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-8m0 8l-3-3m3 3l3-3M5 20h14a1 1 0 001-1v-3M4 16v3a1 1 0 001 1"/></svg>
+              PDF
+            </button>
+            <button id="metrics-add-data" type="button" class="flex flex-[1.4] items-center justify-center gap-1.5 rounded-xl bg-[var(--primary-color)] px-4 py-2.5 text-xs font-extrabold text-white shadow-lg shadow-blue-950/20 transition hover:bg-blue-900 active:scale-[.98] sm:flex-none">
+              <span class="text-base leading-none">＋</span> Cargar datos
+            </button>
+          </div>
+        </div>
+
+        <div id="metrics-periods" class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0" role="tablist" aria-label="Período de métricas">
+          <button data-metrics-period="3" type="button" class="shrink-0 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-extrabold text-slate-500 transition">3 Meses</button>
+          <button data-metrics-period="6" type="button" class="shrink-0 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-extrabold text-slate-500 transition">6 Meses</button>
+          <button data-metrics-period="12" type="button" class="shrink-0 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-extrabold text-slate-500 transition">12 Meses</button>
+          <button data-metrics-period="all" type="button" class="shrink-0 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-extrabold text-slate-500 transition">Histórico</button>
+        </div>
+
+        <section id="metrics-health" class="card relative overflow-hidden border-l-4 border-l-slate-300 p-5">
+          <div class="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-slate-100/80"></div>
+          <div class="relative flex items-start gap-3">
+            <span id="metrics-health-icon" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-lg font-black text-slate-600">—</span>
+            <div class="min-w-0">
+              <span id="metrics-health-badge" class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-600">Sin datos</span>
+              <h3 id="metrics-health-title" class="mt-2 text-base font-black text-[var(--primary-color)]">Esperando información comercial</h3>
+              <p id="metrics-health-text" class="mt-1 text-xs font-medium leading-relaxed text-slate-500">Cargá inversión en Ads y clientes para obtener un diagnóstico automático.</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          <article class="card min-w-0 p-4 sm:p-5">
+            <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Inversión / Ganancia</p>
+            <p id="metric-investment" class="mt-2 truncate text-lg font-black text-red-600 sm:text-xl">$ 0</p>
+            <p id="metric-potential" class="mt-1 text-[10px] font-semibold leading-snug text-emerald-600">Potencial: $ 0</p>
+          </article>
+          <article class="card min-w-0 p-4 sm:p-5">
+            <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Inversión Ads</p>
+            <p id="metric-ads-nominal" class="mt-2 truncate text-lg font-black text-[var(--primary-color)] sm:text-xl">$ 0</p>
+            <p id="metric-ads-adjusted" class="mt-1 text-[10px] font-semibold leading-snug text-slate-400">IPC: $ 0</p>
+          </article>
+          <article class="card min-w-0 p-4 sm:p-5">
+            <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">CAC</p>
+            <p id="metric-cac-nominal" class="mt-2 truncate text-lg font-black text-[var(--primary-color)] sm:text-xl">$ 0</p>
+            <p id="metric-cac-adjusted" class="mt-1 text-[10px] font-semibold leading-snug text-slate-400">IPC: $ 0</p>
+          </article>
+          <article class="card min-w-0 p-4 sm:p-5">
+            <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">LTV promedio</p>
+            <p id="metric-ltv-real" class="mt-2 truncate text-lg font-black text-emerald-600 sm:text-xl">$ 0</p>
+            <p id="metric-ltv-expected" class="mt-1 text-[10px] font-semibold leading-snug text-slate-400">Expectativa: $ 0</p>
+          </article>
+          <article class="card min-w-0 p-4 sm:p-5">
+            <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Ratio LTV / CAC</p>
+            <p id="metric-ratio" class="mt-2 text-lg font-black text-[var(--primary-color)] sm:text-xl">—</p>
+            <p id="metric-ratio-label" class="mt-1 text-[10px] font-semibold text-slate-400">Sin datos suficientes</p>
+          </article>
+          <article class="card min-w-0 p-4 sm:p-5">
+            <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">ROI</p>
+            <p id="metric-roi" class="mt-2 text-lg font-black text-[var(--primary-color)] sm:text-xl">—</p>
+            <p class="mt-1 text-[10px] font-semibold text-slate-400">Retorno neto sobre Ads</p>
+          </article>
+          <article class="card min-w-0 p-4 sm:p-5">
+            <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Payback promedio</p>
+            <p id="metric-payback" class="mt-2 text-lg font-black text-[var(--primary-color)] sm:text-xl">—</p>
+            <p class="mt-1 text-[10px] font-semibold text-slate-400">Meses calendario reales</p>
+          </article>
+          <article class="card min-w-0 p-4 sm:p-5">
+            <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Ritmo de clientes</p>
+            <p id="metric-client-pace" class="mt-2 text-lg font-black text-[var(--primary-color)] sm:text-xl">0</p>
+            <p id="metric-client-count" class="mt-1 text-[10px] font-semibold text-slate-400">0 clientes en el período</p>
+          </article>
+        </div>
+
+        <section class="card overflow-hidden">
+          <div class="flex flex-col gap-3 border-b border-slate-100 bg-slate-50/50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p class="text-[11px] font-extrabold uppercase tracking-wider text-[var(--secondary-color)]">Registro de clientes</p>
+              <h3 class="text-lg font-black text-[var(--primary-color)]">Clientes y regulaciones</h3>
+            </div>
+            <div class="relative w-full sm:w-64">
+              <input id="metrics-client-search" type="search" placeholder="Buscar cliente..." class="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-xs font-medium text-slate-800">
+              <svg class="absolute left-3 top-3 h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+          </div>
+          <div id="metrics-client-list" class="divide-y divide-slate-100"></div>
+        </section>
+
+        <details class="card overflow-hidden group">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-black text-[var(--primary-color)]">
+            Diccionario de conceptos
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-amber-50 text-lg text-[var(--secondary-color)] transition-transform group-open:rotate-45">＋</span>
+          </summary>
+          <div class="space-y-4 border-t border-slate-100 px-5 py-5 text-xs font-medium leading-relaxed text-slate-600">
+            <p><strong class="font-black text-slate-800">Costo de Adquisición de Cliente (CAC):</strong> Es el dinero total invertido en publicidad en Google Ads (incluyendo el 21% de IVA) dividido por la cantidad de clientes conseguidos en dicho período. Mide exactamente cuánto te cuesta "comprar" un cliente nuevo. Un CAC más bajo indica mayor eficiencia publicitaria.</p>
+            <p><strong class="font-black text-slate-800">Valor de Vida del Cliente (LTV):</strong> Es el ingreso promedio total proyectado que genera un cliente durante toda su relación con el estudio. Se compone de las cuotas fijas contratadas más los honorarios judiciales efectivamente cobrados.</p>
+            <p><strong class="font-black text-slate-800">LTV en Expectativa:</strong> Suma de los honorarios de regulaciones judiciales estimadas en casos donde el demandado es solvente. No se contabiliza como caja real hasta que el dinero es efectivamente percibido.</p>
+            <div><p><strong class="font-black text-slate-800">Ratio LTV / CAC:</strong> Es la métrica reina de la rentabilidad. Indica cuántas veces te devuelve un cliente en dinero el costo que pagaste en publicidad para conseguirlo.</p><ul class="mt-2 list-disc space-y-1 pl-4"><li>Menor a 1.5x (Alerta): Estás gastando en anuncios casi lo mismo que ingresa.</li><li>Entre 3x y 5x (Bueno): Negocio saludable, rentable y escalable.</li><li>Mayor a 5x (Excelente): Retorno sobresaliente sobre la inversión publicitaria.</li></ul></div>
+            <p><strong class="font-black text-slate-800">Retorno de la Inversión (ROI %):</strong> Representa el porcentaje de ganancia neta limpia obtenido sobre el total del dinero invertido en Google Ads. Refleja la multiplicación neta de tu capital.</p>
+            <div><p><strong class="font-black text-slate-800">Tiempo de Recupero (Payback Period):</strong> Cantidad de meses de calendario necesarios para que los pagos de un cliente cubran al 100% el Costo de Adquisición (CAC), tomando en cuenta el desfasaje del mes en que realiza su primer pago.</p><ul class="mt-2 list-disc space-y-1 pl-4"><li>Menos de 3 meses: Excelente liquidez.</li><li>De 3 a 6 meses: Recupero saludable.</li><li>Más de 12 meses: Riesgo alto de flujo de caja.</li></ul></div>
+            <p><strong class="font-black text-slate-800">Ritmo de Clientes (Promedio Mensual):</strong> Muestra la velocidad promedio de incorporación de nuevos clientes por mes dentro del período evaluado.</p>
+            <p><strong class="font-black text-slate-800">Ajuste por IPC (Inflación):</strong> Reexpresa los valores históricos de inversión publicitaria a pesos constantes de hoy utilizando los índices de inflación cargados, permitiendo una comparación justa del rendimiento en el tiempo.</p>
+          </div>
+        </details>
+      </section>
+
+      <!-- VISTA CALCULADORA DE HONORARIOS (LEY 27.423 - ART. 21) -->
+      <section id="calculator-view" class="view-content hidden space-y-6">
+        <div class="border-b border-slate-200/60 pb-4">
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-[11px] font-bold tracking-wide text-amber-700 ring-1 ring-amber-200/60">
+            <span class="h-2 w-2 rounded-full bg-amber-500"></span> LEY 27.423 - ARTÍCULO 21
+          </span>
+          <h2 class="mt-2 text-2xl font-black tracking-tight text-[var(--primary-color)] sm:text-3xl">Calculadora de Honorarios</h2>
+          <p class="mt-1 text-sm font-medium text-slate-500">Cálculo por escala acumulativa/marginal y propuesta formal de plan de pago.</p>
+        </div>
+
+        <!-- SECCIÓN A: INGRESO DE DATOS Y CÁLCULO -->
+        <div class="card p-5 sm:p-6 space-y-5">
+          <div class="flex items-center gap-2">
+            <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-xs font-black text-[var(--primary-color)]">1</span>
+            <h3 class="text-base font-black text-[var(--primary-color)]">Ingreso de Datos</h3>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="calc-uma" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Valor UMA Actual ($)</label>
+              <div class="relative">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 font-black text-slate-400">$</span>
+                <input id="calc-uma" type="text" inputmode="numeric" placeholder="0" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 pl-9 text-base font-black text-slate-800 transition focus:bg-white">
+              </div>
+            </div>
+            <div>
+              <label for="calc-base" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Base de Cálculo ($)</label>
+              <div class="relative">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 font-black text-slate-400">$</span>
+                <input id="calc-base" type="text" inputmode="numeric" placeholder="0" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 pl-9 text-base font-black text-slate-800 transition focus:bg-white">
+              </div>
+            </div>
+          </div>
+          <button id="calc-btn-calculate" type="button" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[var(--primary-color)] text-sm font-black text-white shadow-lg shadow-blue-950/20 transition hover:bg-blue-900 active:scale-[.98]">
+            Calcular
+          </button>
+        </div>
+
+        <!-- CONTENEDOR RESULTADOS Y PLAN DE PAGO (OCULTO INICIALMENTE) -->
+        <div id="calc-results-container" class="hidden space-y-6">
+          <!-- SECCIÓN B: RESULTADOS DE HONORARIOS -->
+          <div class="card p-5 sm:p-6 border-l-4 border-l-[var(--secondary-color)] space-y-4">
+            <div class="flex items-center gap-2">
+              <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-xs font-black text-[var(--secondary-color)]">2</span>
+              <h3 class="text-base font-black text-[var(--primary-color)]">Resultados de Honorarios Legales</h3>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="rounded-2xl bg-slate-50/80 p-4 border border-slate-200/80">
+                <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Honorario Mínimo Legal</p>
+                <p id="calc-res-min-pesos" class="mt-1 text-2xl font-black text-emerald-600">$ 0</p>
+                <p id="calc-res-min-uma" class="mt-0.5 text-xs font-bold text-slate-500">0,00 UMAs</p>
+              </div>
+              <div class="rounded-2xl bg-slate-50/80 p-4 border border-slate-200/80">
+                <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Honorario Máximo Legal</p>
+                <p id="calc-res-max-pesos" class="mt-1 text-2xl font-black text-[var(--primary-color)]">$ 0</p>
+                <p id="calc-res-max-uma" class="mt-0.5 text-xs font-bold text-slate-500">0,00 UMAs</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN C: CONFIGURACIÓN DEL PLAN DE PAGO -->
+          <div class="card p-5 sm:p-6 space-y-5">
+            <div class="flex items-center gap-2">
+              <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-xs font-black text-[var(--primary-color)]">3</span>
+              <h3 class="text-base font-black text-[var(--primary-color)]">Configuración del Plan de Pago</h3>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-600">Monto a Financiar</label>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <label class="card flex items-center gap-3 p-3.5 cursor-pointer hover:bg-slate-50 border-slate-200">
+                    <input type="radio" name="calc-monto-opt" value="min" checked class="h-4 w-4 text-[var(--primary-color)] focus:ring-[var(--secondary-color)]">
+                    <div>
+                      <span class="block text-xs font-extrabold text-slate-800">Mínimo Legal</span>
+                      <span id="calc-opt-min-val" class="block text-[11px] font-bold text-emerald-600">$ 0</span>
+                    </div>
+                  </label>
+                  <label class="card flex items-center gap-3 p-3.5 cursor-pointer hover:bg-slate-50 border-slate-200">
+                    <input type="radio" name="calc-monto-opt" value="max" class="h-4 w-4 text-[var(--primary-color)] focus:ring-[var(--secondary-color)]">
+                    <div>
+                      <span class="block text-xs font-extrabold text-slate-800">Máximo Legal</span>
+                      <span id="calc-opt-max-val" class="block text-[11px] font-bold text-[var(--primary-color)]">$ 0</span>
+                    </div>
+                  </label>
+                  <label class="card flex items-center gap-3 p-3.5 cursor-pointer hover:bg-slate-50 border-slate-200">
+                    <input type="radio" name="calc-monto-opt" value="custom" class="h-4 w-4 text-[var(--primary-color)] focus:ring-[var(--secondary-color)]">
+                    <div>
+                      <span class="block text-xs font-extrabold text-slate-800">Monto Personalizado</span>
+                      <span class="block text-[11px] font-medium text-slate-400">Ingresar valor</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div id="calc-custom-monto-wrap" class="hidden">
+                <label for="calc-custom-monto" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Monto Personalizado ($)</label>
+                <div class="relative">
+                  <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 font-black text-slate-400">$</span>
+                  <input id="calc-custom-monto" type="text" inputmode="numeric" placeholder="0" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 pl-9 text-base font-black text-slate-800 transition focus:bg-white">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label for="calc-cuotas" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Cantidad de Cuotas</label>
+                  <input id="calc-cuotas" type="number" min="1" max="60" value="6" class="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm font-bold text-slate-800">
+                </div>
+                <div>
+                  <label for="calc-modalidad-uma" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Modalidad de UMA</label>
+                  <select id="calc-modalidad-uma" class="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm font-bold text-slate-800">
+                    <option value="congelada">Congelada al valor actual</option>
+                    <option value="indexada">Indexada al valor de la UMA al momento de cada pago</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="calc-start-month" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Período de Inicio</label>
+                  <input id="calc-start-month" type="month" class="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm font-bold text-slate-800">
+                </div>
+              </div>
+
+              <div>
+                <label for="calc-rango-dias" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Rango de Días de Pago</label>
+                <select id="calc-rango-dias" class="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm font-bold text-slate-800">
+                  <option value="Del 1 al 10">Del 1 al 10 de cada mes</option>
+                  <option value="Del 1 al 15">Del 1 al 15 de cada mes</option>
+                  <option value="Del 16 al 30">Del 16 al 30 de cada mes</option>
+                  <option value="Del 1 al 5">Del 1 al 5 de cada mes</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Previsualización en pantalla -->
+            <div class="space-y-3 pt-2">
+              <h4 class="text-xs font-black uppercase tracking-wider text-[var(--primary-color)]">Previsualización del Plan de Pago</h4>
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-100/80 text-slate-600 uppercase font-extrabold tracking-wider border-b border-slate-200">
+                    <tr>
+                      <th class="px-4 py-3">Cuota</th>
+                      <th class="px-4 py-3">Fecha / Rango de Pago</th>
+                      <th class="px-4 py-3 text-right">Monto UMA</th>
+                      <th class="px-4 py-3 text-right">Monto Pesos ($)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="calc-table-body" class="divide-y divide-slate-100 bg-white"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Botón Exportar PDF -->
+            <div class="pt-2 flex justify-end">
+              <button id="calc-btn-pdf" type="button" class="flex items-center justify-center gap-2 rounded-xl bg-[var(--primary-color)] px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-blue-950/20 transition hover:bg-blue-900 active:scale-[.98]">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-8m0 8l-3-3m3 3l3-3M5 20h14a1 1 0 001-1v-3M4 16v3a1 1 0 001 1"/></svg>
+                Generar PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Panel Lateral / Modal Formulario -->
+  <section id="entry-panel" class="screen-panel items-end sm:items-center justify-center p-0 sm:p-4" aria-hidden="true">
+    <div class="panel-drawer relative w-full max-w-lg rounded-t-3xl sm:rounded-3xl bg-white shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+      <header class="flex items-center justify-between border-b border-slate-200 bg-slate-50/80 px-6 py-4">
+        <div>
+          <p id="entry-eyebrow" class="text-xs font-black uppercase tracking-widest text-[var(--secondary-color)]">Nuevo registro</p>
+          <h2 id="entry-title" class="text-xl font-black text-[var(--primary-color)]">Agregar ingreso</h2>
+        </div>
+        <button id="entry-back-button" aria-label="Cerrar" class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-200/70 text-slate-600 font-bold hover:bg-slate-300">✕</button>
+      </header>
+
+      <form id="entry-form" class="space-y-5 p-6 overflow-y-auto">
+        <div class="space-y-4">
+          <div>
+            <label id="concept-label" for="entry-concept" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Concepto / Cliente</label>
+            <input id="entry-concept" required maxlength="100" autocomplete="off" placeholder="Ej.: Honorarios Profesionales" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 text-sm font-semibold text-slate-800 transition focus:bg-white">
+          </div>
+
+          <div>
+            <label id="amount-label" for="entry-amount" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Monto mensual</label>
+            <div class="relative">
+              <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 font-black text-slate-400">$</span>
+              <input id="entry-amount" required min="1" step="1" inputmode="decimal" placeholder="0" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 pl-9 text-base font-black text-slate-800 transition focus:bg-white">
+            </div>
+            <p class="mt-1 text-[11px] font-medium text-slate-400">Monto individual en pesos argentinos (ARS).</p>
+          </div>
+        </div>
+
+        <div class="space-y-4 rounded-2xl border border-slate-100 bg-slate-50/60 p-4">
+          <div>
+            <label for="entry-duration" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Duración</label>
+            <select id="entry-duration" class="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm font-semibold text-slate-800">
+              <option value="ongoing">Hasta nuevo aviso (Recurrente)</option>
+              <option value="fixed">Cantidad fija de cuotas / meses</option>
+            </select>
+          </div>
+
+          <div id="installments-wrap" class="hidden">
+            <label for="entry-installments" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Cantidad de cuotas</label>
+            <input id="entry-installments" min="1" max="600" step="1" inputmode="numeric" class="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm font-semibold text-slate-800" type="number" placeholder="Ej.: 6">
+          </div>
+
+          <div>
+            <label for="entry-start-month" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Mes de inicio</label>
+            <input id="entry-start-month" required class="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm font-semibold text-slate-800" type="month">
+          </div>
+        </div>
+
+        <label id="savings-wrap" class="card flex cursor-pointer items-center justify-between gap-4 p-4 border-amber-200/80 bg-amber-50/20">
+          <div>
+            <span class="block text-sm font-black text-[var(--primary-color)]">Destinado a Ahorro</span>
+            <span class="mt-0.5 block text-xs text-slate-500 leading-snug">Se registrará separadamente en el historial mensual, sin sumar al flujo operativo.</span>
+          </div>
+          <div class="relative shrink-0">
+            <input id="entry-savings" class="sr-only" type="checkbox">
+            <span class="toggle-track block h-7 w-12 rounded-full bg-slate-300 p-1 transition">
+              <span class="toggle-dot block h-5 w-5 rounded-full bg-white shadow-md"></span>
+            </span>
+          </div>
+        </label>
+
+        <button id="entry-submit" type="submit" class="w-full rounded-xl bg-[var(--primary-color)] py-4 text-sm font-black text-white shadow-lg shadow-blue-950/20 transition active:scale-[.99]">
+          Guardar ingreso
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Notificaciones Toast -->
+  <div id="toast-container" aria-live="polite" class="fixed inset-x-4 bottom-5 z-[100] mx-auto flex max-w-md flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Lógica modular Firebase y Negocio -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+    import { getFirestore, setLogLevel, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBvXXACPC7r_Ix-taS_P_ZJBxhyZAzrg-A",
+      authDomain: "gestor-cya.firebaseapp.com",
+      projectId: "gestor-cya",
+      storageBucket: "gestor-cya.firebasestorage.app",
+      messagingSenderId: "991990798028",
+      appId: "1:991990798028:web:66360f422cfaeac1919469",
+      measurementId: "G-N4NGD4XDTK"
+    };
+
+    const COLLECTIONS = { income: "incomes", expense: "expenses", ads: "metric_ads", ipc: "metric_ipc", client: "metric_clients" };
+    const CASH_FLOW_SCHEMA_VERSION = 2;
+    const METRICS_SCHEMA_VERSION = 1;
+    const el = (id) => document.getElementById(id);
+    
+    const state = { 
+      db: null, 
+      authReady: false, 
+      incomes: [], 
+      expenses: [], 
+      ads: [],
+      ipcs: [],
+      clients: [],
+      view: "home", 
+      recordsTab: "active", 
+      searchQuery: "",
+      metricsPeriod: "6",
+      metricsSearch: "",
+      metricsSummary: null,
+      entryType: "income", 
+      editingRecordId: null,
+      entryOpen: false, 
+      historyEntryAdded: false, 
+      pendingArchives: new Map(),
+      calculator: {
+        valorUMA: 0,
+        montoPesos: 0,
+        results: null
+      }
+    };
+
+    const money = (value) => new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 }).format(Number(value) || 0);
+    const cap = (value) => value ? value.charAt(0).toUpperCase() + value.slice(1) : "";
+    const currentMonth = () => monthKey(new Date());
+    const monthKey = (date) => String(date.getFullYear()) + "-" + String(date.getMonth() + 1).padStart(2, "0");
+    const parseMonth = (key) => { const parts = String(key || "").split("-").map(Number); return new Date(parts[0] || 2000, (parts[1] || 1) - 1, 1); };
+    const addMonths = (key, amount) => { const date = parseMonth(key); date.setMonth(date.getMonth() + amount); return monthKey(date); };
+    const monthDifference = (from, to) => { const a = parseMonth(from); const b = parseMonth(to); return (b.getFullYear() - a.getFullYear()) * 12 + b.getMonth() - a.getMonth(); };
+    const monthName = (key, long = true) => cap(parseMonth(key).toLocaleDateString("es-AR", { month: long ? "long" : "short", year: "numeric" }));
+    const create = (tag, className, text) => { const node = document.createElement(tag); if (className) node.className = className; if (text !== undefined) node.textContent = text; return node; };
+    const clear = (node) => { node.replaceChildren(); };
+    const allRecords = () => state.incomes.map((record) => Object.assign({ type: "income" }, record)).concat(state.expenses.map((record) => Object.assign({ type: "expense" }, record)));
+    const pendingKey = (type, id) => type + ":" + id;
+
+    const isEffectiveInMonth = (record, targetMonth) => {
+      if (!record.startMonth || monthDifference(record.startMonth, targetMonth) < 0) return false;
+      const elapsed = monthDifference(record.startMonth, targetMonth);
+      if (record.durationType === "fixed" && elapsed >= Number(record.installments || 0)) return false;
+      const archivedFrom = record.archivedFromMonth || (record.status === "archived" ? currentMonth() : "");
+      if (archivedFrom && monthDifference(archivedFrom, targetMonth) >= 0) return false;
+      return true;
+    };
+
+    const isAutomaticallyComplete = (record) => record.durationType === "fixed" && Number(record.installments) > 0 && monthDifference(record.startMonth, currentMonth()) >= Number(record.installments);
+    const isArchived = (record) => record.status === "archived" || isAutomaticallyComplete(record);
+    const isPending = (record) => state.pendingArchives.has(pendingKey(record.type, record.id));
+
+    function setView(view) {
+      state.view = view;
+      el("home-view").classList.toggle("hidden", view !== "home");
+      el("register-view").classList.toggle("hidden", view !== "register");
+      el("metrics-view").classList.toggle("hidden", view !== "metrics");
+      el("calculator-view").classList.toggle("hidden", view !== "calculator");
+
+      ["home", "register", "metrics", "calculator"].forEach((name) => {
+        const button = el("nav-" + name);
+        if (button) {
+          const active = name === view;
+          button.classList.toggle("bg-white", active);
+          button.classList.toggle("text-[var(--primary-color)]", active);
+          button.classList.toggle("shadow-sm", active);
+          button.classList.toggle("text-slate-500", !active);
+        }
+      });
+      if (view === "register") renderRegistry();
+      if (view === "metrics") renderMetrics();
+      if (view === "calculator") renderCalculator();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showToast(message, tone = "info") {
+      const colors = { info: "bg-[var(--primary-color)]", success: "bg-emerald-600", error: "bg-red-600" };
+      const toast = create("div", (colors[tone] || colors.info) + " pointer-events-auto flex items-center justify-between rounded-xl px-4 py-3 text-xs font-bold text-white shadow-xl");
+      toast.textContent = message;
+      el("toast-container").append(toast);
+      window.setTimeout(() => toast.remove(), 3500);
+    }
+
+    function showConfirmModal(message, onConfirm) {
+      const modal = create("div", "fixed inset-0 z-[300] flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm");
+      const card = create("div", "w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl space-y-4 text-center");
+      
+      const title = create("h3", "text-base font-black text-slate-800", "Confirmar eliminación");
+      const desc = create("p", "text-xs font-medium text-slate-500", message);
+      
+      const actions = create("div", "flex items-center gap-3 pt-2");
+      
+      const cancelBtn = create("button", "flex-1 rounded-xl border border-slate-200 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 transition", "Cancelar");
+      cancelBtn.type = "button";
+      cancelBtn.onclick = () => modal.remove();
+      
+      const confirmBtn = create("button", "flex-1 rounded-xl bg-red-600 py-2.5 text-xs font-bold text-white shadow-md hover:bg-red-700 transition", "Eliminar");
+      confirmBtn.type = "button";
+      confirmBtn.onclick = async () => {
+        modal.remove();
+        await onConfirm();
+      };
+      
+      actions.append(cancelBtn, confirmBtn);
+      card.append(title, desc, actions);
+      modal.append(card);
+      document.body.append(modal);
+    }
+
+    async function deleteRecord(type, id, conceptName) {
+      showConfirmModal(`¿Eliminar "${conceptName || 'este registro'}"? Esta acción no se puede deshacer.`, async () => {
+        try {
+          await deleteDoc(doc(state.db, COLLECTIONS[type], id));
+          showToast("Registro eliminado correctamente.", "success");
+        } catch (error) {
+          console.error(error);
+          showToast("Error al eliminar el registro.", "error");
+        }
+      });
+    }
+
+    function showUndoToast(key, message) {
+      const toast = create("div", "pointer-events-auto flex items-center justify-between gap-3 rounded-xl bg-slate-900 px-4 py-3 text-xs font-extrabold text-white shadow-2xl");
+      const label = create("span", "", message);
+      const undo = create("button", "shrink-0 rounded-lg bg-[var(--secondary-color)] px-3 py-1 text-xs font-black text-slate-900", "Deshacer");
+      undo.type = "button";
+      undo.addEventListener("click", () => undoArchive(key, toast));
+      toast.append(label, undo);
+      el("toast-container").append(toast);
+      const pending = state.pendingArchives.get(key);
+      pending.toast = toast;
+      pending.timer = window.setTimeout(() => commitArchive(key), 4000);
+    }
+
+    function undoArchive(key, toast) {
+      const pending = state.pendingArchives.get(key);
+      if (!pending) return;
+      window.clearTimeout(pending.timer);
+      state.pendingArchives.delete(key);
+      (toast || pending.toast).remove();
+      renderAll();
+    }
+
+    async function commitArchive(key) {
+      const pending = state.pendingArchives.get(key);
+      if (!pending) return;
+      state.pendingArchives.delete(key);
+      pending.toast.remove();
+      try {
+        await updateDoc(doc(state.db, COLLECTIONS[pending.type], pending.id), { 
+          status: "archived", 
+          archivedFromMonth: currentMonth(), 
+          archivedAt: new Date().toISOString(), 
+          archivedReason: "manual" 
+        });
+      } catch (error) {
+        console.error(error);
+        showToast("No se pudo archivar el registro.", "error");
+        renderAll();
+      }
+    }
+
+    function archiveRecord(type, id) {
+      const key = pendingKey(type, id);
+      if (state.pendingArchives.has(key)) return;
+      state.pendingArchives.set(key, { type, id, timer: null, toast: null });
+      showUndoToast(key, "Registro archivado temporariamente");
+      renderAll();
+    }
+
+    async function synchronizeAutomaticArchives(records) {
+      if (!state.db) return;
+      const expired = records.filter((record) => record.status !== "archived" && isAutomaticallyComplete(record));
+      await Promise.all(expired.map((record) => 
+        updateDoc(doc(state.db, COLLECTIONS[record.type], record.id), { 
+          status: "archived", 
+          archivedFromMonth: addMonths(record.startMonth, Number(record.installments)), 
+          archivedAt: new Date().toISOString(), 
+          archivedReason: "completed" 
+        }).catch((error) => console.error(error))
+      ));
+    }
+
+    function buildQuickList(container, records, emptyText, tone) {
+      clear(container);
+      if (!records.length) { 
+        container.append(create("p", "px-5 py-8 text-center text-xs font-medium text-slate-400", emptyText)); 
+        return; 
+      }
+      records.sort((a, b) => a.concept.localeCompare(b.concept, "es"));
+      records.forEach((record) => {
+        const row = create("div", "flex items-center justify-between gap-3 px-5 py-3.5 hover:bg-slate-50/80 transition");
+        const left = create("div", "min-w-0");
+        left.append(
+          create("p", "truncate text-xs font-bold text-slate-800", record.concept), 
+          create("p", "mt-0.5 text-[11px] font-medium text-slate-400", record.durationType === "ongoing" ? "Recurrente" : "Cuota fija mensual")
+        );
+        row.append(left, create("strong", "shrink-0 text-xs font-black " + tone, money(record.amount)));
+        container.append(row);
+      });
+    }
+
+    function renderDashboard() {
+      const month = currentMonth();
+      el("current-title").textContent = "Flujo de Caja - " + monthName(month);
+      const currentIncomes = state.incomes.filter((record) => isEffectiveInMonth(record, month));
+      const flowIncomes = currentIncomes.filter((record) => !record.isSavings);
+      const currentExpenses = state.expenses.filter((record) => isEffectiveInMonth(record, month));
+      const incomeTotal = flowIncomes.reduce((sum, record) => sum + Number(record.amount || 0), 0);
+      const expenseTotal = currentExpenses.reduce((sum, record) => sum + Number(record.amount || 0), 0);
+      const net = incomeTotal - expenseTotal;
+
+      el("month-income").textContent = money(incomeTotal);
+      el("month-expense").textContent = money(expenseTotal);
+      el("month-net").textContent = money(net);
+      el("month-net").className = "mt-3 text-2xl sm:text-3xl font-black " + (net >= 0 ? "text-emerald-600" : "text-red-600");
+
+      buildQuickList(el("quick-income-list"), flowIncomes, "No hay ingresos proyectados para este mes.", "text-emerald-600");
+      buildQuickList(el("quick-expense-list"), currentExpenses, "No hay egresos proyectados para este mes.", "text-red-600");
+
+      renderProjection();
+      renderHistory();
+    }
+
+    function renderProjection() {
+      const container = el("projection-list");
+      clear(container);
+      for (let index = 0; index < 6; index += 1) {
+        const month = addMonths(currentMonth(), index);
+        const income = state.incomes.filter((record) => !record.isSavings && isEffectiveInMonth(record, month)).reduce((sum, record) => sum + Number(record.amount || 0), 0);
+        const expense = state.expenses.filter((record) => isEffectiveInMonth(record, month)).reduce((sum, record) => sum + Number(record.amount || 0), 0);
+        const net = income - expense;
+
+        const row = create("div", "grid grid-cols-4 gap-2 px-5 py-3.5 text-xs hover:bg-slate-50 transition");
+        row.append(create("strong", "self-center text-slate-800 font-bold capitalize", monthName(month, false)));
+        
+        const incomeCell = create("div", "text-right self-center"); 
+        incomeCell.append(create("strong", "text-emerald-600 font-bold", money(income)));
+        
+        const expenseCell = create("div", "text-right self-center"); 
+        expenseCell.append(create("strong", "text-red-600 font-bold", money(expense)));
+        
+        const netCell = create("div", "text-right self-center"); 
+        netCell.append(create("strong", net >= 0 ? "text-emerald-600 font-black" : "text-red-600 font-black", money(net)));
+        
+        row.append(incomeCell, expenseCell, netCell);
+        container.append(row);
+      }
+    }
+
+    function renderHistory() {
+      const body = el("history-table");
+      clear(body);
+      for (let index = 0; index < 12; index += 1) {
+        const month = addMonths(currentMonth(), -index);
+        const flow = state.incomes.filter((record) => !record.isSavings && isEffectiveInMonth(record, month)).reduce((sum, record) => sum + Number(record.amount || 0), 0);
+        const savings = state.incomes.filter((record) => record.isSavings && isEffectiveInMonth(record, month)).reduce((sum, record) => sum + Number(record.amount || 0), 0);
+        const expenses = state.expenses.filter((record) => isEffectiveInMonth(record, month)).reduce((sum, record) => sum + Number(record.amount || 0), 0);
+        const net = flow - expenses;
+
+        const row = create("tr", "bg-white hover:bg-slate-50/80 transition");
+        const values = [monthName(month), money(flow), money(expenses), money(net), money(savings)];
+        
+        values.forEach((value, cellIndex) => {
+          const cell = create("td", "whitespace-nowrap px-5 py-3.5 text-xs " + (cellIndex === 0 ? "font-bold text-slate-800" : cellIndex === 1 ? "font-semibold text-emerald-600" : cellIndex === 2 ? "font-semibold text-red-600" : cellIndex === 3 ? (net >= 0 ? "font-black text-emerald-600" : "font-black text-red-600") : "font-semibold text-[var(--primary-color)]"), value);
+          row.append(cell);
+        });
+        body.append(row);
+      }
+    }
+
+    function progressText(record) {
+      const difference = monthDifference(record.startMonth, currentMonth());
+      if (difference < 0) return "Inicia " + monthName(record.startMonth);
+      if (record.durationType === "ongoing") return "Recurrente";
+      return "Cuota " + Math.min(difference + 1, Number(record.installments)) + " de " + record.installments;
+    }
+
+    function renderRegistry() {
+      const container = el("records-list");
+      clear(container);
+
+      ["active", "archived"].forEach((name) => {
+        const button = el("records-" + name + "-tab");
+        const selected = state.recordsTab === name;
+        button.classList.toggle("border-[var(--primary-color)]", selected);
+        button.classList.toggle("text-[var(--primary-color)]", selected);
+        button.classList.toggle("border-transparent", !selected);
+        button.classList.toggle("text-slate-400", !selected);
+      });
+
+      let records = allRecords().filter((record) => state.recordsTab === "archived" ? isArchived(record) : !isArchived(record) && !isPending(record));
+      
+      if (state.searchQuery) {
+        const q = state.searchQuery.toLowerCase();
+        records = records.filter(r => r.concept.toLowerCase().includes(q));
+      }
+
+      records = records.sort((a, b) => String(b.startMonth).localeCompare(String(a.startMonth)) || a.concept.localeCompare(b.concept, "es"));
+
+      if (!records.length) {
+        container.append(create("p", "px-5 py-12 text-center text-xs font-semibold text-slate-400", state.recordsTab === "active" ? "No se encontraron registros activos." : "No hay registros archivados."));
+        return;
+      }
+
+      records.forEach((record) => {
+        const item = create("article", "flex items-center justify-between gap-2 sm:gap-4 px-4 sm:px-5 py-3.5 hover:bg-slate-50/60 transition");
+        
+        const leftGroup = create("div", "flex items-center gap-3 min-w-0 flex-1");
+        const icon = create("span", "grid h-9 w-9 shrink-0 place-items-center rounded-xl text-base font-black " + (record.type === "income" ? "bg-emerald-100/70 text-emerald-700" : "bg-red-100/70 text-red-700"), record.type === "income" ? "＋" : "−");
+        
+        const content = create("div", "min-w-0 flex-1");
+        content.append(create("h3", "truncate text-xs sm:text-sm font-black text-slate-800", record.concept));
+        
+        const detail = create("div", "mt-1 flex flex-wrap items-center gap-1.5");
+        detail.append(create("span", "rounded-md px-2 py-0.5 text-[9px] font-black uppercase tracking-wider " + (record.type === "income" ? (record.isSavings ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800") : "bg-red-100 text-red-800"), record.type === "income" ? (record.isSavings ? "AHORRO" : "FLUJO") : "EGRESO"));
+        
+        if (state.recordsTab === "active") detail.append(create("span", "text-[11px] font-medium text-slate-400", progressText(record)));
+        else detail.append(create("span", "text-[11px] font-medium text-slate-400", record.archivedReason === "manual" ? "Archivado manualmente" : "Ciclo finalizado"));
+        
+        content.append(detail);
+        leftGroup.append(icon, content);
+
+        const rightGroup = create("div", "flex items-center gap-2 sm:gap-3 shrink-0");
+
+        if (state.recordsTab === "active" && record.durationType === "ongoing") {
+          const archive = create("button", "shrink-0 rounded-lg border border-slate-200 px-2 py-1 text-[11px] font-extrabold text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600", "Archivar");
+          archive.type = "button";
+          archive.addEventListener("click", () => archiveRecord(record.type, record.id));
+          rightGroup.append(archive);
+        }
+
+        const amount = create("strong", "text-right text-xs sm:text-sm font-black whitespace-nowrap min-w-[75px] sm:min-w-[95px] " + (record.type === "income" ? "text-emerald-600" : "text-red-600"), money(record.amount));
+        rightGroup.append(amount);
+
+        const actions = create("div", "flex items-center gap-1 shrink-0");
+
+        const editBtn = create("button", "p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors", "");
+        editBtn.type = "button";
+        editBtn.title = "Editar registro";
+        editBtn.innerHTML = `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>`;
+        editBtn.addEventListener("click", () => openEntry(record.type, record));
+        actions.append(editBtn);
+
+        const deleteBtn = create("button", "p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors", "");
+        deleteBtn.type = "button";
+        deleteBtn.title = "Eliminar registro";
+        deleteBtn.innerHTML = `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>`;
+        deleteBtn.addEventListener("click", () => deleteRecord(record.type, record.id, record.concept));
+        actions.append(deleteBtn);
+
+        rightGroup.append(actions);
+        item.append(leftGroup, rightGroup);
+        container.append(item);
+      });
+    }
+
+    function getMetricsWindow() {
+      const end = currentMonth();
+      if (state.metricsPeriod === "all") {
+        const allMonths = state.ads.map((item) => item.month).concat(state.clients.map((item) => item.acquisitionMonth)).filter(Boolean).sort();
+        return { start: allMonths[0] || end, end, months: Math.max(1, monthDifference(allMonths[0] || end, end) + 1), label: "Histórico" };
+      }
+      const months = Number(state.metricsPeriod) || 6;
+      return { start: addMonths(end, -(months - 1)), end, months, label: `Últimos ${months} meses` };
+    }
+
+    function isInMetricsWindow(month, window) {
+      return Boolean(month) && String(month) >= window.start && String(month) <= window.end;
+    }
+
+    function clientBaseLtv(client) {
+      const months = Number(client.effectiveMonths ?? client.contractedMonths ?? 0);
+      return Math.max(0, Number(client.monthlyFee || 0)) * Math.max(0, months);
+    }
+
+    function adjustedByIpc(value, fromMonth) {
+      const monthlyRates = new Map();
+      state.ipcs.forEach((item) => {
+        if (item.month && String(item.month) > String(fromMonth) && String(item.month) <= currentMonth()) monthlyRates.set(item.month, Number(item.rate || 0));
+      });
+      return Array.from(monthlyRates.entries()).sort(([a], [b]) => a.localeCompare(b)).reduce((total, [, rate]) => total * (1 + Math.max(0, rate) / 100), Number(value) || 0);
+    }
+
+    function calculateMetrics() {
+      const window = getMetricsWindow();
+      const ads = state.ads.filter((item) => isInMetricsWindow(item.month, window));
+      const clients = state.clients.filter((item) => isInMetricsWindow(item.acquisitionMonth, window));
+      const investment = ads.reduce((sum, item) => sum + Number(item.totalAmount ?? (Number(item.baseAmount || 0) * 1.21)), 0);
+      const adjustedInvestment = ads.reduce((sum, item) => sum + adjustedByIpc(Number(item.totalAmount ?? (Number(item.baseAmount || 0) * 1.21)), item.month), 0);
+      const clientCount = clients.length;
+      const baseLtv = clients.reduce((sum, client) => sum + clientBaseLtv(client), 0);
+      const collectedJudicial = clients.reduce((sum, client) => sum + Math.max(0, Number(client.judicialCollected || 0)), 0);
+      const expectedJudicial = clients.reduce((sum, client) => sum + Math.max(0, Number(client.judicialExpected || 0)), 0);
+      const realizedLtv = baseLtv + collectedJudicial;
+      const potentialLtv = realizedLtv + expectedJudicial;
+      const cac = clientCount ? investment / clientCount : 0;
+      const adjustedCac = clientCount ? adjustedInvestment / clientCount : 0;
+      const ltvAverage = clientCount ? realizedLtv / clientCount : 0;
+      const expectationAverage = clientCount ? expectedJudicial / clientCount : 0;
+      const ratio = cac > 0 ? ltvAverage / cac : 0;
+      const roi = investment > 0 ? ((realizedLtv - investment) / investment) * 100 : 0;
+
+      const paybackValues = clients.map((client) => {
+        const monthlyFee = Number(client.monthlyFee || 0);
+        if (!ads.length || !cac || !monthlyFee || !client.firstPaymentMonth) return null;
+        const candidates = ads.filter((ad) => !client.acquisitionMonth || String(ad.month) <= String(client.acquisitionMonth));
+        const relevantAds = candidates.length ? candidates : ads;
+        const ad = relevantAds.reduce((nearest, item) => !nearest || Math.abs(monthDifference(item.month, client.acquisitionMonth || client.firstPaymentMonth)) < Math.abs(monthDifference(nearest.month, client.acquisitionMonth || client.firstPaymentMonth)) ? item : nearest, null);
+        const calendarDelay = Math.max(0, monthDifference(ad.month, client.firstPaymentMonth));
+        const paymentsToRecover = Math.ceil(cac / monthlyFee);
+        return calendarDelay + Math.max(0, paymentsToRecover - 1);
+      }).filter((value) => value !== null);
+      const payback = paybackValues.length ? paybackValues.reduce((sum, value) => sum + value, 0) / paybackValues.length : null;
+
+      return { window, ads, clients, investment, adjustedInvestment, clientCount, baseLtv, collectedJudicial, expectedJudicial, realizedLtv, potentialLtv, cac, adjustedCac, ltvAverage, expectationAverage, ratio, roi, payback };
+    }
+
+    function getMetricsHealth(summary) {
+      if (!summary.clientCount || !summary.investment || summary.payback === null) return { key: "empty", label: "Sin datos", title: "Esperando información comercial", text: "Cargá inversión en Ads y clientes con primer cobro para obtener un diagnóstico automático.", icon: "—" };
+      if (summary.ratio >= 5 && summary.payback <= 3) return { key: "excellent", label: "Excelente", title: "Rendimiento sobresaliente", text: "Rendimiento sobresaliente. La campaña es highly rentable y recuperás la inversión en menos de 3 meses. Escenario ideal para escalar el presupuesto.", icon: "✓" };
+      if (summary.ratio >= 3 && summary.ratio < 5 && summary.payback <= 6) return { key: "good", label: "Bueno", title: "Campañas saludables", text: "Campañas saludables. La adquisición de clientes es sostenible y genera buena rentabilidad.", icon: "✓" };
+      if (summary.ratio >= 1.5 && summary.ratio < 3) return { key: "acceptable", label: "Aceptable", title: "Rendimiento moderado", text: "Rendimiento moderado. El sistema genera ganancia pero los márgenes son estrechos. Se recomienda monitorear el costo por cliente.", icon: "!" };
+      return { key: "alert", label: "Alerta", title: "Atención requerida", text: "Atención requerida. El costo de adquisición es muy alto en relación al retorno real. Revisar anuncios o tarifas.", icon: "!" };
+    }
+
+    function renderMetrics() {
+      const summary = calculateMetrics();
+      state.metricsSummary = summary;
+      el("metrics-period-label").textContent = `${summary.window.label}: ${monthName(summary.window.start)} a ${monthName(summary.window.end)}.`;
+      document.querySelectorAll("[data-metrics-period]").forEach((button) => {
+        const active = button.dataset.metricsPeriod === state.metricsPeriod;
+        button.classList.toggle("bg-[var(--primary-color)]", active);
+        button.classList.toggle("text-white", active);
+        button.classList.toggle("border-[var(--primary-color)]", active);
+        button.classList.toggle("bg-white", !active);
+        button.classList.toggle("text-slate-500", !active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+
+      el("metric-investment").textContent = money(summary.investment);
+      el("metric-potential").textContent = `Potencial: ${money(summary.potentialLtv)}`;
+      el("metric-ads-nominal").textContent = money(summary.investment);
+      el("metric-ads-adjusted").textContent = `IPC: ${money(summary.adjustedInvestment)}`;
+      el("metric-cac-nominal").textContent = money(summary.cac);
+      el("metric-cac-adjusted").textContent = `IPC: ${money(summary.adjustedCac)}`;
+      el("metric-ltv-real").textContent = money(summary.ltvAverage);
+      el("metric-ltv-expected").textContent = `Expectativa: ${money(summary.expectationAverage)}`;
+      el("metric-ratio").textContent = summary.cac ? `${summary.ratio.toFixed(2)}x` : "—";
+      el("metric-ratio-label").textContent = summary.cac ? getMetricsHealth(summary).label : "Sin datos suficientes";
+      el("metric-roi").textContent = summary.investment ? `${summary.roi.toFixed(1)}%` : "—";
+      el("metric-roi").className = `mt-2 text-lg font-black sm:text-xl ${summary.roi >= 0 ? "text-emerald-600" : "text-red-600"}`;
+      el("metric-payback").textContent = summary.payback === null ? "—" : `${summary.payback.toFixed(1)} meses`;
+      el("metric-client-pace").textContent = `${(summary.clientCount / summary.window.months).toFixed(1)} / mes`;
+      el("metric-client-count").textContent = `${summary.clientCount} cliente${summary.clientCount === 1 ? "" : "s"} en el período`;
+
+      const health = getMetricsHealth(summary);
+      const tone = {
+        empty: ["border-l-slate-300", "bg-slate-100", "text-slate-600"],
+        excellent: ["border-l-emerald-500", "bg-emerald-100", "text-emerald-700"],
+        good: ["border-l-blue-500", "bg-blue-100", "text-blue-700"],
+        acceptable: ["border-l-amber-500", "bg-amber-100", "text-amber-700"],
+        alert: ["border-l-red-500", "bg-red-100", "text-red-700"]
+      }[health.key];
+      const healthCard = el("metrics-health");
+      healthCard.className = `card relative overflow-hidden border-l-4 p-5 ${tone[0]}`;
+      el("metrics-health-icon").className = `flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg font-black ${tone[1]} ${tone[2]}`;
+      el("metrics-health-icon").textContent = health.icon;
+      el("metrics-health-badge").className = `inline-flex rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wider ${tone[1]} ${tone[2]}`;
+      el("metrics-health-badge").textContent = health.label;
+      el("metrics-health-title").textContent = health.title;
+      el("metrics-health-text").textContent = health.text;
+      renderMetricsClients(summary);
+    }
+
+    function metricClientFact(label, value) {
+      const fact = create("div", "min-w-0 rounded-xl bg-slate-50 px-3 py-2");
+      fact.append(create("p", "text-[9px] font-extrabold uppercase tracking-wider text-slate-400", label), create("p", "mt-0.5 truncate text-xs font-black text-slate-700", value));
+      return fact;
+    }
+
+    function renderMetricsClients(summary) {
+      const container = el("metrics-client-list");
+      clear(container);
+      const query = state.metricsSearch.trim().toLocaleLowerCase("es");
+      const clients = summary.clients.filter((client) => !query || String(client.name || "").toLocaleLowerCase("es").includes(query)).sort((a, b) => String(b.acquisitionMonth || "").localeCompare(String(a.acquisitionMonth || "")) || String(a.name || "").localeCompare(String(b.name || ""), "es"));
+      if (!clients.length) {
+        container.append(create("p", "px-5 py-12 text-center text-xs font-semibold text-slate-400", query ? "No se encontraron clientes con esa búsqueda en el período." : "No hay clientes cargados en este período."));
+        return;
+      }
+      clients.forEach((client) => {
+        const item = create("article", "space-y-3 px-4 py-4 sm:px-5");
+        const heading = create("div", "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between");
+        const identity = create("div", "min-w-0");
+        identity.append(create("h4", "truncate text-sm font-black text-slate-800", client.name || "Cliente sin nombre"), create("p", "mt-1 text-[11px] font-medium text-slate-400", `Alta: ${client.acquisitionMonth ? monthName(client.acquisitionMonth) : "Sin fecha"} · Primer cobro: ${client.firstPaymentMonth ? monthName(client.firstPaymentMonth) : "Sin registrar"}`));
+        const status = create("select", "rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-black uppercase tracking-wider text-slate-600");
+        [["active", "Activo"], ["finalized", "Finalizado"], ["uncollectible", "Incobrable"]].forEach(([value, label]) => {
+          const option = create("option", "", label);
+          option.value = value;
+          option.selected = (client.status || "active") === value;
+          status.append(option);
+        });
+        status.addEventListener("change", async () => {
+          try { await updateDoc(doc(state.db, COLLECTIONS.client, client.id), { status: status.value, updatedAt: new Date().toISOString() }); }
+          catch (error) { console.error(error); showToast("No se pudo actualizar el estado.", "error"); }
+        });
+        heading.append(identity, status);
+        const facts = create("div", "grid grid-cols-2 gap-2 lg:grid-cols-4");
+        facts.append(metricClientFact("Cuota / mes", money(client.monthlyFee)), metricClientFact("Meses cobrados", `${Number(client.effectiveMonths ?? client.contractedMonths ?? 0)} de ${Number(client.contractedMonths || 0)}`), metricClientFact("Reg. expectativa", money(client.judicialExpected)), metricClientFact("Reg. cobradas", money(client.judicialCollected)));
+        const actions = create("div", "flex flex-wrap gap-2");
+        const edit = create("button", "rounded-lg border border-slate-200 px-3 py-2 text-[11px] font-extrabold text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700", "Editar");
+        edit.type = "button";
+        edit.addEventListener("click", () => openMetricEntry("client", client));
+        const judicial = create("button", "rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-extrabold text-amber-800 transition hover:bg-amber-100", "Registrar cobro judicial");
+        judicial.type = "button";
+        judicial.addEventListener("click", () => openMetricEntry("judicial", client));
+        const remove = create("button", "rounded-lg px-2 py-2 text-[11px] font-extrabold text-slate-400 transition hover:bg-red-50 hover:text-red-600", "Eliminar");
+        remove.type = "button";
+        remove.addEventListener("click", () => deleteMetricClient(client));
+        actions.append(edit, judicial, remove);
+        item.append(heading, facts, actions);
+        container.append(item);
+      });
+    }
+
+    // =========================================================================
+    // LÓGICA DE CÁLCULO DE HONORARIOS (LEY 27.423 - ARTÍCULO 21)
+    // =========================================================================
+    function calcularHonorarios(montoPesos, valorUMA) {
+      const montoUMA = montoPesos / valorUMA;
+
+      const tramos = [
+        { minUMA: 0,   maxUMA: 15,       acumMaxUMA: 0,      pctMin: 0.22, pctMax: 0.33 },
+        { minUMA: 15,  maxUMA: 45,       acumMaxUMA: 4.95,   pctMin: 0.20, pctMax: 0.26 },
+        { minUMA: 45,  maxUMA: 90,       acumMaxUMA: 12.75,  pctMin: 0.18, pctMax: 0.24 },
+        { minUMA: 90,  maxUMA: 150,      acumMaxUMA: 23.55,  pctMin: 0.17, pctMax: 0.22 },
+        { minUMA: 150, maxUMA: 450,      acumMaxUMA: 36.75,  pctMin: 0.15, pctMax: 0.20 },
+        { minUMA: 450, maxUMA: 750,      acumMaxUMA: 96.75,  pctMin: 0.13, pctMax: 0.17 },
+        { minUMA: 750, maxUMA: Infinity, acumMaxUMA: 147.75, pctMin: 0.12, pctMax: 0.15 }
+      ];
+
+      const tramo = tramos.find(t => montoUMA > t.minUMA && montoUMA <= t.maxUMA) 
+                 || tramos[tramos.length - 1];
+
+      const excedenteUMA = montoUMA - tramo.minUMA;
+
+      const honorarioMinUMA = tramo.acumMaxUMA + (excedenteUMA * tramo.pctMin);
+      const honorarioMaxUMA = tramo.acumMaxUMA + (excedenteUMA * tramo.pctMax);
+
+      return {
+        minPesos: honorarioMinUMA * valorUMA,
+        maxPesos: honorarioMaxUMA * valorUMA,
+        minUMA: honorarioMinUMA,
+        maxUMA: honorarioMaxUMA
+      };
+    }
+
+    function attachCurrencyMask(inputElement) {
+      if (!inputElement) return;
+      inputElement.addEventListener("input", (e) => {
+        let raw = e.target.value.replace(/\D/g, "");
+        if (!raw) {
+          e.target.value = "";
+          return;
+        }
+        const val = parseInt(raw, 10);
+        e.target.value = "$ " + val.toLocaleString("es-AR");
+      });
+    }
+
+    function parseCurrencyInputValue(inputElement) {
+      if (!inputElement) return 0;
+      const raw = String(inputElement.value || "").replace(/\D/g, "");
+      return parseInt(raw, 10) || 0;
+    }
+
+    function renderCalculator() {
+      if (!el("calc-start-month").value) {
+        el("calc-start-month").value = currentMonth();
+      }
+    }
+
+    function handleCalculatorSubmit() {
+      const valorUMA = parseCurrencyInputValue(el("calc-uma"));
+      const montoPesos = parseCurrencyInputValue(el("calc-base"));
+
+      if (!valorUMA || valorUMA <= 0 || !montoPesos || montoPesos <= 0) {
+        showToast("Por favor, ingrese un Valor UMA y Base de cálculo válidos.", "error");
+        return;
+      }
+
+      const results = calcularHonorarios(montoPesos, valorUMA);
+      state.calculator.valorUMA = valorUMA;
+      state.calculator.montoPesos = montoPesos;
+      state.calculator.results = results;
+
+      // Limpia los campos de entrada de datos (vuelven a quedar en cero / vacíos)
+      el("calc-uma").value = "";
+      el("calc-base").value = "";
+
+      // Mostrar contenedor de resultados y previsualización
+      el("calc-results-container").classList.remove("hidden");
+
+      // Actualizar valores en UI
+      el("calc-res-min-pesos").textContent = money(results.minPesos);
+      el("calc-res-min-uma").textContent = results.minUMA.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " UMA";
+      el("calc-res-max-pesos").textContent = money(results.maxPesos);
+      el("calc-res-max-uma").textContent = results.maxUMA.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " UMA";
+
+      el("calc-opt-min-val").textContent = money(results.minPesos);
+      el("calc-opt-max-val").textContent = money(results.maxPesos);
+
+      renderCalculatorTable();
+      showToast("Honorarios calculados correctamente.", "success");
+    }
+
+    function getMontoToFinanciar() {
+      const results = state.calculator.results;
+      if (!results) return 0;
+      const selectedOpt = document.querySelector("input[name='calc-monto-opt']:checked")?.value || "min";
+      if (selectedOpt === "min") return results.minPesos;
+      if (selectedOpt === "max") return results.maxPesos;
+      if (selectedOpt === "custom") return parseCurrencyInputValue(el("calc-custom-monto"));
+      return results.minPesos;
+    }
+
+    function renderCalculatorTable() {
+      const container = el("calc-table-body");
+      clear(container);
+
+      if (!state.calculator.results) return;
+
+      const montoFinanciar = getMontoToFinanciar();
+      const cuotas = Math.max(1, parseInt(el("calc-cuotas").value, 10) || 1);
+      const modalidadUMA = el("calc-modalidad-uma").value;
+      const startMonth = el("calc-start-month").value || currentMonth();
+      const rangoDias = el("calc-rango-dias").value;
+      const valorUMA = state.calculator.valorUMA;
+
+      const montoCuotaPesos = montoFinanciar / cuotas;
+      const montoCuotaUMA = montoCuotaPesos / valorUMA;
+
+      for (let i = 1; i <= cuotas; i++) {
+        const targetMonth = addMonths(startMonth, i - 1);
+        const fechaTexto = `${rangoDias} de ${monthName(targetMonth)}`;
+        
+        const row = create("tr", "hover:bg-slate-50 transition");
+        row.append(
+          create("td", "px-4 py-3 font-extrabold text-slate-800", `Cuota ${i} / ${cuotas}`),
+          create("td", "px-4 py-3 font-semibold text-slate-600", fechaTexto),
+          create("td", "px-4 py-3 text-right font-bold text-slate-700", `${montoCuotaUMA.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} UMA`),
+          create("td", "px-4 py-3 text-right font-black text-[var(--primary-color)]", `${money(montoCuotaPesos)}${modalidadUMA === "indexada" ? " (*)" : ""}`)
+        );
+        container.append(row);
+      }
+    }
+
+    function exportCalculatorPdf() {
+      if (!window.jspdf?.jsPDF) { showToast("La herramienta de PDF todavía no está disponible.", "error"); return; }
+      const calcState = state.calculator;
+      if (!calcState.results) { showToast("Primero realice un cálculo de honorarios.", "error"); return; }
+      
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ unit: "mm", format: "a4" });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      let y = 18;
+
+      const checkPageBreak = (neededHeight = 10) => {
+        if (y + neededHeight > pageHeight - 15) {
+          pdf.addPage();
+          y = 18;
+        }
+      };
+
+      // Header principal
+      pdf.setFillColor(30, 58, 138); // var(--primary-color)
+      pdf.rect(0, 0, pageWidth, 35, "F");
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(16);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Estudio Jurídico Cárdenas y Asociados", 15, 14);
+      pdf.setFontSize(10);
+      pdf.setFont("helvetica", "normal");
+      pdf.text("Plan de Pago Propuesto - Honorarios Profesionales (Ley 27.423)", 15, 22);
+      pdf.setFontSize(8);
+      pdf.text(`Fecha: ${new Date().toLocaleDateString("es-AR")} | UMA de Referencia: ${money(calcState.valorUMA)}`, 15, 28);
+
+      y = 45;
+
+      // Resumen del cálculo
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(11);
+      pdf.setTextColor(30, 58, 138);
+      pdf.text("RESUMEN DE LIQUIDACIÓN DE HONORARIOS", 15, y);
+      y += 6;
+
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(9);
+      pdf.setTextColor(71, 85, 105);
+
+      const montoFinanciar = getMontoToFinanciar();
+      const cuotas = Math.max(1, parseInt(el("calc-cuotas").value, 10) || 1);
+      const modalidadUMA = el("calc-modalidad-uma").value;
+      const startMonth = el("calc-start-month").value || currentMonth();
+      const rangoDias = el("calc-rango-dias").value;
+      const valorUMA = calcState.valorUMA;
+
+      pdf.text(`Base de Cálculo: ${money(calcState.montoPesos)}`, 15, y); y += 5;
+      pdf.text(`Honorario Mínimo Legal: ${money(calcState.results.minPesos)} (${calcState.results.minUMA.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} UMAs)`, 15, y); y += 5;
+      pdf.text(`Honorario Máximo Legal: ${money(calcState.results.maxPesos)} (${calcState.results.maxUMA.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} UMAs)`, 15, y); y += 5;
+      pdf.text(`Monto Acordado a Financiar: ${money(montoFinanciar)} (${(montoFinanciar / valorUMA).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} UMAs)`, 15, y); y += 8;
+
+      // Encabezado de tabla formato ticket
+      checkPageBreak(25);
+      pdf.setFillColor(241, 245, 249);
+      pdf.rect(15, y, pageWidth - 30, 8, "F");
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(8.5);
+      pdf.setTextColor(30, 58, 138);
+      pdf.text("N° Cuota", 18, y + 5.5);
+      pdf.text("Fecha de pago", 50, y + 5.5);
+      pdf.text("Monto en UMAs", 125, y + 5.5, { align: "right" });
+      pdf.text("Monto en Pesos", 185, y + 5.5, { align: "right" });
+      y += 8;
+
+      // Filas de cuotas
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(8);
+      pdf.setTextColor(51, 65, 85);
+
+      const montoCuotaPesos = montoFinanciar / cuotas;
+      const montoCuotaUMA = montoCuotaPesos / valorUMA;
+
+      for (let i = 1; i <= cuotas; i++) {
+        checkPageBreak(7);
+        const targetMonth = addMonths(startMonth, i - 1);
+        const fechaTexto = `${rangoDias} de ${monthName(targetMonth)}`;
+        const textUMA = `${montoCuotaUMA.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} UMAs`;
+        const textPesos = `${money(montoCuotaPesos)}${modalidadUMA === "indexada" ? " (*)" : ""}`;
+
+        pdf.text(`Cuota ${i} / ${cuotas}`, 18, y + 4.5);
+        pdf.text(fechaTexto, 50, y + 4.5);
+        pdf.text(textUMA, 125, y + 4.5, { align: "right" });
+        pdf.text(textPesos, 185, y + 4.5, { align: "right" });
+
+        pdf.setDrawColor(226, 232, 240);
+        pdf.line(15, y + 6, pageWidth - 15, y + 6);
+        y += 6.5;
+      }
+
+      y += 15;
+
+      // CONDICIONES Y LEYENDAS LEGALES (AL PIE DEL DOCUMENTO)
+      checkPageBreak(65);
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(9);
+      pdf.setTextColor(30, 58, 138);
+      pdf.text("CONDICIONES Y CLAUSULADO LEGAL", 15, y);
+      y += 10;
+
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(7.5);
+      pdf.setTextColor(71, 85, 105);
+
+      const addLegalParagraph = (title, text) => {
+        pdf.setFont("helvetica", "bold");
+        pdf.text(title, 15, y);
+        y += 4;
+        pdf.setFont("helvetica", "normal");
+        const lines = pdf.splitTextToSize(text, pageWidth - 30);
+        checkPageBreak(lines.length * 3.5 + 4);
+        pdf.text(lines, 15, y);
+        y += lines.length * 3.5 + 3;
+      };
+
+      const condUmaText = modalidadUMA === "congelada"
+        ? `La presente propuesta se establece bajo la modalidad de UMA CONGELADA al valor de $ ${valorUMA.toLocaleString("es-AR")} por UMA. Se puede consultar el valor de la UMA en la página del Colegio Público de la Abogacía de la Capital Federal.`
+        : `La presente propuesta se establece bajo la modalidad de UMA INDEXADA al valor de la UMA al momento de efectivizarse el pago de cada cuota. Se puede consultar el valor actualizado de la UMA en la página del Colegio Público de la Abogacía de la Capital Federal.`;
+
+      addLegalParagraph("1. CONDICIÓN DE UMA Y CONSULTA:", condUmaText);
+      addLegalParagraph("2. MORA AUTOMÁTICA:", "La mora en el pago de cualquiera de las cuotas se producirá de pleno derecho por el solo vencimiento de los plazos pactados, sin necesidad de interpelación judicial o extrajudicial previa.");
+      addLegalParagraph("3. CADUCIDAD DE PLAZOS Y PÉRDIDA DE BENEFICIO:", "La mora en el pago de una sola cuota generará el vencimiento anticipado de la totalidad de las cuotas restantes y la pérdida del beneficio de congelamiento de la UMA. El acreedor quedará plenamente facultado para exigir el saldo adeudado íntegramente actualizado al valor de la UMA vigente al momento de su efectiva cancelación.");
+      addLegalParagraph("4. VIGENCIA DE LA PROPUESTA:", "La presente propuesta tiene un plazo de vigencia de 5 días corridos.");
+      addLegalParagraph("5. VALIDEZ LEGAL Y FORMALIZACIÓN:", "La presente propuesta no es vinculante, no representa una oferta asumida, otorgamiento unilateral, ni una disposición contractual. De ser aceptada la misma por el deudor se formaliza en un acuerdo a firmar mediante la plataforma de firma electrónica Adobe Sign.");
+
+      pdf.setFontSize(7);
+      pdf.setTextColor(148, 163, 184);
+      pdf.text("Document genereted by Gestor Cárdenas & Asociados", 15, pageHeight - 8);
+
+      pdf.save(`PLAN DE PAGOS PROPUESTO - HONORARIOS CyA - ${currentMonth()}.pdf`);
+      showToast("Propuesta formal en PDF generada con éxito.", "success");
+    }
+
+    function renderAll() {
+      renderDashboard();
+      if (state.view === "register") renderRegistry();
+      if (state.view === "metrics") renderMetrics();
+      if (state.view === "calculator") renderCalculator();
+    }
+
+    function updateDurationVisibility() {
+      const fixed = el("entry-duration").value === "fixed";
+      el("installments-wrap").classList.toggle("hidden", !fixed);
+      el("entry-installments").required = fixed;
+    }
+
+    function openEntry(type, recordToEdit = null) {
+      state.entryType = type;
+      state.editingRecordId = recordToEdit ? recordToEdit.id : null;
+      el("entry-form").reset();
+      
+      if (recordToEdit) {
+        el("entry-concept").value = recordToEdit.concept || "";
+        el("entry-amount").value = recordToEdit.amount || "";
+        el("entry-duration").value = recordToEdit.durationType || "ongoing";
+        el("entry-installments").value = recordToEdit.installments || "";
+        el("entry-start-month").value = recordToEdit.startMonth || currentMonth();
+        if (type === "income") {
+          el("entry-savings").checked = Boolean(recordToEdit.isSavings);
+        }
+      } else {
+        el("entry-duration").value = "ongoing";
+        el("entry-start-month").value = currentMonth();
+      }
+      updateDurationVisibility();
+      
+      const isIncome = type === "income";
+      const isEditing = Boolean(recordToEdit);
+      
+      el("entry-eyebrow").textContent = isEditing ? (isIncome ? "Editar ingreso" : "Editar egreso") : (isIncome ? "Nuevo ingreso" : "Nuevo egreso");
+      el("entry-title").textContent = isEditing ? "Modificar registro" : (isIncome ? "Agregar ingreso" : "Agregar egreso");
+      el("concept-label").textContent = isIncome ? "Concepto / Cliente" : "Concepto";
+      el("amount-label").textContent = isIncome ? "Monto mensual por cuota" : "Monto mensual";
+      el("entry-submit").textContent = isEditing ? "Guardar cambios" : (isIncome ? "Guardar ingreso" : "Guardar egreso");
+      el("savings-wrap").classList.toggle("hidden", !isIncome);
+      
+      el("entry-panel").classList.add("active");
+      el("entry-panel").setAttribute("aria-hidden", "false");
+      state.entryOpen = true;
+      history.pushState({ cashEntry: type }, "", window.location.href);
+      state.historyEntryAdded = true;
+      window.setTimeout(() => el("entry-concept").focus(), 100);
+    }
+
+    function closeEntry(useBrowserHistory = true) {
+      if (!state.entryOpen) return;
+      state.entryOpen = false;
+      state.editingRecordId = null;
+      el("entry-panel").classList.remove("active");
+      el("entry-panel").setAttribute("aria-hidden", "true");
+      if (useBrowserHistory && state.historyEntryAdded) {
+        state.historyEntryAdded = false;
+        history.back();
+      } else {
+        state.historyEntryAdded = false;
+      }
+    }
+
+    async function saveEntry(event) {
+      event.preventDefault();
+      if (!state.authReady || !state.db) { showToast("Estableciendo conexión con la base de datos...", "error"); return; }
+      
+      const concept = el("entry-concept").value.trim();
+      const amount = Number(el("entry-amount").value);
+      const startMonth = el("entry-start-month").value;
+      const durationType = el("entry-duration").value;
+      const installments = durationType === "fixed" ? Number(el("entry-installments").value) : null;
+      
+      if (!concept || !amount || amount <= 0 || !startMonth || (durationType === "fixed" && (!installments || installments < 1))) { 
+        showToast("Por favor complete todos los datos correctamente.", "error"); 
+        return; 
+      }
+      
+      const alreadyCompleted = durationType === "fixed" && monthDifference(startMonth, currentMonth()) >= installments;
+      const data = { 
+        schemaVersion: CASH_FLOW_SCHEMA_VERSION, 
+        concept, 
+        amount, 
+        startMonth, 
+        durationType, 
+        installments, 
+        status: alreadyCompleted ? "archived" : "active"
+      };
+      
+      if (alreadyCompleted) { 
+        data.archivedFromMonth = addMonths(startMonth, installments); 
+        data.archivedAt = new Date().toISOString(); 
+        data.archivedReason = "completed"; 
+      }
+      
+      if (state.entryType === "income") data.isSavings = el("entry-savings").checked;
+
+      try {
+        el("entry-submit").disabled = true;
+        el("entry-submit").textContent = "Guardando...";
+        
+        if (state.editingRecordId) {
+          await updateDoc(doc(state.db, COLLECTIONS[state.entryType], state.editingRecordId), data);
+          showToast("Registro actualizado correctamente.", "success");
+        } else {
+          data.createdAt = new Date().toISOString();
+          await addDoc(collection(state.db, COLLECTIONS[state.entryType]), data);
+          showToast(state.entryType === "income" ? "Ingreso registrado correctamente." : "Egreso registrado correctamente.", "success");
+        }
+        closeEntry();
+      } catch (error) {
+        console.error(error);
+        showToast("Error al guardar el registro.", "error");
+      } finally {
+        el("entry-submit").disabled = false;
+        el("entry-submit").textContent = state.editingRecordId ? "Guardar cambios" : (state.entryType === "income" ? "Guardar ingreso" : "Guardar egreso");
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]);
+    }
+
+    function openMetricsModal({ eyebrow, title, content, submitText, onSave }) {
+      const modal = create("section", "fixed inset-0 z-[250] flex items-end bg-slate-900/50 p-0 backdrop-blur-sm sm:items-center sm:justify-center sm:p-4");
+      const drawer = create("div", "panel-drawer flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl sm:rounded-3xl");
+      const header = create("header", "flex items-start justify-between border-b border-slate-200 bg-slate-50/80 px-6 py-4");
+      const heading = create("div");
+      heading.append(create("p", "text-xs font-black uppercase tracking-widest text-[var(--secondary-color)]", eyebrow), create("h2", "mt-1 text-xl font-black text-[var(--primary-color)]", title));
+      const close = create("button", "flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200/70 text-lg font-bold text-slate-600 hover:bg-slate-300", "×");
+      close.type = "button";
+      close.setAttribute("aria-label", "Cerrar");
+      close.addEventListener("click", () => modal.remove());
+      header.append(heading, close);
+      const form = create("form", "space-y-4 overflow-y-auto p-6");
+      form.innerHTML = `${content}<button type="submit" class="mt-2 w-full rounded-xl bg-[var(--primary-color)] py-4 text-sm font-black text-white shadow-lg shadow-blue-950/20 transition active:scale-[.99]">${submitText}</button>`;
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const submit = form.querySelector("button[type='submit']");
+        try {
+          submit.disabled = true;
+          submit.textContent = "Guardando...";
+          const complete = await onSave(form);
+          if (complete !== false) modal.remove();
+        } catch (error) {
+          console.error(error);
+          showToast("No se pudieron guardar los datos.", "error");
+        } finally {
+          submit.disabled = false;
+          submit.textContent = submitText;
+        }
+      });
+      drawer.append(header, form);
+      modal.append(drawer);
+      modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+      document.body.append(modal);
+      window.setTimeout(() => form.querySelector("input, select")?.focus(), 80);
+    }
+
+    function openMetricsDataMenu() {
+      const modal = create("section", "fixed inset-0 z-[250] flex items-end bg-slate-900/50 p-0 backdrop-blur-sm sm:items-center sm:justify-center sm:p-4");
+      const drawer = create("div", "panel-drawer w-full max-w-lg overflow-hidden rounded-t-3xl bg-white shadow-2xl sm:rounded-3xl");
+      const header = create("header", "flex items-center justify-between border-b border-slate-200 bg-slate-50/80 px-6 py-4");
+      const heading = create("div");
+      heading.append(create("p", "text-xs font-black uppercase tracking-widest text-[var(--secondary-color)]", "Métricas"), create("h2", "mt-1 text-xl font-black text-[var(--primary-color)]", "¿Qué querés cargar?"));
+      const close = create("button", "flex h-9 w-9 items-center justify-center rounded-full bg-slate-200/70 text-lg font-bold text-slate-600 hover:bg-slate-300", "×");
+      close.type = "button";
+      close.addEventListener("click", () => modal.remove());
+      header.append(heading, close);
+      const menu = create("div", "grid gap-3 p-5 sm:grid-cols-2");
+      [
+        ["ads", "Gasto Ads", "Monto sin IVA; se suma 21% automáticamente.", "＋"],
+        ["ipc", "Carga de IPC", "Índice mensual para expresar valores constantes.", "%"],
+        ["client", "Nuevo cliente", "Cuota, LTV base y primer cobro efectivo.", "♙"],
+        ["judicial", "Cobro judicial", "Convierte expectativa pendiente en LTV realizado.", "✓"]
+      ].forEach(([type, label, desc, icon]) => {
+        const button = create("button", "flex min-h-[108px] items-start gap-3 rounded-2xl border border-slate-200 p-4 text-left transition hover:border-amber-300 hover:bg-amber-50/40 active:scale-[.99]");
+        button.type = "button";
+        const symbol = create("span", "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--primary-color)] text-sm font-black text-white", icon);
+        const copy = create("span", "min-w-0");
+        copy.append(create("span", "block text-sm font-black text-[var(--primary-color)]", label), create("span", "mt-1 block text-[11px] font-medium leading-snug text-slate-500", desc));
+        button.append(symbol, copy);
+        button.addEventListener("click", () => { modal.remove(); openMetricEntry(type); });
+        menu.append(button);
+      });
+      drawer.append(header, menu);
+      modal.append(drawer);
+      modal.addEventListener("click", (event) => { if (event.target === modal) modal.remove(); });
+      document.body.append(modal);
+    }
+
+    function ipcHistoryMarkup() {
+      const history = state.ipcs.slice().sort((a, b) => String(b.month || "").localeCompare(String(a.month || ""))).slice(0, 12);
+      const rows = history.length ? history.map((item) => `<div class="flex items-center justify-between border-b border-slate-100 py-2 last:border-0"><span class="font-bold text-slate-600">${escapeHtml(monthName(item.month))}</span><strong class="text-[var(--primary-color)]">${Number(item.rate || 0).toLocaleString("es-AR", { maximumFractionDigits: 2 })}%</strong></div>`).join("") : '<p class="py-2 text-center text-xs font-medium text-slate-400">Todavía no hay IPC cargado.</p>';
+      return `<details class="rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3"><summary class="cursor-pointer text-xs font-black text-[var(--primary-color)]">Historial de IPC · últimos 12 meses</summary><div class="mt-3 text-xs">${rows}</div></details>`;
+    }
+
+    function openMetricEntry(type, clientToEdit = null) {
+      if (type === "ads") {
+        openMetricsModal({
+          eyebrow: "Inversión publicitaria", title: "Cargar gasto Ads", submitText: "Guardar gasto",
+          content: `<div><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Mes y año</label><input name="month" required type="month" value="${currentMonth()}" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3 text-sm font-semibold text-slate-800"></div><div><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Google Ads sin IVA</label><div class="relative"><span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 font-black text-slate-400">$</span><input name="amount" required min="0.01" step="0.01" inputmode="decimal" type="number" placeholder="0" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 pl-9 text-base font-black text-slate-800"></div><p class="mt-1 text-[11px] font-medium text-slate-400">Se registrará automáticamente el 21% de IVA.</p></div>`,
+          onSave: async (form) => {
+            const month = form.elements.month.value;
+            const baseAmount = Number(form.elements.amount.value);
+            if (!month || !baseAmount || baseAmount <= 0) { showToast("Ingresá un mes y un monto válido.", "error"); return false; }
+            await addDoc(collection(state.db, COLLECTIONS.ads), { schemaVersion: METRICS_SCHEMA_VERSION, month, baseAmount, totalAmount: baseAmount * 1.21, createdAt: new Date().toISOString() });
+            showToast(`Gasto guardado con IVA: ${money(baseAmount * 1.21)}.`, "success");
+          }
+        });
+        return;
+      }
+      if (type === "ipc") {
+        openMetricsModal({
+          eyebrow: "Índices de inflación", title: "Cargar IPC", submitText: "Guardar IPC",
+          content: `<div><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Mes y año del índice</label><input name="month" required type="month" value="${currentMonth()}" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3 text-sm font-semibold text-slate-800"><p class="mt-1 text-[11px] font-medium text-slate-400">Podés cargar el índice del mes anterior cuando INDEC lo publique.</p></div><div><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Inflación IPC mensual</label><div class="relative"><input name="rate" required min="0" step="0.01" inputmode="decimal" type="number" placeholder="0,00" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 pr-9 text-base font-black text-slate-800"><span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 font-black text-slate-400">%</span></div></div>${ipcHistoryMarkup()}`,
+          onSave: async (form) => {
+            const month = form.elements.month.value;
+            const rate = Number(form.elements.rate.value);
+            if (!month || !Number.isFinite(rate) || rate < 0) { showToast("Ingresá un índice válido.", "error"); return false; }
+            await addDoc(collection(state.db, COLLECTIONS.ipc), { schemaVersion: METRICS_SCHEMA_VERSION, month, rate, createdAt: new Date().toISOString() });
+            showToast("Índice IPC guardado.", "success");
+          }
+        });
+        return;
+      }
+      if (type === "judicial") {
+        if (!state.clients.length) { showToast("Primero cargá un cliente.", "error"); return; }
+        const selectedId = clientToEdit?.id || "";
+        const options = state.clients.slice().sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "es")).map((client) => `<option value="${escapeHtml(client.id)}" ${client.id === selectedId ? "selected" : ""}>${escapeHtml(client.name || "Cliente sin nombre")}</option>`).join("");
+        openMetricsModal({
+          eyebrow: "Regulaciones judiciales", title: "Actualizar cobro judicial", submitText: "Registrar cobro",
+          content: `<div><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Cliente</label><select name="clientId" required class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3 text-sm font-semibold text-slate-800">${options}</select></div><div><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Monto efectivamente cobrado</label><div class="relative"><span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 font-black text-slate-400">$</span><input name="amount" required min="0.01" step="0.01" inputmode="decimal" type="number" placeholder="0" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 pl-9 text-base font-black text-slate-800"></div><p class="mt-1 text-[11px] font-medium text-slate-400">El importe se mueve de Expectativa a LTV realizado.</p></div>`,
+          onSave: async (form) => {
+            const client = state.clients.find((item) => item.id === form.elements.clientId.value);
+            const amount = Number(form.elements.amount.value);
+            if (!client || !amount || amount <= 0) { showToast("Elegí un cliente e ingresá un monto válido.", "error"); return false; }
+            const pending = Math.max(0, Number(client.judicialExpected || 0) - amount);
+            await updateDoc(doc(state.db, COLLECTIONS.client, client.id), { judicialExpected: pending, judicialCollected: Number(client.judicialCollected || 0) + amount, judicialCollectedMonth: currentMonth(), updatedAt: new Date().toISOString() });
+            showToast("Cobro judicial registrado como LTV realizado.", "success");
+          }
+        });
+        return;
+      }
+
+      const isEditing = Boolean(clientToEdit);
+      const client = clientToEdit || {};
+      openMetricsModal({
+        eyebrow: isEditing ? "Editar cliente" : "Alta comercial", title: isEditing ? "Modificar cliente" : "Nuevo cliente", submitText: isEditing ? "Guardar cambios" : "Guardar cliente",
+        content: `<div><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Nombre / carátula</label><input name="name" required maxlength="120" value="${escapeHtml(client.name)}" autocomplete="off" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3 text-sm font-semibold text-slate-800" placeholder="Ej.: Pérez c/ Compañía"></div><div class="grid grid-cols-2 gap-3"><div><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Cuota mensual</label><div class="relative"><span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 font-black text-slate-400">$</span><input name="monthlyFee" required min="0.01" step="0.01" inputmode="decimal" type="number" value="${Number(client.monthlyFee || "")}" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3 pl-7 text-sm font-black text-slate-800"></div></div><div><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Meses contratados</label><input name="contractedMonths" required min="1" step="1" inputmode="numeric" type="number" value="${Number(client.contractedMonths || "")}" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3 text-sm font-black text-slate-800"></div></div></div><div class="rounded-2xl border border-amber-200/80 bg-amber-50/40 p-4"><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-amber-800">Meses efectivamente cobrados</label><input name="effectiveMonths" required min="0" step="1" inputmode="numeric" type="number" value="${Number(client.effectiveMonths ?? client.contractedMonths ?? "")}" class="w-full rounded-xl border border-amber-200 bg-white p-3 text-sm font-black text-slate-800"><p class="mt-1 text-[11px] font-medium text-amber-800/70">Editalo ante una baja anticipada para recalcular el LTV real.</p></div><div class="grid grid-cols-2 gap-3"><div><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Mes / año de alta</label><input name="acquisitionMonth" required type="month" value="${escapeHtml(client.acquisitionMonth || currentMonth())}" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3 text-sm font-semibold text-slate-800"></div><div><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Primer cobro efectivo</label><input name="firstPaymentMonth" required type="month" value="${escapeHtml(client.firstPaymentMonth || currentMonth())}" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3 text-sm font-semibold text-slate-800"></div></div><div><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Honorarios en expectativa</label><div class="relative"><span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 font-black text-slate-400">$</span><input name="judicialExpected" min="0" step="0.01" inputmode="decimal" type="number" value="${Number(client.judicialExpected || "")}" placeholder="Opcional" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 pl-9 text-base font-black text-slate-800"></div></div><div><label class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">Estado</label><select name="status" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3 text-sm font-semibold text-slate-800"><option value="active" ${(client.status || "active") === "active" ? "selected" : ""}>Activo</option><option value="finalized" ${client.status === "finalized" ? "selected" : ""}>Finalizado</option><option value="uncollectible" ${client.status === "uncollectible" ? "selected" : ""}>Incobrable</option></select></div>`,
+        onSave: async (form) => {
+          const name = form.elements.name.value.trim();
+          const monthlyFee = Number(form.elements.monthlyFee.value);
+          const contractedMonths = Number(form.elements.contractedMonths.value);
+          const effectiveMonths = Number(form.elements.effectiveMonths.value);
+          const acquisitionMonth = form.elements.acquisitionMonth.value;
+          const firstPaymentMonth = form.elements.firstPaymentMonth.value;
+          const judicialExpected = Number(form.elements.judicialExpected.value || 0);
+          if (!name || !monthlyFee || monthlyFee <= 0 || !contractedMonths || contractedMonths < 1 || effectiveMonths < 0 || !acquisitionMonth || !firstPaymentMonth || judicialExpected < 0) { showToast("Completá los datos del cliente correctamente.", "error"); return false; }
+          const data = { schemaVersion: METRICS_SCHEMA_VERSION, name, monthlyFee, contractedMonths, effectiveMonths, acquisitionMonth, firstPaymentMonth, judicialExpected, status: form.elements.status.value, updatedAt: new Date().toISOString() };
+          if (isEditing) {
+            await updateDoc(doc(state.db, COLLECTIONS.client, client.id), data);
+            showToast("Cliente actualizado correctamente.", "success");
+          } else {
+            await addDoc(collection(state.db, COLLECTIONS.client), { ...data, judicialCollected: 0, createdAt: new Date().toISOString() });
+            showToast("Cliente registrado correctamente.", "success");
+          }
+        }
+      });
+    }
+
+    function deleteMetricClient(client) {
+      showConfirmModal(`¿Eliminar a "${client.name || "este cliente"}"? Sus métricas se recalcularán automáticamente.`, async () => {
+        try {
+          await deleteDoc(doc(state.db, COLLECTIONS.client, client.id));
+          showToast("Cliente eliminado y métricas actualizadas.", "success");
+        } catch (error) {
+          console.error(error);
+          showToast("No se pudo eliminar el cliente.", "error");
+        }
+      });
+    }
+
+    function exportMetricsPdf() {
+      if (!window.jspdf?.jsPDF) { showToast("La herramienta de PDF todavía no está disponible.", "error"); return; }
+      const summary = calculateMetrics();
+      const health = getMetricsHealth(summary);
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ unit: "mm", format: "a4" });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      let y = 20;
+      const nextPage = (space = 8) => {
+        if (y + space > pageHeight - 16) { pdf.addPage(); y = 18; }
+      };
+      const text = (value, size = 10, color = [71, 85, 105], gap = 5) => {
+        pdf.setFontSize(size);
+        pdf.setTextColor(...color);
+        const lines = pdf.splitTextToSize(String(value), pageWidth - 30);
+        nextPage(lines.length * (size * 0.48) + gap);
+        pdf.text(lines, 15, y);
+        y += lines.length * (size * 0.48) + gap;
+      };
+      pdf.setFillColor(30, 58, 138);
+      pdf.rect(0, 0, pageWidth, 36, "F");
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(20);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Gestor CyA · Métricas", 15, 17);
+      pdf.setFontSize(9);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(`${summary.window.label} · ${monthName(summary.window.start)} a ${monthName(summary.window.end)}`, 15, 25);
+      y = 48;
+      pdf.setFont("helvetica", "bold");
+      text(`Diagnóstico: ${health.label}`, 13, [30, 58, 138], 4);
+      pdf.setFont("helvetica", "normal");
+      text(health.text, 9, [71, 85, 105], 8);
+      pdf.setDrawColor(226, 232, 240);
+      pdf.line(15, y, pageWidth - 15, y);
+      y += 8;
+      pdf.setFont("helvetica", "bold");
+      text("Resumen de métricas", 13, [30, 58, 138], 5);
+      pdf.setFont("helvetica", "normal");
+      [
+        ["Inversión Ads (IVA incluido)", money(summary.investment)],
+        ["Inversión Ads ajustada por IPC", money(summary.adjustedInvestment)],
+        ["Ganancia potencial total", money(summary.potentialLtv)],
+        ["CAC nominal", money(summary.cac)],
+        ["LTV promedio real", money(summary.ltvAverage)],
+        ["LTV promedio en expectativa", money(summary.expectationAverage)],
+        ["Ratio LTV / CAC", summary.cac ? `${summary.ratio.toFixed(2)}x` : "Sin datos"],
+        ["ROI", summary.investment ? `${summary.roi.toFixed(1)}%` : "Sin datos"],
+        ["Payback promedio", summary.payback === null ? "Sin datos" : `${summary.payback.toFixed(1)} meses`],
+        ["Ritmo de clientes", `${(summary.clientCount / summary.window.months).toFixed(1)} por mes`]
+      ].forEach(([label, value]) => text(`${label}: ${value}`, 9, [71, 85, 105], 3.8));
+      y += 3;
+      pdf.setFont("helvetica", "bold");
+      text("Clientes activos en la ventana", 13, [30, 58, 138], 5);
+      pdf.setFont("helvetica", "normal");
+      const activeClients = summary.clients.filter((client) => (client.status || "active") === "active");
+      if (!activeClients.length) text("No hay clientes activos para este período.", 9, [100, 116, 139], 4);
+      activeClients.forEach((client) => {
+        text(`${client.name || "Cliente sin nombre"} · Cuota: ${money(client.monthlyFee)} · Meses: ${Number(client.effectiveMonths ?? client.contractedMonths ?? 0)} · Expectativa: ${money(client.judicialExpected)} · Cobradas: ${money(client.judicialCollected)}`, 8.5, [71, 85, 105], 4);
+      });
+      pdf.setFontSize(7);
+      pdf.setTextColor(148, 163, 184);
+      pdf.text(`Generado el ${new Date().toLocaleDateString("es-AR")}`, 15, pageHeight - 10);
+      pdf.save(`metricas-cya-${currentMonth()}.pdf`);
+      showToast("Informe PDF generado.", "success");
+    }
+
+    function showApp() {
+      el("login-screen").classList.add("hidden-force");
+      el("app-container").classList.remove("hidden");
+      setView("home");
+      renderAll();
+    }
+
+    function logout() {
+      sessionStorage.removeItem("cya_auth");
+      sessionStorage.removeItem("cya_user");
+      closeEntry(false);
+      el("app-container").classList.add("hidden");
+      el("login-screen").classList.remove("hidden-force");
+      el("login-screen").style.display = "flex";
+      el("login-form").reset();
+      el("login-error").classList.add("hidden");
+    }
+
+    async function setupFirebase() {
+      try {
+        const app = initializeApp(firebaseConfig);
+        state.db = getFirestore(app);
+        const auth = getAuth(app);
+        setLogLevel("error");
+        await signInAnonymously(auth);
+
+        onAuthStateChanged(auth, (user) => {
+          state.authReady = Boolean(user);
+          if (!user) { showToast("Error de autenticación.", "error"); return; }
+          
+          onSnapshot(collection(state.db, COLLECTIONS.income), (snapshot) => {
+            state.incomes = snapshot.docs.map((snapshotDoc) => Object.assign({ id: snapshotDoc.id }, snapshotDoc.data())).filter((record) => record.schemaVersion === CASH_FLOW_SCHEMA_VERSION);
+            synchronizeAutomaticArchives(state.incomes.map((record) => Object.assign({ type: "income" }, record)));
+            renderAll();
+          }, () => showToast("Error al sincronizar ingresos.", "error"));
+
+          onSnapshot(collection(state.db, COLLECTIONS.expense), (snapshot) => {
+            state.expenses = snapshot.docs.map((snapshotDoc) => Object.assign({ id: snapshotDoc.id }, snapshotDoc.data())).filter((record) => record.schemaVersion === CASH_FLOW_SCHEMA_VERSION);
+            synchronizeAutomaticArchives(state.expenses.map((record) => Object.assign({ type: "expense" }, record)));
+            renderAll();
+          }, () => showToast("Error al sincronizar egresos.", "error"));
+
+          onSnapshot(collection(state.db, COLLECTIONS.ads), (snapshot) => {
+            state.ads = snapshot.docs.map((snapshotDoc) => Object.assign({ id: snapshotDoc.id }, snapshotDoc.data())).filter((record) => record.schemaVersion === METRICS_SCHEMA_VERSION);
+            renderAll();
+          }, () => showToast("Error al sincronizar inversión publicitaria.", "error"));
+
+          onSnapshot(collection(state.db, COLLECTIONS.ipc), (snapshot) => {
+            state.ipcs = snapshot.docs.map((snapshotDoc) => Object.assign({ id: snapshotDoc.id }, snapshotDoc.data())).filter((record) => record.schemaVersion === METRICS_SCHEMA_VERSION);
+            renderAll();
+          }, () => showToast("Error al sincronizar índices IPC.", "error"));
+
+          onSnapshot(collection(state.db, COLLECTIONS.client), (snapshot) => {
+            state.clients = snapshot.docs.map((snapshotDoc) => Object.assign({ id: snapshotDoc.id }, snapshotDoc.data())).filter((record) => record.schemaVersion === METRICS_SCHEMA_VERSION);
+            renderAll();
+          }, () => showToast("Error al sincronizar clientes de métricas.", "error"));
+
+          if (sessionStorage.getItem("cya_auth") === "true") showApp();
+        });
+      } catch (error) {
+        console.error(error);
+        showToast("Error de conexión con la base de datos.", "error");
+      }
+    }
+
+    // Event Listeners principales
+    el("login-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const username = el("login-username").value.trim();
+      const password = el("login-password").value.trim();
+      const error = el("login-error");
+
+      if (username.toLowerCase() === "enzo" && password.toLowerCase() === "tapiales") {
+        sessionStorage.setItem("cya_auth", "true");
+        sessionStorage.setItem("cya_user", username);
+        error.classList.add("hidden");
+        showApp();
+        showToast("Bienvenido, " + username + ".", "success");
+      } else {
+        error.querySelector("span").textContent = username && password ? "Usuario o contraseña incorrectos" : "Complete ambos campos";
+        error.classList.remove("hidden");
+      }
+    });
+
+    document.querySelectorAll("[data-view]").forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
+    el("logout-button").addEventListener("click", logout);
+    el("add-income-button").addEventListener("click", () => openEntry("income"));
+    el("add-expense-button").addEventListener("click", () => openEntry("expense"));
+    
+    el("records-active-tab").addEventListener("click", () => { state.recordsTab = "active"; renderRegistry(); });
+    el("records-archived-tab").addEventListener("click", () => { state.recordsTab = "archived"; renderRegistry(); });
+    
+    el("records-search").addEventListener("input", (e) => {
+      state.searchQuery = e.target.value;
+      renderRegistry();
+    });
+
+    document.querySelectorAll("[data-metrics-period]").forEach((button) => button.addEventListener("click", () => {
+      state.metricsPeriod = button.dataset.metricsPeriod;
+      renderMetrics();
+    }));
+    el("metrics-add-data").addEventListener("click", openMetricsDataMenu);
+    el("metrics-export-pdf").addEventListener("click", exportMetricsPdf);
+    el("metrics-client-search").addEventListener("input", (event) => {
+      state.metricsSearch = event.target.value;
+      renderMetrics();
+    });
+
+    el("entry-duration").addEventListener("change", updateDurationVisibility);
+    el("entry-form").addEventListener("submit", saveEntry);
+    el("entry-back-button").addEventListener("click", () => closeEntry());
+
+    // Event listeners para la sección CALCULADORA
+    attachCurrencyMask(el("calc-uma"));
+    attachCurrencyMask(el("calc-base"));
+    attachCurrencyMask(el("calc-custom-monto"));
+
+    el("calc-btn-calculate").addEventListener("click", handleCalculatorSubmit);
+
+    document.querySelectorAll("input[name='calc-monto-opt']").forEach((radio) => {
+      radio.addEventListener("change", (e) => {
+        const isCustom = e.target.value === "custom";
+        el("calc-custom-monto-wrap").classList.toggle("hidden", !isCustom);
+        renderCalculatorTable();
+      });
+    });
+
+    el("calc-custom-monto").addEventListener("input", renderCalculatorTable);
+    el("calc-cuotas").addEventListener("input", renderCalculatorTable);
+    el("calc-modalidad-uma").addEventListener("change", renderCalculatorTable);
+    el("calc-start-month").addEventListener("change", renderCalculatorTable);
+    el("calc-rango-dias").addEventListener("change", renderCalculatorTable);
+    el("calc-btn-pdf").addEventListener("click", exportCalculatorPdf);
+
+    window.addEventListener("popstate", () => { if (state.entryOpen) closeEntry(false); });
+    window.addEventListener("keydown", (e) => { if (e.key === "Escape" && state.entryOpen) closeEntry(); });
+
+    setupFirebase();
+    renderAll();
+  </script>
+</body>
+</html>
