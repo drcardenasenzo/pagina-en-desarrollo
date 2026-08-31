@@ -1,0 +1,12 @@
+.DS_Store
+**/.DS_Store
+
+# Material de trabajo: queda en esta carpeta local, pero no forma parte del sitio publicado.
+/data/
+/docs/
+/scripts/
+/templates/
+
+# Archivos de referencia no publicados.
+/assets/img/articles/_originales-retiradas/
+/assets/img/site/testimonios-ilustrativos/
