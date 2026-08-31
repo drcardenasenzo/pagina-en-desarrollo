@@ -2204,8 +2204,11 @@ html.is-adjusting-articles body {
   .contact-methods {
     grid-template-columns: 1fr;
   }
-  .contact-method strong {
-    font-size: 1.14rem;
+  .contact-method-email strong {
+    font-size: clamp(0.8rem, 4.05vw, 1.14rem);
+    letter-spacing: -0.025em;
+    overflow-wrap: normal;
+    white-space: nowrap;
   }
 }
 
@@ -2357,14 +2360,14 @@ html.is-adjusting-articles body {
 
 /* Páginas de servicios: acercar la ruta al encabezado y compactar los bloques informativos. */
 .service-page .page-hero {
-  padding: 7.75rem 10% 3.5rem;
+  padding: 6.25rem 10% 3.5rem;
 }
 .service-page main > .section {
   padding: 3.5rem 10%;
 }
 @media (max-width: 1024px) {
   .service-page .page-hero {
-    padding: 7.2rem 5% 3.15rem;
+    padding: 5.75rem 5% 3.15rem;
   }
   .service-page main > .section {
     padding: 3.35rem 5%;
@@ -2372,7 +2375,7 @@ html.is-adjusting-articles body {
 }
 @media (max-width: 767px) {
   .service-page .page-hero {
-    padding: 6.9rem 5% 2.9rem;
+    padding: 5.3rem 5% 2.9rem;
   }
   .service-page main > .section {
     padding: 3.15rem 5%;
@@ -2381,29 +2384,32 @@ html.is-adjusting-articles body {
 
 /* Servicios: las tarjetas de contenido relacionado se apilan durante el scroll. */
 .service-page [data-service-article-stack] {
-  align-items: start;
+  align-items: stretch;
+  grid-auto-rows: 1fr;
   isolation: isolate;
   overflow: visible;
 }
 .service-page [data-service-article-stack] .article-card {
+  --service-article-order: 1;
+  --service-article-mobile-offset: 0px;
+  --service-article-desktop-offset: 0px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   position: sticky;
   top: calc(88px + var(--service-article-mobile-offset));
   z-index: var(--service-article-order);
   transform-origin: center top;
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
-.service-page [data-service-article-stack] .article-card:nth-child(1) { --service-article-order: 1; --service-article-mobile-offset: 0px; --service-article-desktop-offset: 0px; }
-.service-page [data-service-article-stack] .article-card:nth-child(2) { --service-article-order: 2; --service-article-mobile-offset: 8px; --service-article-desktop-offset: 0px; }
-.service-page [data-service-article-stack] .article-card:nth-child(3) { --service-article-order: 3; --service-article-mobile-offset: 16px; --service-article-desktop-offset: 0px; }
-.service-page [data-service-article-stack] .article-card:nth-child(4) { --service-article-order: 4; --service-article-mobile-offset: 24px; --service-article-desktop-offset: 10px; }
-.service-page [data-service-article-stack] .article-card:nth-child(5) { --service-article-order: 5; --service-article-mobile-offset: 32px; --service-article-desktop-offset: 10px; }
-.service-page [data-service-article-stack] .article-card:nth-child(6) { --service-article-order: 6; --service-article-mobile-offset: 40px; --service-article-desktop-offset: 10px; }
-.service-page [data-service-article-stack] .article-card:nth-child(7) { --service-article-order: 7; --service-article-mobile-offset: 48px; --service-article-desktop-offset: 20px; }
-.service-page [data-service-article-stack] .article-card:nth-child(8) { --service-article-order: 8; --service-article-mobile-offset: 56px; --service-article-desktop-offset: 20px; }
-.service-page [data-service-article-stack] .article-card:nth-child(9) { --service-article-order: 9; --service-article-mobile-offset: 64px; --service-article-desktop-offset: 20px; }
-.service-page [data-service-article-stack] .article-card:nth-child(10) { --service-article-order: 10; --service-article-mobile-offset: 72px; --service-article-desktop-offset: 30px; }
-.service-page [data-service-article-stack] .article-card:nth-child(11) { --service-article-order: 11; --service-article-mobile-offset: 80px; --service-article-desktop-offset: 30px; }
-.service-page [data-service-article-stack] .article-card:nth-child(12) { --service-article-order: 12; --service-article-mobile-offset: 88px; --service-article-desktop-offset: 30px; }
+.service-page [data-service-article-stack] .article-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+.service-page [data-service-article-stack] .article-card[hidden] {
+  display: none !important;
+}
 @media (min-width: 768px) {
   .service-page [data-service-article-stack] {
     grid-template-columns: repeat(3, minmax(0, 1fr));

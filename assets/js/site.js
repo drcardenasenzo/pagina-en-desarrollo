@@ -282,6 +282,25 @@
     applyFilter(knownFilter ? requestedTopic : "todos");
   }
 
+  const syncServiceArticleStack = (grid) => {
+    if (!grid) return;
+    const visibleCards = [...grid.querySelectorAll(".article-card")].filter(
+      (card) => !card.hidden,
+    );
+    visibleCards.forEach((card, index) => {
+      card.style.setProperty("--service-article-order", String(index + 1));
+      card.style.setProperty("--service-article-mobile-offset", `${index * 8}px`);
+      card.style.setProperty(
+        "--service-article-desktop-offset",
+        `${Math.floor(index / 3) * 10}px`,
+      );
+    });
+  };
+
+  document
+    .querySelectorAll("[data-service-article-stack]")
+    .forEach(syncServiceArticleStack);
+
   const familyFeaturedGrid = document.querySelector("[data-family-featured-articles]");
   if (familyFeaturedGrid) {
     const featuredArticles = new Set([
@@ -302,6 +321,7 @@
       card.hidden = !featuredArticles.has(new URL(card.href).pathname);
       if (!card.hidden) hydrateArticleImage(card.querySelector("img"));
     });
+    syncServiceArticleStack(familyFeaturedGrid);
   }
   const oldHashRoutes = {
     5: "/articulos/hasta-que-edad-se-paga-cuota-alimentaria/",
