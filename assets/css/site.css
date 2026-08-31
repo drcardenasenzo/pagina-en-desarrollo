@@ -2382,6 +2382,21 @@ html.is-adjusting-articles body {
   }
 }
 
+/* Artículos, Nosotros y Contacto: la ruta queda a la misma altura que en Servicios. */
+.content-page .page-hero {
+  padding: 6.25rem 10% 3.5rem;
+}
+@media (max-width: 1024px) {
+  .content-page .page-hero {
+    padding: 5.75rem 5% 3.15rem;
+  }
+}
+@media (max-width: 767px) {
+  .content-page .page-hero {
+    padding: 5.3rem 5% 2.9rem;
+  }
+}
+
 /* Servicios: las tarjetas de contenido relacionado se apilan durante el scroll. */
 .service-page [data-service-article-stack] {
   align-items: stretch;
